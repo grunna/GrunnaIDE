@@ -1,0 +1,24 @@
+GET http://127.0.0.1:3333/api/featchAllProjects HTTP/1.1
+
+###
+
+GET http://127.0.0.1:3333/api/getAllFiles?projectId=4 HTTP/1.1
+
+###
+
+POST http://127.0.0.1:3333/api/createProject HTTP/1.1
+content-type: application/json
+
+{
+    "name": "nesANN",
+    "gitUrl": "https://gitlab.com/GreatGroupOfAll/NesANN.git"
+}
+
+###
+
+POST http://127.0.0.1:3333/api/deleteProject HTTP/1.1
+content-type: application/json
+
+{
+    "projectId": "4"
+}

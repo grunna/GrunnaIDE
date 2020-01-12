@@ -1,0 +1,16 @@
+#alerts {
+  position: fixed;
+  top: 50;
+  left: 5%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+}
+
+ul.fancytree-container {
+  border: 0px;
+}
+
+ul.fancytree-container:focus {
+  outline: none;
+}

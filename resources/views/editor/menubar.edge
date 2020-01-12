@@ -1,0 +1,172 @@
+<nav class="navbar navbar-expand-lg navbar-light sticky-top bg-light" style="height: 56px">
+  <div class=" collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link" id="navbarDropdownFile" role="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          File
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownFile">
+          <a class="dropdown-item" data-toggle="modal" data-target="#createProjectDialog">New project</a>
+          <a class="dropdown-item" data-toggle="modal" data-target="#openProjectDialog">Open project</a>	  
+          <a class="dropdown-item" href="#">Preference</a>
+          <a class="dropdown-item" href="#">Project settings</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ route('login.logout') }}">Logout</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" id="navbarDropdownEdit" role="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          Edit
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownEdit">
+          <a class="dropdown-item" href="#">Undo</a>
+          <a class="dropdown-item" href="#">Redo</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Cut</a>
+          <a class="dropdown-item" href="#">Copy</a>
+          <a class="dropdown-item" href="#">Paste</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Find in file</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" id="navbarDropdownRun" role="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          Run
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownRun">
+          <a class="dropdown-item" id="run">Run</a>
+          <a class="dropdown-item" href="#">Debug</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" id="navbarDropdownTerminal" role="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          Terminal
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownTerminal">
+          <a class="dropdown-item" href="#">Open terminal</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+	<a class="nav-link" id="navbarDropdownGit" role="button" data-toggle="dropdown" aria-haspopupt="true" aria-expanded="false">
+	  Git
+	</a>
+	<div class="dropdown-menu" aria-labelledby="navbarDropdownGit">
+    <a class="dropdown-item" id="menuGitFetch">Fetch</a>
+    <a class="dropdown-item" id="menuGitStatus">Status</a>
+	  <a class="dropdown-item" id="menuGitPull">Pull</a>
+	  <a class="dropdown-item" id="menuGitAdd">Add</a>	  
+	  <a class="dropdown-item" id="menuGitCommit">Commit</a>
+    <a class="dropdown-item" id="menuGitPush">Push</a>
+    <a class="dropdown-item" id="menuGitTest">Test</a>
+	</div>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div id="alerts"></div>
+
+<div class="modal fade" id="gitUsernameModal" tabindex="-1" role="dialog" aria-labelledby="openGitUsernameModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+	<label for="gitUsernameModalInput">Username:</label>
+	<input type="text" class="form-control" id="gitUsernameModalInput" aria-describedby="usernameHelp" placeholder="Git username">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="gitPasswordModal" tabindex="-1" role="dialog" aria-labelledby="openGitPasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+	<label for="gitPasswordModalInput">Password:</label>
+	<input type="password" class="form-control" id="gitPasswordModalInput" aria-describedby="passwordHelp" placeholder="Git password">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="gitCommitMessageModal" tabindex="-1" role="dialog" aria-labelledby="openGitCommitMessageModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+	<label for="gitCommitMessageModalInput">CommitMessage:</label>
+	<input type="text" class="form-control" id="gitCommitMessageModalInput" aria-describedby="commitMessageHelp" placeholder="Commit Message">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="gitAddModal" tabindex="-1" role="dialog" aria-labelledby="openGitAddModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+	<label for="gitAddModalInput">Add file:</label>
+	<input type="text" class="form-control" id="gitAddModalInput" aria-describedby="addHelp" placeholder="Add file">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="openProjectDialog" tabindex="-1" role="dialog" aria-labelledby="openProjectDialogLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="openProjectModalLabel">open new project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="open-project-form" role="form">
+          <div class="form-group">
+            <label for="project-name" class="col-form-label">Project name:</label>
+             <select class="form-control" id="openProjectControlSelect">
+	     </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Open project</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="createProjectDialog" tabindex="-1" role="dialog" aria-labelledby="createProjectDialogLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create new project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="create-project-form" action="/api/project/createProject" method="POST" role="form">
+          <div class="form-group">
+            <label for="project-name" class="col-form-label">Project name:</label>
+            <input type="text" class="form-control" id="project-name" name="projectName" >
+          </div>
+          <div class="form-group">
+            <label for="git-url" class="col-form-label">Git URL:</label>
+            <input type="text" class="form-control" id="git-url" name="gitUrl" >
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Create project</button>
+          </div>
+	  <input type="hidden" id="createProjectUsername" name="username" value="">
+	  <input type="hidden" id="createProjectPassword" name="password" value="">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

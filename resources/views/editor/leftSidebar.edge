@@ -1,0 +1,44 @@
+<div class="sidebar-header">Folders</div>
+<div id="filetree"></div>
+
+<div class="modal fade" id="createDirectoryModal" tabindex="-1" role="dialog" aria-labelledby="openCreateDirectoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+	<label for="createDirectoryModalInput">New Directory:</label>
+	<input type="text" class="form-control" id="createDirectoryModalInput" aria-describedby="createDirectoryHelp" placeholder="Directory name">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="createFileModal" tabindex="-1" role="dialog" aria-labelledby="openCreateFileModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+	<label for="createFileModalInput">New File:</label>
+	<input type="text" class="form-control" id="createFileModalInput" aria-describedby="createFileHelp" placeholder="File name">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteFileDirectoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteFileDirectoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteFileDirectoryModalLabel">Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" id="deleteFileDirectoryModalBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
