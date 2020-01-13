@@ -27,7 +27,7 @@ class Shared {
 
   checkPath(correctPath, checkPath) {
     let pathOne = PATH.resolve(correctPath)
-    let PathTwo = PATH.resolve(checkPath)
+    let pathTwo = PATH.resolve(checkPath)
     if (pathTwo.startsWith(pathOne)) {
       return true
     } else {
