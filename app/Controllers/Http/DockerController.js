@@ -61,6 +61,8 @@ class DockerController {
       }
     }
 
+    let container = docker.getContainer('grunna-' + auth.user.id)
+    
     console.log('CreateContainer')
     await docker.createContainer(dockerConfig)
       .then(container => {

@@ -14,20 +14,22 @@ let docker = new Docker()
 class WsDockerTerminal extends Writable {
   constructor(options) {
     super(options)
-    
+    this.socket = options.writeSocket
   }
   _write(chunk, encoding, callback) {
     const data = chunk.toString('utf8')
-    if (dockerChannel) {
-      dockerChannel.topic('docker:terminal').broadcast('terminal', data)
-      process.stdout.write(data);
+    if (this.socket) {
+      try {
+	this.socket.emit('terminal', data)
+      } catch (err) {
+	console.log('WsDockerTerminal error: ', err)
+      }
     }
     callback();
   }
 }
 
-let sendToTerminal = new WsDockerTerminal()
-
+let sendToTerminal
 
 class DockerController {
   constructor ({ session, socket, request, auth }) {
@@ -35,7 +37,25 @@ class DockerController {
     this.request = request
     this.session = session
     this.auth = auth
+    sendToTerminal = new WsDockerTerminal({ writeSocket: this.socket})
     console.log('user joined with %s socket id, Topic %s', socket.id, socket.topic)
+  }
+
+  onClose() {
+    let container = docker.getContainer('grunna-' + this.auth.user.id)
+
+    container.stop()
+      .then(data => {
+	console.log('onClose: Container have been stoped')
+	return container.remove()
+      })
+      .then(data => {
+	
+	console.log('onClose: Container have been removed')
+      })
+      .catch(err => {
+	console.log('onClose: Container error -> ' + err)
+      })
   }
 
   onDockerAttach() {
