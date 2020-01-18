@@ -2,6 +2,21 @@
 
 $(function () {
 
+  $('#filetree').fancytree({
+    extensions: ["childcounter"],
+    activate: (event, data) => {
+      if (!data.node.isFolder()) {
+        retriveFile(data.node.key)
+      }
+    },
+    source: [],
+    childcounter: {
+      deep: true,
+      hideZeros: true,
+      hideExpanded: true
+    },
+  })
+  
   $('#create-project-form').on('submit', function (e) {
     // if the validator does not prevent form submit
 
@@ -89,7 +104,8 @@ $(function () {
       },
       success: function (data) {
         $('#openProjectDialog').modal('hide');
-        updateTree(data)
+        //updateTree(data)
+	 $('#filetree').fancytree('getTree').reload(createTree(data))
 	createNewDocker()
       }
     })

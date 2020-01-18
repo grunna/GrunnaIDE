@@ -13,6 +13,7 @@ let docker = new Docker()
 
 class WsDockerTerminal extends Writable {
   constructor(options) {
+    console.log('new terminal created: ' + options.writeSocket.id)
     super(options)
     this.socket = options.writeSocket
   }
