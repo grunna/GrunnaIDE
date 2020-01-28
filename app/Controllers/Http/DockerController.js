@@ -4,6 +4,8 @@ const Env = use('Env')
 const Docker = require('dockerode');
 const Ws = use('Ws')
 const path = use('path')
+const Shared = require('./Shared')
+const shared = new Shared()
 const {
   Writable
 } = require('stream');
@@ -12,7 +14,6 @@ const dockerChannel = Ws.getChannel('docker:*')
 class WsDockerInfoChannel extends Writable {
   constructor(options) {
     super(options)
-    
   }
   _write(chunk, encoding, callback) {
     const data = chunk.toString('utf8')
@@ -33,58 +34,33 @@ class DockerController {
 
     console.log('ProjectPath: ', projectPath)
     
-    let dockerConfig = {
-      Image: 'node:10',
-      Cmd: ['/bin/bash'],
-      name: 'grunna-' + auth.user.id,
-      'AttachStdin': true,
-      'AttachStdout': true,
-      'AttachStderr': true,
-      'OpenStdin': true,
-      Tty: true,
-      "WorkingDir": "/src",
-      "ExposedPorts": {
-        "8080/tcp": { }
-            },
-      "HostConfig": {
-	    "AutoRemove": true,
-        "Binds": [
-          path.resolve(projectPath) + ":/src"
-        ],
-        "PortBindings": {
-          "8080/tcp": [
-            {
-              "HostPort": "0"
-            }
-          ]
-        },
-      }
-    }
-
     let container = docker.getContainer('grunna-' + auth.user.id)
-    
+
+    await container.stop()
+      .then(data => {
+	console.log('createDocker: Container have been stoped')
+	return container.remove()
+      })
+      .then(data => {
+	console.log('createDocker: Container have been removed')
+      })
+      .catch(err => {
+	console.log('createDocker: Container error -> ' + err)
+      })
+
+    let dockerConfig = shared.dockerConfig('node:10', path.resolve(projectPath), 'grunna-' + auth.user.id) 
+
     console.log('CreateContainer')
     await docker.createContainer(dockerConfig)
       .then(container => {
-	return container.start()
-      })
-      .then(container => {
-	return container.inspect(function (err, data) {
-	  if (err) {
-	    console.log('ContainerInspectErr: ', err)
-	    return response.badRequest()
-	  }
-	  console.log('Container created');
-	  return response.ok()
-	})
+	container.start()
+	return response.ok()
       })
       .catch(err => {
 	console.log('err: ', err)
 	return response.ok('Container already running')
-      }) 
-    // return response.ok()
+      })
   }
-
 }
 
 module.exports = DockerController

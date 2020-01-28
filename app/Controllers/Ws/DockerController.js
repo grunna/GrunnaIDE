@@ -1,14 +1,18 @@
 'use strict'
 
+const Env = use('Env')
 const Docker = require('dockerode');
 const Ws = use('Ws')
 const { Writable, Readable } = require('stream');
 const dockerChannel = Ws.getChannel('docker:*')
+const path = use('path')
 const inStream = new Readable({
   read() {}
 });
+const Shared = require('../Http/Shared')
+const shared = new Shared()
 let docker = new Docker()
-   
+let sendToTerminal   
 
 
 class WsDockerTerminal extends Writable {
@@ -18,19 +22,17 @@ class WsDockerTerminal extends Writable {
     this.socket = options.writeSocket
   }
   _write(chunk, encoding, callback) {
-    const data = chunk.toString('utf8')
-    if (this.socket) {
-      try {
-	this.socket.emit('terminal', data)
-      } catch (err) {
-	console.log('WsDockerTerminal error: ', err)
-      }
+    try {
+      const data = chunk.toString('utf8')
+      this.socket.emit('terminal', data)
+    } catch (err) {
+      console.log('WsDockerTerminal error: ', err)
     }
-    callback();
+    callback()
   }
 }
 
-let sendToTerminal
+
 
 class DockerController {
   constructor ({ session, socket, request, auth }) {
@@ -38,71 +40,80 @@ class DockerController {
     this.request = request
     this.session = session
     this.auth = auth
-    sendToTerminal = new WsDockerTerminal({ writeSocket: this.socket})
     console.log('user joined with %s socket id, Topic %s', socket.id, socket.topic)
   }
 
-  onClose() {
+  async onClose() {
     let container = docker.getContainer('grunna-' + this.auth.user.id)
 
-    container.stop()
-      .then(data => {
-	console.log('onClose: Container have been stoped')
-	return container.remove()
-      })
-      .then(data => {
-	
-	console.log('onClose: Container have been removed')
-      })
-      .catch(err => {
-	console.log('onClose: Container error -> ' + err)
-      })
+    if (this.socket.topic === 'docker:terminal') {
+      await container.stop()
+	.then(data => {
+	  console.log('onClose: Container have been stoped')
+	  return container.remove()
+	})
+	.then(data => {
+	  console.log('onClose: Container have been removed')
+	})
+	.catch(err => {
+	  console.log('onClose: Container error -> ' + err)
+	})
+    }
   }
 
-  onDockerAttach() {
-    
+  async onDockerAttach() {
+
     console.log('attach: grunna-', this.auth.user.id)
     let container = docker.getContainer('grunna-' + this.auth.user.id);
-
-    if (!container) {
-      console.log('No container is running')
-      return
-    }
+    sendToTerminal = new WsDockerTerminal({ writeSocket: this.socket})
     
-    container.logs({
+    await container.logs({
       stdout: true,
       stderr: true,
       tail: 20
-    }, function(err, stream){
-      if(err) {
-	console.log('error on logs: ', err)
+    })
+      .then(stream => {
+	try {
+	  sendToTerminal.write(stream)
+	} catch (err) {
+	  console.log('logs33 error: ', err)
+	}
+      })
+      .catch(err => {
+	console.log('Attach error: ', err)
 	return
-      }
-      sendToTerminal.write(stream)      
-    });
+      })
     
     var attach_opts = {stream: true, stdin: true, stdout: true, stderr: true};
-    container.attach(attach_opts, function handler(err, stream) {
-      if (err) {
-	console.log('Error on attach: ', err)
+    await container.attach(attach_opts)
+      .then(stream => {
+	try {
+	  inStream.setEncoding('utf8')
+	  inStream.pipe(stream).pipe(sendToTerminal)
+	} catch (err) {
+	  console.log('attach44 error: ', err)
+	}
+      })
+      .catch(err => {
+	console.log('Error on attach/log :', err)
 	return
-      }
-      inStream.setEncoding('utf8')
-      inStream.pipe(stream).pipe(sendToTerminal)
-    })
+      })
   }
 
   onDockerCommand(command) {
-    console.log('Recived command: ' + command.message)
-    console.log('docker ID: ', this.session.get('dId'))
-    if (command.message.trim() !== '/quit') {
-      console.log('humm', command.message.trim())
-      inStream.push(command.message + '\u000D')
-    } else {
-      console.log('run else')
-      inStream.push('\x03')
+    try {
+      console.log('Recived command: ' + command.message)
+      console.log('docker ID: ', this.session.get('dId'))
+      if (command.message.trim() !== '/quit') {
+	console.log('humm', command.message.trim())
+	inStream.push(command.message + '\u000D')
+      } else {
+	console.log('run else')
+	inStream.push('\x03')
+      }
+    } catch (err) {
+      console.log('onDockerCommand error: ', err)
     }
   }
 }
-
 module.exports = DockerController

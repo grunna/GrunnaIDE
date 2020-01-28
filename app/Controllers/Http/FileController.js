@@ -63,11 +63,11 @@ class FileController {
   }
 
   async deleteFileDirectory({session, request, response, auth}) {
-    let deletePath = Env.get('GITPROJECTDIR') + '/' + auth.user.id + request.post().fileOrDirectory
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, deletePath)) {
-      return response.badRequest('error in path')
-    }
+    let deletePath = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fileOrDirectory
     console.log('path: ', deletePath)
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, deletePath)) {
+      return response.badRequest('error in path: ', request.post().fileOrDirectory)
+    }
     await fs.remove(deletePath)
       .catch(err => {
 	console.log('err: ', err)
