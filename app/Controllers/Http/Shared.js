@@ -40,7 +40,6 @@ class Shared {
       Image: image,
       Cmd: ['/bin/bash'],
       name: name,
-      // name: 'grunna-' + auth.user.id,
       'AttachStdin': true,
       'AttachStdout': true,
       'AttachStderr': true,
@@ -53,7 +52,6 @@ class Shared {
       "HostConfig": {
 	"Binds": [
 	  binds + ":/src"
-	  //PATH.resolve(projectPath) + ":/src"
 	],
 	"PortBindings": {
 	  "8080/tcp": [

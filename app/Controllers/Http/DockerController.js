@@ -29,6 +29,8 @@ class WsDockerInfoChannel extends Writable {
 class DockerController {
 
   async createDocker({ session, response, request, auth }) {
+
+    let sendToInfoChannel = new WsDockerInfoChannel()
     let docker = new Docker()
     const projectPath = Env.get('SAVEDIRECTORY') + '/' + auth.user.uuid + '/' + session.get('currentProject')
 
@@ -53,8 +55,21 @@ class DockerController {
     console.log('CreateContainer')
     await docker.createContainer(dockerConfig)
       .then(container => {
-	container.start()
-	return response.ok()
+	return container.start()
+      })
+      .then(data => {
+	return container.inspect()
+      })
+      .then(data => {
+	const portBindings = Object.values(data.NetworkSettings.Ports)
+	console.log('data: ', portBindings)
+	portBindings.forEach(hosts => {
+	  hosts.forEach(host => {
+	    console.log('port: ', host)
+	    sendToInfoChannel.write('Connect to: http://' + host.HostPort + '.ide.grunna.com:18088')
+	  })
+	})
+	
       })
       .catch(err => {
 	console.log('err: ', err)

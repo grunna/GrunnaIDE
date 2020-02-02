@@ -7,9 +7,9 @@ const fs = require('fs')
 const User = use('App/Models/User')
 const Project = use('App/Models/Project')
 const Shared = use('./Shared')
+const shared = new Shared()
 
 git.plugins.set('fs', fs)
-
 
 class GitController {
 
@@ -52,8 +52,7 @@ class GitController {
   async pull({session, response, request, auth}) {
     try {
       await git.pull({dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), username: request.post().username, password: request.post().password})
-      const shared = new Shared()
-      return response.ok(shared.getTree(auth.user.uuid, session.get('currentProject')))
+      return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
     } catch (error) {
       console.log(error)
       if (error.data.statusCode === 401) {

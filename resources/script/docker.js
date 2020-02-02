@@ -42,8 +42,9 @@ function subscribeToOutputChannel() {
   console.log('infoChannel; ', infoChannel);
   
   infoChannel.on('output', (output) => {
-    $('#outputData').append(output)
-    console.log('Out: ', output);
+    let addNewData = output + '<br/>' 
+    $('#outputData').append(addNewData)
+    console.log('Out add: ', addNewData);
   })
 }
 
