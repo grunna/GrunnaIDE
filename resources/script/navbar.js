@@ -120,7 +120,7 @@ $(function () {
       url: "/api/git/pull",
       data: globalValues.postData,
       success: function(data) {
-        updateTree(data)
+	$('#filetree').fancytree('getTree').reload(createTree(data))
       },
       error: function(xhr, ajaxOptions, thrownError) {
         if (xhr.status === 401) {
