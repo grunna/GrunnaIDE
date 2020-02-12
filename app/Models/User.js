@@ -6,10 +6,16 @@ const Hash = use('Hash')
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
+const uuid = use('uuid/v4')
+
 class User extends Model {
   static boot () {
     super.boot()
 
+    this.addHook('beforeCreate', async (userInstance) => {
+      userInstance.uuid = uuid()
+    })
+    
     /**
      * A hook to hash the user password before saving
      * it to the database.
