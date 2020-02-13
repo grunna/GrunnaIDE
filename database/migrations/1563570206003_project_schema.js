@@ -8,7 +8,7 @@ class ProjectSchema extends Schema {
   up () {
     this.create('projects', (table) => {
       table.increments()
-      table.uuid('uuid').notNullable().defaultTo(uuid())
+      table.uuid('uuid').notNullable().unique()
       table.timestamps()
       table.string('name', 255).notNullable()
       table.string('gitUrl', 1024).notNullable()
