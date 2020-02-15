@@ -24,12 +24,21 @@
     <div class="card-header">
       <h5 class="card-title">Login</h5>
     </div>
+@if(process.env.NODE_ENV === 'production')
     <div class="card-body">
       <p class="card-text">At this first version we only support login via a GitHub account</p>
       <a href="{{ route('login.github') }}">
 	Login with GitHub
       </a>
     </div>
+@else
+    <div class="card-body">
+      <p class="card-text">Login as a developer</p>
+      <a href="{{ route('login.loginDev') }}">
+	Login Development
+      </a>
+    </div>
+@endif
   </div>  
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

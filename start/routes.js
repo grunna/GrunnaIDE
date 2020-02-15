@@ -18,6 +18,7 @@ const Route = use('Route')
 
 // Login with github
 Route.get('login/github', 'LoginController.redirect').as('login.github')
+Route.get('login/loginDev', 'LoginController.loginDev').as('login.loginDev')
 Route.get('github/callback', 'LoginController.callback').as('github.callback')
 
 Route.on('/login').render('login').middleware('guest')

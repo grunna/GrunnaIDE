@@ -41,6 +41,25 @@ class LoginController {
     }
   }
 
+  async loginDev({auth, response}) {
+     const userDetails = {
+        email: 'dev123@grunna.com',
+        token: 'token',
+        login_source: 'dev'
+      }
+
+     // search for existing user
+      const whereClause = {
+        email: 'dev123@grunna.com'
+      }
+
+      const user = await User.findOrCreate(whereClause, userDetails)
+      let accessToken = await auth.login(user)
+      response.safeHeader('Authorization', accessToken.type + ' ' + accessToken.token)
+
+      return response.route('editor')
+  }
+
   async logout({
     ally,
     auth,
