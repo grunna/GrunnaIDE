@@ -38,6 +38,10 @@ class FileController {
     return response.ok(request.post().fileName + ' Created')
   }
 
+  async reloadFileTree({session, auth, response}) {
+     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
+  }
+
   async createFile({session, request, response, auth}) {
     let newPath = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fromDirectory + '/' + request.post().newFile
     if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newPath)) {

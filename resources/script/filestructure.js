@@ -1,6 +1,15 @@
 "use strict";
 
 $(function () {
-  console.log('do something');
+  $('#reloadFileTree').on('click', function (e) {
+    console.log('working');
+    $.ajax({
+      type: "GET",
+      url: "/api/file/reloadFileTree",
+      success: function (data) {
+       $('#filetree').fancytree('getTree').reload(createTree(data))
+      }
+    })
+  });
 
 });
