@@ -98,7 +98,7 @@ $(function () {
       url: "/api/git/push",
       data: globalValues.postData,
       success: function(data) {
-        updateTree(data)
+        $('#filetree').fancytree('getTree').reload(createTree(data))
       },
       error: function(xhr, ajaxOptions, thrownError) {
 	console.log('ERROR', xhr)

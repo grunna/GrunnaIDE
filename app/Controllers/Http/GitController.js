@@ -73,7 +73,7 @@ class GitController {
     let sha = await git.commit({
       dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'),
       author: {
-        name: 'test',
+        name: '',
         email: auth.user.email
       },
       message: request.post().commitMessage
