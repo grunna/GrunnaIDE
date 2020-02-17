@@ -111,6 +111,16 @@ $(function () {
     })
     event.preventDefault()
   })
+
+  $('#menuRemoveProject').on('click', function (event) {
+    $.ajax({
+      type: 'POST',
+      url: '/api/project/removeProject',
+      success: function (data) {
+          console.log('Remove project: ', data)
+       }
+     })
+   })
 });
 
 function createNewDocker() {
@@ -118,7 +128,7 @@ function createNewDocker() {
     type: 'POST',
     url: '/api/docker/createDocker',
     data: { },
-    success: (data) => {
+    success: function (data) {
       console.log('created docker: ', data)
       ws.getSubscription('docker:terminal').emit('dockerAttach', { })
     }

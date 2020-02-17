@@ -16,12 +16,14 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
+const NODE_ENV= { NODE_ENV: process.env.NODE_ENV }
+
 // Login with github
 Route.get('login/github', 'LoginController.redirect').as('login.github')
 Route.get('login/loginDev', 'LoginController.loginDev').as('login.loginDev')
 Route.get('github/callback', 'LoginController.callback').as('github.callback')
 
-Route.on('/login').render('login').middleware('guest')
+Route.on('/login').render('login', NODE_ENV).middleware('guest')
 
 Route.on('/ide').render('editor').as('editor').middleware('auth')
 Route.get('login/logout', 'LoginController.logout').as('login.logout').middleware('auth')
@@ -30,7 +32,7 @@ Route.group(() => {
   Route.get('/project/featchAllProjects', 'ProjectController.featchAllProjects')
   Route.get('/project/getAllFiles', 'ProjectController.getAllFiles')
   Route.post('/project/createProject', 'ProjectController.createProject')
-  Route.post('/project/deleteProject', 'ProjectController.deleteProject')
+  Route.post('/project/removeProject', 'ProjectController.removeProject')
   Route.get('/project/testGit', 'ProjectController.testGit')
   
   Route.post('/file/downloadFile', 'FileController.downloadFile')

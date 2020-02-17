@@ -3,7 +3,7 @@
 const Database = use('Database')
 const Env = use('Env')
 const git = require('isomorphic-git');
-const fs = require('fs');
+const fs = require('fs-extra')
 git.plugins.set('fs', fs)
 const User = use('App/Models/User')
 const Project = use('App/Models/Project')
@@ -48,24 +48,28 @@ class ProjectController {
 	project.user_id = user.id
 	project.owner = user.id
 	project.save()
-	treeResponse = shared.getTree(user.uuid, request.post().projectName)
       })
       .catch((error) => {
 	      return response.unauthorized() 
       })
-    return response.send(treeResponse)
+    return response.send(await shared.getTree(user.uuid, request.post().projectName))
   }
 
-  async deleteProject({response, request, auth}) {
-    let project = await Project.findBy('uuid', request.post().projectId)
-    if (project) {
-      let deletedProject = await project.delete()
-      if (deletedProject) {
-        return response.ok()
-      } else {
-        return response.notModified()
-      }
-    }
+  async removeProject({response, request, auth, session}) {
+     console.log('project', session.get('currentProject'))
+     let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
+        
+     if (project) {
+      await project.delete()
+      await fs.remove(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid +'/' + session.get('currentProject'))
+       .then(() => {
+           console.log('success')     
+        })
+       .catch(err => {
+           console.error(err)
+       })
+     return response.ok()
+     }
     return response.notFound({projectId: request.post().projectId})
   }
 }
