@@ -17,6 +17,9 @@
 
   <!-- fancytree -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.32.0/skin-lion/ui.fancytree.css" rel="stylesheet">
+
+  <!-- CodeMirror css -->
+  {{ style('codemirror/lib/codemirror.css') }}
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.1/jquery.contextMenu.min.css" />
@@ -76,6 +79,11 @@
   <!-- Fancytree js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.32.0/jquery.fancytree-all-deps.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.1/jquery.contextMenu.min.js"></script>
+  
+   <!-- CodeMirror JS -->
+  {{ script('codemirror/lib/codemirror.js') }}
+  {{ script('codemirror/mode/javascript/javascript.js') }}
+
   {{ script('script/xterm.js') }}
   {{ script('script/app.min.js') }}
 </body>

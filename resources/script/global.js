@@ -6,5 +6,6 @@ var globalValues = {
   loadedFilePath: "",
   action: "",
   postData: {},
-  username: ""
+  username: "",
+  codemirrorInstance: null
 }

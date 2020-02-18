@@ -145,7 +145,8 @@ function retriveFile(path) {
     },
     success: (data) => {
       console.log('newFIle: ', path)
-      $('#allMyCode').val(data)
+      //$('#allMyCode').val(data)
+      globalValues.codemirrorInstance.setValue(data)
       globalValues.loadedFile = data
       globalValues.loadedFilePath = path
     }

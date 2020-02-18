@@ -14,3 +14,8 @@ ul.fancytree-container {
 ul.fancytree-container:focus {
   outline: none;
 }
+
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
