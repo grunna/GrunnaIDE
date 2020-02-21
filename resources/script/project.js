@@ -16,7 +16,7 @@ $(function () {
       hideExpanded: true
     },
   })
-  
+
   $('#create-project-form').on('submit', function (e) {
     // if the validator does not prevent form submit
 
@@ -62,18 +62,18 @@ $(function () {
       globalValues.postData.password = $('#gitPasswordModalInput').val()
       $('#gitPasswordModalInput').val('')
       switch (globalValues.action) {
-      case 'createNewProject':
-        $('#create-project-form').submit()
-        break;
-      case 'gitPull':
-        $('#menuGitPull').click()
-        break;
-      case 'gitPush':
-	$('#menuGitPush').click()
-	break;
-      case 'gitFetch':
-	$('#menuGitFetch').click()
-	break;
+        case 'createNewProject':
+          $('#create-project-form').submit()
+          break;
+        case 'gitPull':
+          $('#menuGitPull').click()
+          break;
+        case 'gitPush':
+          $('#menuGitPush').click()
+          break;
+        case 'gitFetch':
+          $('#menuGitFetch').click()
+          break;
       }
       globalValues.action = ''
     }
@@ -105,8 +105,8 @@ $(function () {
       success: function (data) {
         $('#openProjectDialog').modal('hide');
         //updateTree(data)
-	 $('#filetree').fancytree('getTree').reload(createTree(data))
-	createNewDocker()
+        $('#filetree').fancytree('getTree').reload(createTree(data))
+        createNewDocker()
       }
     })
     event.preventDefault()
@@ -117,10 +117,10 @@ $(function () {
       type: 'POST',
       url: '/api/project/removeProject',
       success: function (data) {
-          console.log('Remove project: ', data)
-       }
-     })
-   })
+        console.log('Remove project: ', data)
+      }
+    })
+  })
 });
 
 function createNewDocker() {
@@ -144,8 +144,26 @@ function retriveFile(path) {
       fileName: path
     },
     success: (data) => {
-      console.log('newFIle: ', path)
-      //$('#allMyCode').val(data)
+      var val = path, m, mode, spec;
+      if (m = /.+\.([^.]+)$/.exec(val)) {
+        var info = CodeMirror.findModeByExtension(m[1]);
+        if (info) {
+          mode = info.mode;
+          spec = info.mime;
+        }
+      } else if (/\//.test(val)) {
+        var info = CodeMirror.findModeByMIME(val);
+        if (info) {
+          mode = info.mode;
+          spec = val;
+        }
+      } else {
+        mode = spec = val;
+      }
+      if (mode) {
+        globalValues.codemirrorInstance.setOption("mode", spec);
+        CodeMirror.autoLoadMode(globalValues.codemirrorInstance, mode);
+      }
       globalValues.codemirrorInstance.setValue(data)
       globalValues.loadedFile = data
       globalValues.loadedFilePath = path

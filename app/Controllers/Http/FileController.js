@@ -13,11 +13,11 @@ class FileController {
       return response.badRequest('error in path')
     }
     await fs.readFile(path, 'utf8')
-    .then(contents => {
+      .then(contents => {
       response.type('application/octet-stream')
       return response.send(contents)
     })
-    .catch(err => {
+      .catch(err => {
       return response.badRequest(err)
     })
   }
@@ -29,17 +29,17 @@ class FileController {
     }
     await fs.outputFile(path, request.post().data)
       .then(() => {
-        console.log('all good')
-      })
+      console.log('all good')
+    })
       .catch(err => {
-	console.log('err: ', err)
-        return response.badRequest(err)
-      })
+      console.log('err: ', err)
+      return response.badRequest(err)
+    })
     return response.ok(request.post().fileName + ' Created')
   }
 
   async reloadFileTree({session, auth, response}) {
-     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
+    return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 
   async createFile({session, request, response, auth}) {
@@ -49,8 +49,8 @@ class FileController {
     }
     await fs.ensureFile(newPath)
       .catch((err) => {
-	return response.badRequest(err)
-      })
+      return response.badRequest(err)
+    })
     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 
@@ -61,8 +61,8 @@ class FileController {
     }
     await fs.mkdir(newPath)
       .catch((err) => {
-	return response.badRequest(err)
-      })
+      return response.badRequest(err)
+    })
     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 
@@ -74,9 +74,9 @@ class FileController {
     }
     await fs.remove(deletePath)
       .catch(err => {
-	console.log('err: ', err)
-        return response.badRequest(err)
-      })
+      console.log('err: ', err)
+      return response.badRequest(err)
+    })
     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 }

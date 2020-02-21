@@ -8,7 +8,7 @@ $(function () {
       type: "POST",
       url: "/api/docker/compile",
       success: function (data) {
-       console.log('Ajax Post return data: ', data);
+        console.log('Ajax Post return data: ', data);
       }
     })
   });
@@ -19,10 +19,10 @@ $(function () {
       url: "/api/git/fetch",
       data: globalValues.postData,
       success: function(data) {
-	    console.log('Fetch return: ', data)
+        console.log('Fetch return: ', data)
       },
       error: function(xhr, ajaxOptions, thrownError) {
-	console.log('ERROR', xhr)
+        console.log('ERROR', xhr)
         if (xhr.status === 401) {
           globalValues.action = 'gitFetch'
           globalValues.postData = {}
@@ -46,7 +46,7 @@ $(function () {
             $('#outputData').append('File: ' + element.file + ' ' + element.status + '\n')
           }
         });
-	$('#outputData').append('-----------------------------------\n')
+        $('#outputData').append('-----------------------------------\n')
       }
     })
   });
@@ -88,11 +88,11 @@ $(function () {
           console.log('Fetch return: ', data)
         }
       })
-      
+
     }
   });
 
-   $('#menuGitPush').on('click', function (e) {
+  $('#menuGitPush').on('click', function (e) {
     $.ajax({
       type: "POST",
       url: "/api/git/push",
@@ -101,7 +101,7 @@ $(function () {
         $('#filetree').fancytree('getTree').reload(createTree(data))
       },
       error: function(xhr, ajaxOptions, thrownError) {
-	console.log('ERROR', xhr)
+        console.log('ERROR', xhr)
         if (xhr.status === 401) {
           globalValues.action = 'gitPush'
           globalValues.postData = {}
@@ -120,7 +120,7 @@ $(function () {
       url: "/api/git/pull",
       data: globalValues.postData,
       success: function(data) {
-	$('#filetree').fancytree('getTree').reload(createTree(data))
+        $('#filetree').fancytree('getTree').reload(createTree(data))
       },
       error: function(xhr, ajaxOptions, thrownError) {
         if (xhr.status === 401) {
@@ -140,12 +140,12 @@ $(function () {
       type: "POST",
       url: "/api/git/test",
       success: function(data) {
-	    console.log('Fetch return: ', data)
+        console.log('Fetch return: ', data)
       }
     })
   });
 
   function commitChanges(message) {
-    
+
   }
 });

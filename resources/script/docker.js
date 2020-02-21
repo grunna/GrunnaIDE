@@ -1,14 +1,20 @@
 "use strict";
 
 let ws = null;
-var term;
 
 $(function() {
   startWs();
 
-  /*term = new Terminal();
-  term.open(document.getElementById('terminalOutput'));
-  */
+  var shellprompt = '$ ';
+  
+  let termContainer = document.getElementById('terminal-continer');
+  var term = new Terminal({
+    cursorBlink: true
+  });
+  term.open(termContainer);
+  
+  term.write("~$ ");
+  
   $('#terminalInput').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if (keycode == '13') {
@@ -18,7 +24,7 @@ $(function() {
       $(this).val('')
 
       ws.getSubscription('docker:terminal').emit('dockerCommand', {
-	message
+        message
       })
       return
     }
@@ -40,7 +46,7 @@ function subscribeToOutputChannel() {
   console.log('SubscribeToDocker')
   const infoChannel = ws.subscribe('docker:infoChannel');
   console.log('infoChannel; ', infoChannel);
-  
+
   infoChannel.on('output', (output) => {
     let addNewData = output + '<br/>' 
     $('#outputData').append(addNewData)

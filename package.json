@@ -39,7 +39,8 @@
     "sqlite3": "^4.0.9",
     "strip-ansi": "^5.2.0",
     "uuid": "^3.3.3",
-    "xterm": "^4.3.0"
+    "xterm": "^4.4.0",
+    "xterm-addon-fit": "^0.3.0"
   },
   "devDependencies": {
     "onchange": "^6.0.0",

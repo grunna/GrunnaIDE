@@ -47,19 +47,19 @@ class Shared {
       Tty: true,
       "WorkingDir": "/src",
       "ExposedPorts": {
-	"8080/tcp": { }
+        "8080/tcp": { }
       },
       "HostConfig": {
-	"Binds": [
-	  binds + ":/src"
-	],
-	"PortBindings": {
-	  "8080/tcp": [
-	    {
-	      "HostPort": "0"
-	    }
-	  ]
-	},
+        "Binds": [
+          binds + ":/src"
+        ],
+        "PortBindings": {
+          "8080/tcp": [
+            {
+              "HostPort": "0"
+            }
+          ]
+        },
       }
     }
     return config

@@ -41,35 +41,35 @@ class ProjectController {
     let treeResponse = ''
     await git.clone({dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
       .then(() => {
-	let project = new Project()
-	project.name = request.post().projectName
-	project.gitUrl = request.post().gitUrl
-	project.gitUsername = request.post().gitUsername
-	project.user_id = user.id
-	project.owner = user.id
-	project.save()
-      })
+      let project = new Project()
+      project.name = request.post().projectName
+      project.gitUrl = request.post().gitUrl
+      project.gitUsername = request.post().gitUsername
+      project.user_id = user.id
+      project.owner = user.id
+      project.save()
+    })
       .catch((error) => {
-	      return response.unauthorized() 
-      })
+      return response.unauthorized() 
+    })
     return response.send(await shared.getTree(user.uuid, request.post().projectName))
   }
 
   async removeProject({response, request, auth, session}) {
-     console.log('project', session.get('currentProject'))
-     let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
-        
-     if (project) {
+    console.log('project', session.get('currentProject'))
+    let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
+
+    if (project) {
       await project.delete()
       await fs.remove(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid +'/' + session.get('currentProject'))
-       .then(() => {
-           console.log('success')     
-        })
-       .catch(err => {
-           console.error(err)
-       })
-     return response.ok()
-     }
+        .then(() => {
+        console.log('success')     
+      })
+        .catch(err => {
+        console.error(err)
+      })
+      return response.ok()
+    }
     return response.notFound({projectId: request.post().projectId})
   }
 }

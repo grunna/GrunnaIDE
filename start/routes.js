@@ -18,9 +18,13 @@ const Route = use('Route')
 
 const NODE_ENV= { NODE_ENV: process.env.NODE_ENV }
 
+Route.on('/welcome').render('welcome').middleware('guest')
+
 // Login with github
 Route.get('login/github', 'LoginController.redirect').as('login.github')
-Route.get('login/loginDev', 'LoginController.loginDev').as('login.loginDev')
+if (NODE_ENV !== 'production') {
+  Route.get('login/loginDev', 'LoginController.loginDev').as('login.loginDev')
+}
 Route.get('github/callback', 'LoginController.callback').as('github.callback')
 
 Route.on('/login').render('login', NODE_ENV).middleware('guest')
@@ -34,7 +38,7 @@ Route.group(() => {
   Route.post('/project/createProject', 'ProjectController.createProject')
   Route.post('/project/removeProject', 'ProjectController.removeProject')
   Route.get('/project/testGit', 'ProjectController.testGit')
-  
+
   Route.post('/file/downloadFile', 'FileController.downloadFile')
   Route.post('/file/saveFile', 'FileController.saveFile')
   Route.post('/file/createDirectory', 'FileController.createDirectory')

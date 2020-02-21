@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.1/jquery.contextMenu.min.css" />
   {{ style('editor.css') }}
-  {{ style('xterm.css') }}
+  {{ style('xterm/xterm.css') }}
   <title>
     Grunna IDE
   </title>
@@ -36,7 +36,7 @@
   <div class="container-fluid" style="height: calc(100vh - 56px)">
     <div class="row" style="height: 100%">
       <div class="col-2 pl-0" style="height: 100%; width: 250px; overflow: auto">
-	@include('editor.leftSidebar')
+		@include('editor.leftSidebar')
       </div>
       <div class="col-10 pr-0" style="height: 100%">
         <div class="row no-gutters" style="height: 100%">
@@ -44,24 +44,25 @@
             @include('editor.code')
           </div>
           <div class="col-12 overflow-auto border" style="height: 30%">
-	    <div style="height: calc(100% - 42px)">
-	      <div class="tab-content" style="height: 100%">
-		<div style="height: 100%" class="tab-pane active" role="tabpanel" id="outputTab">
-		  @include('editor.output')
-		</div>
-		<div style="height: 100%" class="tab-pane" role="tabpanel" id="terminalTab">
-		  @include('editor.terminal')
-		</div>
-	      </div>
-	      <ul class="nav nav-tabs" id="bottomCodeTabs" role="tablist">
-		<li class="nav-item">
-		  <a class="nav-link active" id="output-tab" data-toggle="tab" href="#outputTab" role="tab" aria-controls="output" aria-selected="true">Output</a>
-		</li>
-		<li class="nav-item">
-		  <a class="nav-link" id="terminal-tab" data-toggle="tab" href="#terminalTab" role="tab" aria-controls="terminal" aria-selected="false">Terminal</a>
-		</li>
-	      </ul>
-	    </div>
+            <div style="height: calc(100% - 42px)">
+              <div class="tab-content" style="height: 100%">
+				<div style="height: 100%" class="tab-pane active" role="tabpanel" id="outputTab">
+                  @include('editor.output')
+				</div>
+				<div class="tab-pane" role="tabpanel" id="terminalTab">
+                  @include('editor.terminal')
+                  <!--<div id="terminal-continer"></div>-->
+				</div>
+			  </div>
+	      	  <ul class="nav nav-tabs" id="bottomCodeTabs" role="tablist">
+				<li class="nav-item">
+                  <a class="nav-link active" id="output-tab" data-toggle="tab" href="#outputTab" role="tab" aria-controls="output" aria-selected="true">Output</a>
+				</li>
+				<li class="nav-item">
+                  <a class="nav-link" id="terminal-tab" data-toggle="tab" href="#terminalTab" role="tab" aria-controls="terminal" aria-selected="false">Terminal</a>
+				</li>
+	      	  </ul>
+			</div>
           </div>
         </div>
       </div>
@@ -82,9 +83,24 @@
   
    <!-- CodeMirror JS -->
   {{ script('codemirror/lib/codemirror.js') }}
-  {{ script('codemirror/mode/javascript/javascript.js') }}
+  
+  <!-- CodeMirror JS Addons -->
+  {{ script('codemirror/addon/mode/loadmode.js') }}
+  {{ script('codemirror/mode/meta.js') }}
 
-  {{ script('script/xterm.js') }}
+  <!-- CodeMirror JS Modes -->
+  {{ script('codemirror/mode/javascript/javascript.js') }}
+  {{ script('codemirror/mode/css/css.js') }}
+  {{ script('codemirror/mode/markdown/markdown.js') }}
+  {{ script('codemirror/mode/sass/sass.js') }}
+  {{ script('codemirror/mode/stylus/stylus.js') }}
+  {{ script('codemirror/mode/scheme/scheme.js') }}
+  {{ script('codemirror/mode/yaml/yaml.js') }}
+  
+  <!-- XTermJs -->
+  <script type="text/javascript" src="/xterm/xterm.js" type="module"></script>
+  <script type="text/javascript" src="/xterm/xterm-addon-fit.js" type="module"></script>
+
   {{ script('script/app.min.js') }}
 </body>
 

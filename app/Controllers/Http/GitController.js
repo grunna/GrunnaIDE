@@ -17,16 +17,16 @@ class GitController {
     console.log('test: ', Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'))
     await git.fetch({dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), username: request.post().username, password: request.post().password})
       .then(fetchData => {
-	return response.ok(fetchData)
-      })
+      return response.ok(fetchData)
+    })
       .catch(err => {
-	console.log(err)
-	if (err.data.statusCode === 401) {
-          return response.unauthorized()
-	} else {
-          return response.badRequest(err)
-	}
-      })
+      console.log(err)
+      if (err.data.statusCode === 401) {
+        return response.unauthorized()
+      } else {
+        return response.badRequest(err)
+      }
+    })
   }
 
   async status({session, response, request, auth}) {
@@ -38,11 +38,11 @@ class GitController {
         dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), 
         filepath: listFiles[i] 
       })
-	.then(status => {
-	  console.log('file: ' + listFiles[i] +' status: ', status)
+        .then(status => {
+        console.log('file: ' + listFiles[i] +' status: ', status)
         returnData.stage.push({file: listFiles[i], status: status})
       })
-      .catch(error =>  {
+        .catch(error =>  {
         return response.badRequest(error)
       })
     }    
@@ -80,25 +80,25 @@ class GitController {
     })
     .then(sha => response.ok(sha))
     .catch(error => response.badRequest(error))
-  }
+    }
 
   async push({session, response, request, auth}) {
     await git.push({dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), username: request.post().username, password: request.post().password})
       .then(pushResponse => {
-	console.log('pushResponse: ', pushResponse)
-	if (pushResponse.error) {
-	  return response.badRequest(pushResponse.error)
-	} else {
-	  return response.ok(pushResponse.ok)
-	}
-      })
+      console.log('pushResponse: ', pushResponse)
+      if (pushResponse.error) {
+        return response.badRequest(pushResponse.error)
+      } else {
+        return response.ok(pushResponse.ok)
+      }
+    })
       .catch(error => {
-	if (error.data && error.data.statusCode === 401) {
-	  return response.unauthorized()
-	} else {
-	  return response.badRequest(error)
-	}
-      })
+      if (error.data && error.data.statusCode === 401) {
+        return response.unauthorized()
+      } else {
+        return response.badRequest(error)
+      }
+    })
   }
 
   async testGit({session, response, request, auth}) {
