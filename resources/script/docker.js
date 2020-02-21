@@ -7,13 +7,37 @@ $(function() {
 
   var shellprompt = '$ ';
   
-  let termContainer = document.getElementById('terminal-continer');
-  var term = new Terminal({
-    cursorBlink: true
-  });
-  term.open(termContainer);
   
-  term.write("~$ ");
+  $('#terminal-tab').on('shown.bs.tab', function () {
+    let termContainer = document.getElementById('terminal-continer');
+    globalValues.xterm = new Terminal({
+      cursorBlink: true
+    });
+    globalValues.xtermFitAddon = new FitAddon();
+
+    globalValues.xterm.open(termContainer);
+    globalValues.xterm.loadAddon(globalValues.xtermFitAddon);
+
+    globalValues.xterm.write("~$ ");
+    
+    var input = "";
+    globalValues.xterm.onData(function(data) {
+      const code = data.charCodeAt(0);
+      if (code == 13) { // CR
+        globalValues.xterm.writeln("");
+        globalValues.xterm.writeln("You typed: '" + input + "'");
+        globalValues.xterm.write("~$ ");
+        input = "";
+      } else if (code < 32 || code == 127) { // Control
+        return;
+      } else { // Visible
+        globalValues.xterm.write(data);
+        input += data;
+      }
+    })
+
+    //globalValues.xtermFitAddon.fit()
+  })
   
   $('#terminalInput').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);

@@ -7,5 +7,7 @@ var globalValues = {
   action: "",
   postData: {},
   username: "",
-  codemirrorInstance: null
+  codemirrorInstance: null,
+  xterm: null,
+  xtermFitAddon: null
 }

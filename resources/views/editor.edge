@@ -50,8 +50,7 @@
                   @include('editor.output')
 				</div>
 				<div class="tab-pane" role="tabpanel" id="terminalTab">
-                  @include('editor.terminal')
-                  <!--<div id="terminal-continer"></div>-->
+                  @include('editor.terminal')                  
 				</div>
 			  </div>
 	      	  <ul class="nav nav-tabs" id="bottomCodeTabs" role="tablist">
@@ -98,8 +97,10 @@
   {{ script('codemirror/mode/yaml/yaml.js') }}
   
   <!-- XTermJs -->
-  <script type="text/javascript" src="/xterm/xterm.js" type="module"></script>
-  <script type="text/javascript" src="/xterm/xterm-addon-fit.js" type="module"></script>
+  
+  <script type="text/javascript" src="/xterm/xterm.js"></script>
+  <script>var exports = {};</script>
+  <script type="text/javascript" src="/xterm/FitAddon.js"></script>
 
   {{ script('script/app.min.js') }}
 </body>
