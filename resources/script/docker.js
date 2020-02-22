@@ -7,8 +7,7 @@ $(function() {
 
   var shellprompt = '$ ';
   
-  
-  $('#terminal-tab').on('shown.bs.tab', function () {
+  /*$('#terminal-tab').on('shown.bs.tab', function () {
     let termContainer = document.getElementById('terminal-continer');
     globalValues.xterm = new Terminal({
       cursorBlink: true
@@ -37,7 +36,7 @@ $(function() {
     })
 
     //globalValues.xtermFitAddon.fit()
-  })
+  })*/
   
   $('#terminalInput').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);

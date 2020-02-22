@@ -14,3 +14,12 @@ This is very early so a lot of things isn't done or documented but we are workin
 You can come to our [Discord server](https://discord.gg/4U5ZeMb) and have a chat how things are going. If you want to help that is a good starting point. Checking the issues are another good place to find out what is needed to be done 
 
 Hope you will like this project
+                                     
+## Install localy
+                                     
+- Fork this repo
+- run 'npm i -g @adonisjs/cli'
+- run 'npm install'
+- run 'adonis migration:run'
+- create .env file and copy values from .env.example
+- run 'npm start'

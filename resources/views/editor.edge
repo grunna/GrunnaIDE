@@ -31,9 +31,11 @@
 </head>
 
 <body>
-
+  <header>
   @include('editor.menubar')
-  <div class="container-fluid" style="height: calc(100vh - 56px)">
+  </header>
+  <main>
+  <div role="main" class="container-fluid" style="height: calc(100vh - 80px)">
     <div class="row" style="height: 100%">
       <div class="col-2 pl-0" style="height: 100%; width: 250px; overflow: auto">
 		@include('editor.leftSidebar')
@@ -49,7 +51,7 @@
 				<div style="height: 100%" class="tab-pane active" role="tabpanel" id="outputTab">
                   @include('editor.output')
 				</div>
-				<div class="tab-pane" role="tabpanel" id="terminalTab">
+				<div style="height: 100%" class="tab-pane" role="tabpanel" id="terminalTab">
                   @include('editor.terminal')                  
 				</div>
 			  </div>
@@ -67,6 +69,8 @@
       </div>
     </div>
   </div>
+  </main>
+  @include('editor.footer')
 
   {{ script('https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js') }}
   {{ script('https://unpkg.com/@adonisjs/websocket-client@1.0.9/dist/Ws.browser.js') }}
