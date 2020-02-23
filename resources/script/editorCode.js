@@ -5,7 +5,11 @@ $(function () {
   CodeMirror.modeURL = "/codemirror/mode/%N/%N.js";
   globalValues.codemirrorInstance = CodeMirror.fromTextArea(document.getElementById("allMyCode"), {
     lineNumbers : true,
-    tabSize: 2
+    tabSize: 2,
+    extraKeys: {"Ctrl-Space": "autocomplete"},
+    autoCloseBrackets: true,
+    matchBrackets: true,
+    autoCloseTags: true,
   });
 
   $(document).keydown(function(event) {

@@ -20,11 +20,16 @@
 
   <!-- CodeMirror css -->
   {{ style('codemirror/lib/codemirror.css') }}
+  {{ style('codemirror/addon/hint/show-hint.css') }}
+	{{ style('codemirror/addon/lint/lint.css') }}
   
+	<!-- XTerm css -->
+	{{ style('xterm/xterm.css') }}
+
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.1/jquery.contextMenu.min.css" />
   {{ style('editor.css') }}
-  {{ style('xterm/xterm.css') }}
   <title>
     Grunna IDE
   </title>
@@ -89,7 +94,16 @@
   
   <!-- CodeMirror JS Addons -->
   {{ script('codemirror/addon/mode/loadmode.js') }}
-  {{ script('codemirror/mode/meta.js') }}
+	{{ script('codemirror/addon/edit/closebrackets.js') }}
+	{{ script('codemirror/addon/edit/closetag.js') }}
+	{{ script('codemirror/addon/edit/matchbrackets.js') }}
+	{{ script('codemirror/addon/hint/show-hint.js') }}
+	{{ script('codemirror/addon/hint/anyword-hint.js') }}	
+	{{ script('codemirror/addon/hint/javascript-hint.js') }}
+	{{ script('codemirror/addon/hint/css-hint.js') }}	
+	{{ script('codemirror/addon/hint/html-hint.js') }}
+	{{ script('codemirror/mode/meta.js') }}
+
 
   <!-- CodeMirror JS Modes -->
   {{ script('codemirror/mode/javascript/javascript.js') }}
@@ -101,7 +115,6 @@
   {{ script('codemirror/mode/yaml/yaml.js') }}
   
   <!-- XTermJs -->
-  
   <script type="text/javascript" src="/xterm/xterm.js"></script>
   <script>var exports = {};</script>
   <script type="text/javascript" src="/xterm/FitAddon.js"></script>
