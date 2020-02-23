@@ -84,8 +84,6 @@ function subscribeToTerminalChannel() {
 
   terminalChannel.on('terminal', (terminal) => {
     console.log('terminal: ', terminal)
-    console.log('term: ', term)
-    //term.write(terminal)
     $('#terminalOutput').append(terminal)
     $('#terminalOutput').scrollTop($('#terminalOutput').prop('scrollHeight'))
   })
