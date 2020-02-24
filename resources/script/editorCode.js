@@ -10,6 +10,8 @@ $(function () {
     autoCloseBrackets: true,
     matchBrackets: true,
     autoCloseTags: true,
+    foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   });
 
   $(document).keydown(function(event) {

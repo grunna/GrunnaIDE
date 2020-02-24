@@ -22,6 +22,7 @@
   {{ style('codemirror/lib/codemirror.css') }}
   {{ style('codemirror/addon/hint/show-hint.css') }}
 	{{ style('codemirror/addon/lint/lint.css') }}
+	{{ style('codemirror/addon/fold/foldgutter.css') }}
   
 	<!-- XTerm css -->
 	{{ style('xterm/xterm.css') }}
@@ -97,11 +98,18 @@
 	{{ script('codemirror/addon/edit/closebrackets.js') }}
 	{{ script('codemirror/addon/edit/closetag.js') }}
 	{{ script('codemirror/addon/edit/matchbrackets.js') }}
+	{{ script('codemirror/addon/fold/foldgutter.js') }}
+	{{ script('codemirror/addon/fold/brace-fold.js') }}
+	{{ script('codemirror/addon/fold/comment-fold.js') }}
+	{{ script('codemirror/addon/fold/foldcode.js') }}
+	{{ script('codemirror/addon/fold/indent-fold.js') }}
+	{{ script('codemirror/addon/fold/markdown-fold.js') }}
 	{{ script('codemirror/addon/hint/show-hint.js') }}
 	{{ script('codemirror/addon/hint/anyword-hint.js') }}	
 	{{ script('codemirror/addon/hint/javascript-hint.js') }}
 	{{ script('codemirror/addon/hint/css-hint.js') }}	
 	{{ script('codemirror/addon/hint/html-hint.js') }}
+	{{ script('codemirror/addon/search/jump-to-line.js') }}
 	{{ script('codemirror/mode/meta.js') }}
 
 
