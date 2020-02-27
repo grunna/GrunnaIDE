@@ -36,6 +36,7 @@ class Shared {
   }
 
   dockerConfig(image, binds, name) {
+    console.log('image: ', image)
     let config = {
       Image: image,
       Cmd: ['/bin/bash'],

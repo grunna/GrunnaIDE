@@ -37,6 +37,9 @@ Route.group(() => {
   Route.get('/project/getAllFiles', 'ProjectController.getAllFiles')
   Route.post('/project/createProject', 'ProjectController.createProject')
   Route.post('/project/removeProject', 'ProjectController.removeProject')
+  Route.get('/project/listAllAvailibleImages', 'ProjectController.listAllAvailibleImages')
+  Route.post('/project/changeDockerImage', 'ProjectController.changeDockerImage')
+  Route.post('/project/projectSettings', 'ProjectController.projectSettings')
   Route.get('/project/testGit', 'ProjectController.testGit')
 
   Route.post('/file/downloadFile', 'FileController.downloadFile')

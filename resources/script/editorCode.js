@@ -18,9 +18,7 @@ $(function () {
     if (event.ctrlKey && event.keyCode == 83) {
       event.preventDefault()
       //action here
-      console.log('filePath', globalValues.loadedFilePath)
-      console.log('data text: ', globalValues.codemirrorInstance.getValue())
-
+      
       $.ajax({
         type: 'POST',
         url: '/api/file/saveFile',

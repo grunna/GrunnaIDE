@@ -6,6 +6,7 @@ const Ws = use('Ws')
 const path = use('path')
 const Shared = require('./Shared')
 const shared = new Shared()
+const Project = use('App/Models/Project')
 const {
   Writable
 } = require('stream');
@@ -50,7 +51,8 @@ class DockerController {
       console.log('createDocker: Container error -> ' + err)
     })
 
-    let dockerConfig = shared.dockerConfig('node:10', path.resolve(projectPath), 'grunna-' + auth.user.id) 
+    let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
+    let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), 'grunna-' + auth.user.id) 
 
     console.log('CreateContainer')
     await docker.createContainer(dockerConfig)

@@ -21,12 +21,16 @@ $(function () {
     // if the validator does not prevent form submit
 
     if (!e.isDefaultPrevented()) {
+      let formData = $(this).serialize()
+      console.log('formData', formData)
       $.ajax({
         type: "POST",
         url: "/api/project/createProject",
-        data: $(this).serialize()
+        data: formData
       }).done((data) => {
-        console.log('Data Recived', data)
+        $('#createProjectDialog').modal('hide')
+        $('#filetree').fancytree('getTree').reload(createTree(data))
+        createNewDocker()
       }).fail((data, textStatus, thrown) => {
         console.log('dataError', data)
         if (data.status === 401) {
@@ -92,6 +96,32 @@ $(function () {
       }
     })
   })
+  
+  $('#createProjectDialog').on('show.bs.modal', function (event) {
+    $.ajax({
+      type: "GET",
+      url: "/api/project/listAllAvailibleImages",
+      success: function (data) {
+        $('#createProjectImageSelect').empty()
+        data.forEach(project => {
+          $('#createProjectImageSelect').append('<option value="' + project + '">' + project + '</option>')
+        })
+      }
+    })
+  })
+  
+  $('#projectSettingsDialog').on('show.bs.modal', function (event) {
+    $.ajax({
+      type: "GET",
+      url: "/api/project/listAllAvailibleImages",
+      success: function (data) {
+        $('#projectSettingsImageSelect').empty()
+        data.forEach(project => {
+          $('#projectSettingsImageSelect').append('<option value="' + project + '">' + project + '</option>')
+        })
+      }
+    })
+  })
 
   $('#open-project-form').on('submit', function (event) {
 
@@ -104,7 +134,6 @@ $(function () {
       },
       success: function (data) {
         $('#openProjectDialog').modal('hide');
-        //updateTree(data)
         $('#filetree').fancytree('getTree').reload(createTree(data))
         createNewDocker()
       }
@@ -121,6 +150,27 @@ $(function () {
       }
     })
   })
+  
+  $('#project-settings-form').on('submit', function (e) {
+    // if the validator does not prevent form submit
+
+    if (!e.isDefaultPrevented()) {
+      let formData = $(this).serialize()
+      console.log('formData', formData)
+      $.ajax({
+        type: "POST",
+        url: "/api/project/projectSettings",
+        data: formData
+      }).done((data) => {
+        $('#projectSettingsDialog').modal('hide')
+        createNewDocker()
+      }).fail((data, textStatus, thrown) => {
+        console.log('dataError', data)
+      })
+      return false;
+    }
+    e.preventDefault()
+  });
 });
 
 function createNewDocker() {

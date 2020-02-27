@@ -10,7 +10,7 @@
           <a class="dropdown-item" data-toggle="modal" data-target="#createProjectDialog">New project</a>
           <a class="dropdown-item" data-toggle="modal" data-target="#openProjectDialog">Open project</a>	  
           <a class="dropdown-item" href="#">Preference</a>
-          <a class="dropdown-item" href="#">Project settings</a>
+          <a class="dropdown-item" data-toggle="modal" data-target="#projectSettingsDialog">Project settings</a>
           <a class="dropdown-item" id="menuRemoveProject">Remove project</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ route('login.logout') }}">Logout</a>
@@ -127,8 +127,8 @@
         <form id="open-project-form" role="form">
           <div class="form-group">
             <label for="project-name" class="col-form-label">Project name:</label>
-             <select class="form-control" id="openProjectControlSelect">
-	     </select>
+							<select class="form-control" id="openProjectControlSelect">
+              </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -155,17 +155,42 @@
           <div class="form-group">
             <label for="project-name" class="col-form-label">Project name:</label>
             <input type="text" class="form-control" id="project-name" name="projectName" >
-          </div>
-          <div class="form-group">
             <label for="git-url" class="col-form-label">Git URL:</label>
             <input type="text" class="form-control" id="git-url" name="gitUrl" >
+            <label for="project-name" class="col-form-label">Docker image:</label>
+						<select class="form-control" id="createProjectImageSelect" name="dockerImage"></select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Create project</button>
+					</div>
+            <input type="hidden" id="createProjectUsername" name="username" value="">
+            <input type="hidden" id="createProjectPassword" name="password" value="">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="projectSettingsDialog" tabindex="-1" role="dialog" aria-labelledby="projectSettingsDialogLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="projectSettingsModalLabel">Project settings</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="project-settings-form" role="form">
+          <div class="form-group">
+            <label for="project-name" class="col-form-label">Docker image:</label>
+						<select class="form-control" id="projectSettingsImageSelect" name="dockerImage"></select>
           </div>
-	  <input type="hidden" id="createProjectUsername" name="username" value="">
-	  <input type="hidden" id="createProjectPassword" name="password" value="">
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
         </form>
       </div>
     </div>

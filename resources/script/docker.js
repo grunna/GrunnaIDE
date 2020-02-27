@@ -66,24 +66,20 @@ function startWs() {
 }
 
 function subscribeToOutputChannel() {
-  console.log('SubscribeToDocker')
   const infoChannel = ws.subscribe('docker:infoChannel');
   console.log('infoChannel; ', infoChannel);
 
   infoChannel.on('output', (output) => {
     let addNewData = output + '<br/>' 
     $('#outputData').append(addNewData)
-    console.log('Out add: ', addNewData);
   })
 }
 
 function subscribeToTerminalChannel() {
-  console.log('SubscribeToTerminalChannel')
   const terminalChannel = ws.subscribe('docker:terminal');
   console.log('terminalChannel: ', terminalChannel);
 
   terminalChannel.on('terminal', (terminal) => {
-    console.log('terminal: ', terminal)
     $('#terminalOutput').append(terminal)
     $('#terminalOutput').scrollTop($('#terminalOutput').prop('scrollHeight'))
   })
