@@ -55,7 +55,7 @@ class DockerController {
     let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), 'grunna-' + auth.user.id) 
 
     console.log('Pull docker image: ', project.docker_image)
-    docker.pull(project.docker_image)
+    await docker.pull(project.docker_image)
       .then(stream => {
       	sendToInfoChannel.write(stream)
     })
