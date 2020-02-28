@@ -17,10 +17,14 @@ class WsDockerInfoChannel extends Writable {
     super(options)
   }
   _write(chunk, encoding, callback) {
-    const data = chunk.toString('utf8')
-    if (dockerChannel) {
-      dockerChannel.topic('docker:infoChannel').broadcast('output', data)
-      process.stdout.write(data);
+    try {
+      const data = chunk.toString('utf8')
+      if (dockerChannel) {
+        dockerChannel.topic('docker:infoChannel').broadcast('output', data)
+        process.stdout.write(data);
+      }
+    } catch (err) {
+			process.stdout.write('Docker WsDockerInfoChannel error: ', err)
     }
     callback();
   }
@@ -60,7 +64,7 @@ class DockerController {
       	sendToInfoChannel.write(stream)
     })
       .catch(err => {
-      	sendToInfoChannel.write('Error when pulling image: ', project.docker_image)
+      	sendToInfoChannel.write('Error when pulling image: ' + project.docker_image)
     })
     
     console.log('CreateContainer')
