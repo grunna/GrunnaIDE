@@ -10,7 +10,7 @@ const Project = use('App/Models/Project')
 const Shared = use('./Shared')
 const shared = new Shared()
 
-const acceptedDockerImages = ['node:10', 'node:12', 'node:13', 'openjdk:15', 'openjdk:14', 'golang:1.13', 'python:3.8', 'ruby:2.7', 'mono:6.8']
+const acceptedDockerImages = ['node:10', 'node:12', 'node:13', 'openjdk:8', 'openjdk:11.0', 'golang:1.13', 'python:3.8', 'ruby:2.7', 'mono:6.8']
 
 class ProjectController {
 

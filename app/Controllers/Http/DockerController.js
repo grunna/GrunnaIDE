@@ -64,6 +64,7 @@ class DockerController {
       	sendToInfoChannel.write(stream)
     })
       .catch(err => {
+      	console.log('Error pulling image:', err)
       	sendToInfoChannel.write('Error when pulling image: ' + project.docker_image)
     })
     
