@@ -54,6 +54,15 @@ class DockerController {
     let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
     let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), 'grunna-' + auth.user.id) 
 
+    console.log('Pull docker image: ', project.docker_image)
+    docker.pull(project.docker_image)
+      .then(stream => {
+      	sendToInfoChannel.write(stream)
+    })
+      .catch(err => {
+      	sendToInfoChannel.write('Error when pulling image: ', project.docker_image)
+    })
+    
     console.log('CreateContainer')
     await docker.createContainer(dockerConfig)
       .then(container => {

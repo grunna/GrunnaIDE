@@ -61,6 +61,7 @@ class Shared {
             }
           ]
         },
+        "AutoRemove": true,
       }
     }
     return config
