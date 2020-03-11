@@ -7,14 +7,19 @@ $(function() {
 
   var shellprompt = '$ ';
   
-  /*$('#terminal-tab').on('shown.bs.tab', function () {
+  window.addEventListener("resize", function () {
+    document.getElementById('terminal-continer').style.height = "100%";
+    globalValues.xtermFitAddon.fit()    
+  });
+  
+  $('#terminal-tab').on('shown.bs.tab', function () {
     let termContainer = document.getElementById('terminal-continer');
     globalValues.xterm = new Terminal({
       cursorBlink: true
     });
-    globalValues.xtermFitAddon = new FitAddon();
-
     globalValues.xterm.open(termContainer);
+    globalValues.xtermFitAddon = new FitAddon();
+ 
     globalValues.xterm.loadAddon(globalValues.xtermFitAddon);
 
     globalValues.xterm.write("~$ ");
@@ -23,10 +28,9 @@ $(function() {
     globalValues.xterm.onData(function(data) {
       const code = data.charCodeAt(0);
       if (code == 13) { // CR
-        globalValues.xterm.writeln("");
-        globalValues.xterm.writeln("You typed: '" + input + "'");
-        globalValues.xterm.write("~$ ");
-        input = "";
+        ws.getSubscription('docker:terminal').emit('dockerCommand', {
+          message
+        })
       } else if (code < 32 || code == 127) { // Control
         return;
       } else { // Visible
@@ -34,9 +38,9 @@ $(function() {
         input += data;
       }
     })
-
-    //globalValues.xtermFitAddon.fit()
-  })*/
+		document.getElementById('terminal-continer').style.height = "100%";
+    globalValues.xtermFitAddon.fit()
+  })
   
   $('#terminalInput').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -80,6 +84,7 @@ function subscribeToTerminalChannel() {
   console.log('terminalChannel: ', terminalChannel);
 
   terminalChannel.on('terminal', (terminal) => {
+    globalValues.xterm.writeln(terminal);
     $('#terminalOutput').append(terminal)
     $('#terminalOutput').scrollTop($('#terminalOutput').prop('scrollHeight'))
   })

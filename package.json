@@ -30,13 +30,13 @@
     "@adonisjs/session": "^1.0.29",
     "@adonisjs/shield": "^1.0.8",
     "@adonisjs/websocket": "^1.0.11",
-    "codemirror": "^5.51.0",
+    "codemirror": "^5.52.0",
     "directory-tree": "^2.2.3",
     "dockerode": "^2.5.8",
     "fs-extra": "^8.1.0",
     "isomorphic-git": "^0.57.1",
     "mysql": "^2.17.1",
-    "sqlite3": "^4.0.9",
+    "sqlite3": "^4.1.1",
     "strip-ansi": "^5.2.0",
     "uuid": "^3.3.3",
     "xterm": "^4.4.0",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "onchange": "^6.0.0",
-    "terser": "^4.2.0"
+    "terser": "^4.6.6"
   },
   "autoload": {
     "App": "./app"
