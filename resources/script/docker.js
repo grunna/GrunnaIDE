@@ -13,7 +13,9 @@ $(function() {
   });
   
   $('#terminal-tab').on('shown.bs.tab', function () {
+    if (!globalValues.xterm) {
     let termContainer = document.getElementById('terminal-continer');
+    
     globalValues.xterm = new Terminal({
       cursorBlink: true
     });
@@ -29,8 +31,9 @@ $(function() {
       const code = data.charCodeAt(0);
       if (code == 13) { // CR
         ws.getSubscription('docker:terminal').emit('dockerCommand', {
-          message
-        })
+          message: input
+	})
+	input = ''
       } else if (code < 32 || code == 127) { // Control
         return;
       } else { // Visible
@@ -39,23 +42,10 @@ $(function() {
       }
     })
 		document.getElementById('terminal-continer').style.height = "100%";
-    globalValues.xtermFitAddon.fit()
-  })
-  
-  $('#terminalInput').keypress(function (event) {
-    var keycode = (event.keyCode ? event.keyCode : event.which);
-    if (keycode == '13') {
-      event.preventDefault()
-
-      const message = $(this).val()
-      $(this).val('')
-
-      ws.getSubscription('docker:terminal').emit('dockerCommand', {
-        message
-      })
-      return
+      globalValues.xtermFitAddon.fit()
     }
   })
+  
 })
 
 function startWs() {
@@ -84,7 +74,10 @@ function subscribeToTerminalChannel() {
   console.log('terminalChannel: ', terminalChannel);
 
   terminalChannel.on('terminal', (terminal) => {
-    globalValues.xterm.writeln(terminal);
+    if (globalValues.xterm) {
+      console.log('xterm output: ', terminal)
+      globalValues.xterm.writeln(terminal);
+    }
     $('#terminalOutput').append(terminal)
     $('#terminalOutput').scrollTop($('#terminalOutput').prop('scrollHeight'))
   })
