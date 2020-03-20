@@ -6,46 +6,38 @@ $(function() {
   startWs();
 
   var shellprompt = '$ ';
-  
+
   window.addEventListener("resize", function () {
     document.getElementById('terminal-continer').style.height = "100%";
     globalValues.xtermFitAddon.fit()    
   });
-  
+
   $('#terminal-tab').on('shown.bs.tab', function () {
     if (!globalValues.xterm) {
-    let termContainer = document.getElementById('terminal-continer');
-    
-    globalValues.xterm = new Terminal({
-      cursorBlink: true
-    });
-    globalValues.xterm.open(termContainer);
-    globalValues.xtermFitAddon = new FitAddon();
- 
-    globalValues.xterm.loadAddon(globalValues.xtermFitAddon);
+      let termContainer = document.getElementById('terminal-continer');
 
-    globalValues.xterm.write("~$ ");
-    
-    var input = "";
-    globalValues.xterm.onData(function(data) {
-      const code = data.charCodeAt(0);
-      if (code == 13) { // CR
-        ws.getSubscription('docker:terminal').emit('dockerCommand', {
-          message: input
-	})
-	input = ''
-      } else if (code < 32 || code == 127) { // Control
-        return;
-      } else { // Visible
-        globalValues.xterm.write(data);
-        input += data;
-      }
-    })
-		document.getElementById('terminal-continer').style.height = "100%";
+      globalValues.xterm = new Terminal({
+        cursorBlink: true
+      });
+      globalValues.xterm.open(termContainer);
+      globalValues.xtermFitAddon = new FitAddon();
+
+      globalValues.xterm.loadAddon(globalValues.xtermFitAddon);
+
+      globalValues.xterm.write("~$ ");
+
+      var input = "";
+      globalValues.xterm.onData(function(data) {
+        const code = data.charCodeAt(0);
+        ws.getSubscription('docker:terminal').emit('dockerInput', {
+          character: data
+        })
+      })
+      document.getElementById('terminal-continer').style.height = "100%";
       globalValues.xtermFitAddon.fit()
     }
   })
-  
+
 })
 
 function startWs() {
@@ -76,7 +68,7 @@ function subscribeToTerminalChannel() {
   terminalChannel.on('terminal', (terminal) => {
     if (globalValues.xterm) {
       console.log('xterm output: ', terminal)
-      globalValues.xterm.writeln(terminal);
+      globalValues.xterm.write(terminal);
     }
     $('#terminalOutput').append(terminal)
     $('#terminalOutput').scrollTop($('#terminalOutput').prop('scrollHeight'))

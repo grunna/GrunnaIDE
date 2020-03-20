@@ -48,16 +48,16 @@ class DockerController {
 
     if (this.socket.topic === 'docker:terminal') {
       await container.stop()
-	.then(data => {
-	  console.log('onClose: Container have been stoped')
-	  return container.remove()
-	})
-	.then(data => {
-	  console.log('onClose: Container have been removed')
-	})
-	.catch(err => {
-	  console.log('onClose: Container error -> ' + err)
-	})
+        .then(data => {
+        console.log('onClose: Container have been stoped')
+        return container.remove()
+      })
+        .then(data => {
+        console.log('onClose: Container have been removed')
+      })
+        .catch(err => {
+        console.log('onClose: Container error -> ' + err)
+      })
     }
   }
 
@@ -66,38 +66,38 @@ class DockerController {
     console.log('attach: grunna-', this.auth.user.id)
     let container = docker.getContainer('grunna-' + this.auth.user.id);
     sendToTerminal = new WsDockerTerminal({ writeSocket: this.socket})
-    
+
     await container.logs({
       stdout: true,
       stderr: true,
       tail: 20
     })
       .then(stream => {
-	try {
-	  sendToTerminal.write(stream)
-	} catch (err) {
-	  console.log('logs33 error: ', err)
-	}
-      })
+      try {
+        sendToTerminal.write(stream)
+      } catch (err) {
+        console.log('logs33 error: ', err)
+      }
+    })
       .catch(err => {
-	console.log('Attach error: ', err)
-	return
-      })
-    
+      console.log('Attach error: ', err)
+      return
+    })
+
     var attach_opts = {stream: true, stdin: true, stdout: true, stderr: true};
     await container.attach(attach_opts)
       .then(stream => {
-	try {
-	  inStream.setEncoding('utf8')
-	  inStream.pipe(stream).pipe(sendToTerminal)
-	} catch (err) {
-	  console.log('attach44 error: ', err)
-	}
-      })
+      try {
+        inStream.setEncoding('utf8')
+        inStream.pipe(stream).pipe(sendToTerminal)
+      } catch (err) {
+        console.log('attach44 error: ', err)
+      }
+    })
       .catch(err => {
-	console.log('Error on attach/log :', err)
-	return
-      })
+      console.log('Error on attach/log :', err)
+      return
+    })
   }
 
   onDockerCommand(command) {
@@ -105,14 +105,25 @@ class DockerController {
       console.log('Recived command: ' + command.message)
       console.log('docker ID: ', this.session.get('dId'))
       if (command.message.trim() !== '/quit') {
-	console.log('humm', command.message.trim())
-	inStream.push(command.message + '\u000D')
+        console.log('humm', command.message.trim())
+        inStream.push(command.message + '\u000D')
       } else {
-	console.log('run else')
-	inStream.push('\x03')
+        console.log('run else')
+        inStream.push('\x03')
       }
     } catch (err) {
       console.log('onDockerCommand error: ', err)
+    }
+  }
+  
+  onDockerInput(char) {
+    try {
+      if (sendToTerminal) {
+        console.log('docker ID: ', this.session)
+      	inStream.push(char.character)
+      }
+    } catch (err) {
+      console.log('onDockerInput error: ', err)
     }
   }
 }
