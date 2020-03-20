@@ -115,5 +115,15 @@ class DockerController {
       console.log('onDockerCommand error: ', err)
     }
   }
+  
+  onDockerInput(char) {
+    try {
+      console.log('Recived command: ' + char.character.charCodeAt(0))
+      console.log('docker ID: ', this.session.get('dId'))
+      inStream.push(char.character)
+    } catch (err) {
+      console.log('onDockerInput error: ', err)
+    }
+  }
 }
 module.exports = DockerController

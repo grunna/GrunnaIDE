@@ -29,17 +29,9 @@ $(function() {
       var input = "";
       globalValues.xterm.onData(function(data) {
         const code = data.charCodeAt(0);
-        if (code == 13) { // CR
-          ws.getSubscription('docker:terminal').emit('dockerCommand', {
-            message: input
-          })
-          input = ''
-        } else if (code < 32 || code == 127) { // Control
-          return;
-        } else { // Visible
-          globalValues.xterm.write(data);
-          input += data;
-        }
+        ws.getSubscription('docker:terminal').emit('dockerInput', {
+          character: data
+        })
       })
       document.getElementById('terminal-continer').style.height = "100%";
       globalValues.xtermFitAddon.fit()
@@ -76,7 +68,7 @@ function subscribeToTerminalChannel() {
   terminalChannel.on('terminal', (terminal) => {
     if (globalValues.xterm) {
       console.log('xterm output: ', terminal)
-      globalValues.xterm.writeln(terminal);
+      globalValues.xterm.write(terminal);
     }
     $('#terminalOutput').append(terminal)
     $('#terminalOutput').scrollTop($('#terminalOutput').prop('scrollHeight'))
