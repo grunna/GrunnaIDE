@@ -118,9 +118,10 @@ class DockerController {
   
   onDockerInput(char) {
     try {
-      console.log('Recived command: ' + char.character.charCodeAt(0))
-      console.log('docker ID: ', this.session.get('dId'))
-      inStream.push(char.character)
+      if (sendToTerminal) {
+        console.log('docker ID: ', this.session)
+      	inStream.push(char.character)
+      }
     } catch (err) {
       console.log('onDockerInput error: ', err)
     }
