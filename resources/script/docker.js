@@ -15,15 +15,12 @@ $(function() {
   $('#terminal-tab').on('shown.bs.tab', function () {
     if (!globalValues.xterm) {
       let termContainer = document.getElementById('terminal-continer');
-
       globalValues.xterm = new Terminal({
         cursorBlink: true
       });
       globalValues.xterm.open(termContainer);
       globalValues.xtermFitAddon = new FitAddon();
-
       globalValues.xterm.loadAddon(globalValues.xtermFitAddon);
-
       globalValues.xterm.write("~$ ");
 
       var input = "";
@@ -67,7 +64,6 @@ function subscribeToTerminalChannel() {
 
   terminalChannel.on('terminal', (terminal) => {
     if (globalValues.xterm) {
-      console.log('xterm output: ', terminal)
       globalValues.xterm.write(terminal);
     }
     $('#terminalOutput').append(terminal)

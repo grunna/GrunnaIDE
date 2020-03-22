@@ -20,6 +20,10 @@
 
   <!-- CodeMirror css -->
   {{ style('codemirror/lib/codemirror.css') }}
+  {{ style('codemirror/addon/dialog/dialog.css') }}
+  {{ style('codemirror/addon/fold/foldgutter.css') }}
+  {{ style('codemirror/addon/hint/show-hint.css') }}
+  {{ style('codemirror/addon/search/matchesonscrollbar.css') }}
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.1/jquery.contextMenu.min.css" />
@@ -89,6 +93,34 @@
   {{ script('codemirror/lib/codemirror.js') }}
   
   <!-- CodeMirror JS Addons -->
+	{{ script('codemirror/addon/dialog/dialog.js') }}
+	{{ script('codemirror/addon/edit/closebrackets.js') }}
+	{{ script('codemirror/addon/edit/closetag.js') }}
+	{{ script('codemirror/addon/edit/matchbrackets.js') }}
+	{{ script('codemirror/addon/edit/matchtags.js') }}
+	{{ script('codemirror/addon/edit/trailingspace.js') }}
+	{{ script('codemirror/addon/fold/brace-fold.js') }}
+	{{ script('codemirror/addon/fold/comment-fold.js') }}
+	{{ script('codemirror/addon/fold/foldcode.js') }}
+	{{ script('codemirror/addon/fold/foldgutter.js') }}
+	{{ script('codemirror/addon/fold/indent-fold.js') }}
+	{{ script('codemirror/addon/fold/markdown-fold.js') }}
+	{{ script('codemirror/addon/fold/xml-fold.js') }}
+	{{ script('codemirror/addon/hint/anyword-hint.js') }}
+	{{ script('codemirror/addon/hint/css-hint.js') }}
+	{{ script('codemirror/addon/hint/html-hint.js') }}
+	{{ script('codemirror/addon/hint/javascript-hint.js') }}
+	{{ script('codemirror/addon/hint/show-hint.js') }}
+	{{ script('codemirror/addon/hint/sql-hint.js') }}
+	{{ script('codemirror/addon/hint/xml-hint.js') }}
+	{{ script('codemirror/addon/scroll/annotatescrollbar.js') }}
+	{{ script('codemirror/addon/search/jump-to-line.js') }}
+	{{ script('codemirror/addon/search/match-highlighter.js') }}
+	{{ script('codemirror/addon/search/matchesonscrollbar.js') }}
+	{{ script('codemirror/addon/search/search.js') }}
+	{{ script('codemirror/addon/search/searchcursor.js') }}
+
+
   {{ script('codemirror/addon/mode/loadmode.js') }}
   {{ script('codemirror/mode/meta.js') }}
 

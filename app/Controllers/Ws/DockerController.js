@@ -35,10 +35,9 @@ class WsDockerTerminal extends Writable {
 
 
 class DockerController {
-  constructor ({ session, socket, request, auth }) {
+  constructor ({ socket, request, auth }) {
     this.socket = socket
     this.request = request
-    this.session = session
     this.auth = auth
     console.log('user joined with %s socket id, Topic %s', socket.id, socket.topic)
   }
@@ -99,27 +98,10 @@ class DockerController {
       return
     })
   }
-
-  onDockerCommand(command) {
-    try {
-      console.log('Recived command: ' + command.message)
-      console.log('docker ID: ', this.session.get('dId'))
-      if (command.message.trim() !== '/quit') {
-        console.log('humm', command.message.trim())
-        inStream.push(command.message + '\u000D')
-      } else {
-        console.log('run else')
-        inStream.push('\x03')
-      }
-    } catch (err) {
-      console.log('onDockerCommand error: ', err)
-    }
-  }
   
   onDockerInput(char) {
     try {
       if (sendToTerminal) {
-        console.log('docker ID: ', this.session)
       	inStream.push(char.character)
       }
     } catch (err) {

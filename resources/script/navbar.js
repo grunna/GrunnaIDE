@@ -3,7 +3,6 @@
 $(function () {
 
   $('#run').on('click', function (e) {
-    console.log('working');
     $.ajax({
       type: "POST",
       url: "/api/docker/compile",

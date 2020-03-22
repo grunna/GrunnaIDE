@@ -21,7 +21,6 @@ class WsDockerInfoChannel extends Writable {
       const data = chunk.toString('utf8')
       if (dockerChannel) {
         dockerChannel.topic('docker:infoChannel').broadcast('output', data)
-        process.stdout.write(data);
       }
     } catch (err) {
 			process.stdout.write('Docker WsDockerInfoChannel error: ', err)
@@ -38,8 +37,6 @@ class DockerController {
     let sendToInfoChannel = new WsDockerInfoChannel()
     let docker = new Docker()
     const projectPath = Env.get('SAVEDIRECTORY') + '/' + auth.user.uuid + '/' + session.get('currentProject')
-
-    console.log('ProjectPath: ', projectPath)
 
     let container = docker.getContainer('grunna-' + auth.user.id)
 

@@ -12,6 +12,7 @@ $(function () {
     autoCloseTags: true,
     foldGutter: true,
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+    showTrailingSpace: true,
   });
 
   $(document).keydown(function(event) {
