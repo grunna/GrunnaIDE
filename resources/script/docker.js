@@ -21,7 +21,6 @@ $(function() {
       globalValues.xterm.open(termContainer);
       globalValues.xtermFitAddon = new FitAddon();
       globalValues.xterm.loadAddon(globalValues.xtermFitAddon);
-      globalValues.xterm.write("~$ ");
 
       var input = "";
       globalValues.xterm.onData(function(data) {

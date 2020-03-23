@@ -43,7 +43,7 @@ class DockerController {
   }
 
   async onClose() {
-    let container = docker.getContainer('grunna-' + this.auth.user.id)
+    let container = docker.getContainer(Env.get('DOCKER_NAME') + this.auth.user.id)
 
     if (this.socket.topic === 'docker:terminal') {
       await container.stop()
@@ -62,8 +62,8 @@ class DockerController {
 
   async onDockerAttach() {
 
-    console.log('attach: grunna-', this.auth.user.id)
-    let container = docker.getContainer('grunna-' + this.auth.user.id);
+    console.log('attach: ' + Env.get('DOCKER_NAME'), this.auth.user.id)
+    let container = docker.getContainer(Env.get('DOCKER_NAME') + this.auth.user.id);
     sendToTerminal = new WsDockerTerminal({ writeSocket: this.socket})
 
     await container.logs({
