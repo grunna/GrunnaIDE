@@ -38,7 +38,7 @@ class DockerController {
     let docker = new Docker()
     const projectPath = Env.get('SAVEDIRECTORY') + '/' + auth.user.uuid + '/' + session.get('currentProject')
 
-    let container = docker.getContainer('grunna-' + auth.user.id)
+    let container = docker.getContainer(Env.get('DOCKER_NAME') + auth.user.id)
 
     await container.stop()
       .then(data => {
@@ -53,7 +53,7 @@ class DockerController {
     })
 
     let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
-    let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), 'grunna-' + auth.user.id) 
+    let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), Env.get('DOCKER_NAME') + auth.user.id) 
 
     console.log('Pull docker image: ', project.docker_image)
     await docker.pull(project.docker_image)
