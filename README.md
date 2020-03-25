@@ -3,6 +3,7 @@
 ## Goal of project
 
 This project is intended to do an web IDE that will compile and run the project in Docker containers. You should ether be able to run it localy at your computer/server or run it on our.
+You can find my information on our [homepage](https://grunna.com)
 
 ## Contribution
 
