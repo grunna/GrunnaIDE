@@ -22,7 +22,6 @@ $(function () {
 
     if (!e.isDefaultPrevented()) {
       let formData = $(this).serialize()
-      console.log('formData', formData)
       $.ajax({
         type: "POST",
         url: "/api/project/createProject",
@@ -30,7 +29,6 @@ $(function () {
       }).done((data) => {
         $('#createProjectDialog').modal('hide')
         $('#filetree').fancytree('getTree').reload(createTree(data))
-        createNewDocker()
       }).fail((data, textStatus, thrown) => {
         console.log('dataError', data)
         if (data.status === 401) {
@@ -142,13 +140,26 @@ $(function () {
   })
 
   $('#menuRemoveProject').on('click', function (event) {
-    $.ajax({
+    let deleteModal = $('#removeProjectModal')
+    deleteModal.modal('show')
+  })
+  
+  $('#removeProjectModalBtn').on('click', function (event) {
+		$.ajax({
       type: 'POST',
       url: '/api/project/removeProject',
       success: function (data) {
-        console.log('Remove project: ', data)
+        updateTree([])
+        globalValues.codemirrorInstance.setValue("")
+        globalValues.codemirrorInstance.clearHistory();
       }
     })
+    $('#removeProjectModal').modal('hide')
+  })
+  
+  $('#unsavedFileContinueModalBtn').on('click', function (event) {
+    setCodeMirrorData(globalValues.tempLoadedFile, globalValues.tempLoadedFilePath)
+    $('#unsavedFileModal').modal('hide')
   })
   
   $('#project-settings-form').on('submit', function (e) {
@@ -194,31 +205,41 @@ function retriveFile(path) {
       fileName: path
     },
     success: (data) => {
-      var val = path, m, mode, spec;
-      if (m = /.+\.([^.]+)$/.exec(val)) {
-        var info = CodeMirror.findModeByExtension(m[1]);
-        if (info) {
-          mode = info.mode;
-          spec = info.mime;
-        }
-      } else if (/\//.test(val)) {
-        var info = CodeMirror.findModeByMIME(val);
-        if (info) {
-          mode = info.mode;
-          spec = val;
-        }
+      if (globalValues.codemirrorInstance.getValue() === globalValues.loadedFile || globalValues.loadedFile === '') {
+				setCodeMirrorData(data, path)
       } else {
-        mode = spec = val;
+        globalValues.tempLoadedFile = data
+        globalValues.tempLoadedFilePath = path
+        $('#unsavedFileModal').modal('show') 
       }
-      if (mode) {
-        globalValues.codemirrorInstance.setOption("mode", spec);
-        CodeMirror.autoLoadMode(globalValues.codemirrorInstance, mode);
-      }
-      globalValues.codemirrorInstance.setValue(data)
-      globalValues.loadedFile = data
-      globalValues.loadedFilePath = path
     }
   });
+}
+
+function setCodeMirrorData(data, path) {
+  var val = path, m, mode, spec;
+  if (m = /.+\.([^.]+)$/.exec(val)) {
+    var info = CodeMirror.findModeByExtension(m[1]);
+    if (info) {
+      mode = info.mode;
+      spec = info.mime;
+    }
+  } else if (/\//.test(val)) {
+    var info = CodeMirror.findModeByMIME(val);
+    if (info) {
+      mode = info.mode;
+      spec = val;
+    }
+  } else {
+    mode = spec = val;
+  }
+  if (mode) {
+    globalValues.codemirrorInstance.setOption("mode", spec);
+    CodeMirror.autoLoadMode(globalValues.codemirrorInstance, mode);
+  }
+  globalValues.codemirrorInstance.setValue(data)
+  globalValues.loadedFile = data
+  globalValues.loadedFilePath = path
 }
 
 function updateTree(data) {

@@ -4,6 +4,8 @@ var globalValues = {
   loadedProject: "",
   loadedFile: "",
   loadedFilePath: "",
+  tempLoadedFile: "",
+  tempLoadedFilePath: "",
   action: "",
   postData: {},
   username: "",

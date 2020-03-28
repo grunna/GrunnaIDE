@@ -12,6 +12,23 @@
   </div>
 </div>
 
+<div class="modal fade" id="unsavedFileModal" tabindex="-1" role="dialog" aria-labelledby="unsavedFileModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+       <div class="modal-header">
+        <h5 class="modal-title" id="unsavedFileModalLabel">Unsaved changes</h5>
+      </div>
+      <div class="modal-body">
+				You have unsaved changes, press CTRL+S to save file
+      </div>
+			<div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" id="unsavedFileContinueModalBtn">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="createFileModal" tabindex="-1" role="dialog" aria-labelledby="openCreateFileModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

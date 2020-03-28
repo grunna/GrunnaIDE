@@ -25,7 +25,7 @@ $(function () {
         url: '/api/file/saveFile',
         data: { fileName: globalValues.loadedFilePath, data: globalValues.codemirrorInstance.getValue() },
         success: (data) => {
-          console.log('returnCreate: ', data)
+          globalValues.loadedFile = globalValues.codemirrorInstance.getValue()
         }
       })
 
