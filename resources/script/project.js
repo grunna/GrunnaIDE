@@ -151,6 +151,11 @@ $(function () {
     })
   })
   
+  $('#unsavedFileContinueModalBtn').on('click', function (event) {
+    setCodeMirrorData(globalValues.tempLoadedFile, globalValues.tempLoadedFilePath)
+    $('#unsavedFileModal').modal('hide')
+  })
+  
   $('#project-settings-form').on('submit', function (e) {
     // if the validator does not prevent form submit
 
@@ -194,31 +199,41 @@ function retriveFile(path) {
       fileName: path
     },
     success: (data) => {
-      var val = path, m, mode, spec;
-      if (m = /.+\.([^.]+)$/.exec(val)) {
-        var info = CodeMirror.findModeByExtension(m[1]);
-        if (info) {
-          mode = info.mode;
-          spec = info.mime;
-        }
-      } else if (/\//.test(val)) {
-        var info = CodeMirror.findModeByMIME(val);
-        if (info) {
-          mode = info.mode;
-          spec = val;
-        }
+      if (globalValues.codemirrorInstance.getValue() === globalValues.loadedFile || globalValues.loadedFile === '') {
+				setCodeMirrorData(data, path)
       } else {
-        mode = spec = val;
+        globalValues.tempLoadedFile = data
+        globalValues.tempLoadedFilePath = path
+        $('#unsavedFileModal').modal('show') 
       }
-      if (mode) {
-        globalValues.codemirrorInstance.setOption("mode", spec);
-        CodeMirror.autoLoadMode(globalValues.codemirrorInstance, mode);
-      }
-      globalValues.codemirrorInstance.setValue(data)
-      globalValues.loadedFile = data
-      globalValues.loadedFilePath = path
     }
   });
+}
+
+function setCodeMirrorData(data, path) {
+  var val = path, m, mode, spec;
+  if (m = /.+\.([^.]+)$/.exec(val)) {
+    var info = CodeMirror.findModeByExtension(m[1]);
+    if (info) {
+      mode = info.mode;
+      spec = info.mime;
+    }
+  } else if (/\//.test(val)) {
+    var info = CodeMirror.findModeByMIME(val);
+    if (info) {
+      mode = info.mode;
+      spec = val;
+    }
+  } else {
+    mode = spec = val;
+  }
+  if (mode) {
+    globalValues.codemirrorInstance.setOption("mode", spec);
+    CodeMirror.autoLoadMode(globalValues.codemirrorInstance, mode);
+  }
+  globalValues.codemirrorInstance.setValue(data)
+  globalValues.loadedFile = data
+  globalValues.loadedFilePath = path
 }
 
 function updateTree(data) {
