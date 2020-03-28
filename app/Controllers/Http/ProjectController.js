@@ -33,15 +33,14 @@ class ProjectController {
     response.send(tree)
   }
 
-  async createProject({response, request, auth}) {
+  async createProject({response, request, auth, session}) {
     let user = await User.findBy('uuid', auth.user.uuid)
     let projects = await user.projects().fetch()
     let projectExcist = projects.rows.filter(project => project.name.toLowerCase() === request.post().projectName.toLowerCase())
     if (projectExcist.length > 0) {
       return response.notAcceptable('Project name already used')
     }
-    
-    let treeResponse = ''
+
     await git.clone({dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
       .then(() => {
       let project = new Project()
@@ -56,6 +55,7 @@ class ProjectController {
       .catch((error) => {
       return response.unauthorized() 
     })
+    session.put('currentProject', request.post().projectName)
     return response.send(await shared.getTree(user.uuid, request.post().projectName))
   }
 
@@ -76,17 +76,17 @@ class ProjectController {
     }
     return response.notFound({projectId: request.post().projectId})
   }
-  
+
   async listAllAvailibleImages({response, auth, session}) {
     return response.ok(acceptedDockerImages)
   }
-  
+
   async changeDockerImage({response, request, auth, session}) {
     let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
-    
+
     if (project) {
       if (acceptedDockerImages.includes(request.post().dockerImage) > 0) {
-      	project.docker_image = request.post().dockerImage
+        project.docker_image = request.post().dockerImage
         return response.ok()
       } else {
         return response.notFound('No image was found: ' + request.post().dockerImage)
@@ -94,10 +94,10 @@ class ProjectController {
     }
     return response.badRequest()
   }
-  
+
   async projectSettings({response, request, auth, session}) {
     let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
-    
+
     if (project) {
       if ((acceptedDockerImages.includes(request.post().dockerImage) > 0)) {
         project.docker_image = request.post().dockerImage

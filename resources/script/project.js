@@ -22,7 +22,6 @@ $(function () {
 
     if (!e.isDefaultPrevented()) {
       let formData = $(this).serialize()
-      console.log('formData', formData)
       $.ajax({
         type: "POST",
         url: "/api/project/createProject",
@@ -30,7 +29,6 @@ $(function () {
       }).done((data) => {
         $('#createProjectDialog').modal('hide')
         $('#filetree').fancytree('getTree').reload(createTree(data))
-        createNewDocker()
       }).fail((data, textStatus, thrown) => {
         console.log('dataError', data)
         if (data.status === 401) {
@@ -142,13 +140,21 @@ $(function () {
   })
 
   $('#menuRemoveProject').on('click', function (event) {
-    $.ajax({
+    let deleteModal = $('#removeProjectModal')
+    deleteModal.modal('show')
+  })
+  
+  $('#removeProjectModalBtn').on('click', function (event) {
+		$.ajax({
       type: 'POST',
       url: '/api/project/removeProject',
       success: function (data) {
-        console.log('Remove project: ', data)
+        updateTree([])
+        globalValues.codemirrorInstance.setValue("")
+        globalValues.codemirrorInstance.clearHistory();
       }
     })
+    $('#removeProjectModal').modal('hide')
   })
   
   $('#unsavedFileContinueModalBtn').on('click', function (event) {

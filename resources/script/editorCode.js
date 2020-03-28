@@ -26,7 +26,6 @@ $(function () {
         data: { fileName: globalValues.loadedFilePath, data: globalValues.codemirrorInstance.getValue() },
         success: (data) => {
           globalValues.loadedFile = globalValues.codemirrorInstance.getValue()
-          console.log('returnCreate: ', data)
         }
       })
 
