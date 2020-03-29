@@ -11,10 +11,11 @@ class ProjectSchema extends Schema {
       table.uuid('uuid').notNullable().unique()
       table.timestamps()
       table.string('name', 255).notNullable()
-      table.string('gitUrl', 1024).notNullable()
+      table.string('gitUrl', 1024)
       table.string('gitUsername', 100)
       table.integer('user_id').unsigned().references('id').inTable('users')
       table.integer('owner').notNullable()
+      table.string('docker_image').defaultTo('node:10')
     })
   }
 
