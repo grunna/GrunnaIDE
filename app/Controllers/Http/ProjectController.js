@@ -18,7 +18,6 @@ class ProjectController {
     let user = await User.findBy('uuid', auth.user.uuid)
     let projects = await user.projects().fetch()
     let returnProjects = []
-    console.log('Project ', projects)
     projects.rows.forEach(element => {
       returnProjects.push({id: element.id, name: element.name})
     });
@@ -40,21 +39,33 @@ class ProjectController {
     if (projectExcist.length > 0) {
       return response.notAcceptable('Project name already used')
     }
-
-    await git.clone({dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
-      .then(() => {
-      let project = new Project()
-      project.name = request.post().projectName
-      project.gitUrl = request.post().gitUrl
-      project.gitUsername = request.post().gitUsername
-      project.user_id = user.id
-      project.owner = user.id
-      project.docker_image = (acceptedDockerImages.includes(request.post().dockerImage) > 0) ? request.post().dockerImage : 'node:10'
-      project.save()
-    })
-      .catch((error) => {
-      return response.unauthorized() 
-    })
+    let newPath = Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newPath)) {
+      return response.badRequest('error in path')
+    }
+		
+    if (request.post().gitUrl) {
+      await git.clone({dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
+        .then(() => {
+        console.log('Project created' + request.post().projectName)
+      })
+        .catch((error) => {
+        return response.unauthorized() 
+      })
+    } else {
+      await fs.mkdir(newPath, { recursive: true })
+        .catch((err) => {
+        return response.badRequest(err)
+      })
+    }
+    let project = new Project()
+    project.name = request.post().projectName
+    project.gitUrl = request.post().gitUrl
+    project.gitUsername = request.post().gitUsername
+    project.user_id = user.id
+    project.owner = user.id
+    project.docker_image = (acceptedDockerImages.includes(request.post().dockerImage) > 0) ? request.post().dockerImage : 'node:10'
+    project.save()
     session.put('currentProject', request.post().projectName)
     return response.send(await shared.getTree(user.uuid, request.post().projectName))
   }
@@ -72,6 +83,7 @@ class ProjectController {
         .catch(err => {
         console.error(err)
       })
+      session.forget('currentProject')
       return response.ok()
     }
     return response.notFound({projectId: request.post().projectId})

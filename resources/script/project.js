@@ -29,6 +29,7 @@ $(function () {
       }).done((data) => {
         $('#createProjectDialog').modal('hide')
         $('#filetree').fancytree('getTree').reload(createTree(data))
+        createNewDocker()
       }).fail((data, textStatus, thrown) => {
         console.log('dataError', data)
         if (data.status === 401) {
