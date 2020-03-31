@@ -95,7 +95,7 @@ $(function () {
       }
     })
   })
-  
+
   $('#createProjectDialog').on('show.bs.modal', function (event) {
     $.ajax({
       type: "GET",
@@ -108,7 +108,7 @@ $(function () {
       }
     })
   })
-  
+
   $('#projectSettingsDialog').on('show.bs.modal', function (event) {
     $.ajax({
       type: "GET",
@@ -144,9 +144,9 @@ $(function () {
     let deleteModal = $('#removeProjectModal')
     deleteModal.modal('show')
   })
-  
+
   $('#removeProjectModalBtn').on('click', function (event) {
-		$.ajax({
+    $.ajax({
       type: 'POST',
       url: '/api/project/removeProject',
       success: function (data) {
@@ -157,12 +157,12 @@ $(function () {
     })
     $('#removeProjectModal').modal('hide')
   })
-  
+
   $('#unsavedFileContinueModalBtn').on('click', function (event) {
     setCodeMirrorData(globalValues.tempLoadedFile, globalValues.tempLoadedFilePath)
     $('#unsavedFileModal').modal('hide')
   })
-  
+
   $('#project-settings-form').on('submit', function (e) {
     // if the validator does not prevent form submit
 
@@ -191,7 +191,6 @@ function createNewDocker() {
     url: '/api/docker/createDocker',
     data: { },
     success: function (data) {
-      console.log('created docker: ', data)
       ws.getSubscription('docker:terminal').emit('dockerAttach', { })
     }
   });
@@ -207,7 +206,7 @@ function retriveFile(path) {
     },
     success: (data) => {
       if (globalValues.codemirrorInstance.getValue() === globalValues.loadedFile || globalValues.loadedFile === '') {
-				setCodeMirrorData(data, path)
+        setCodeMirrorData(data, path)
       } else {
         globalValues.tempLoadedFile = data
         globalValues.tempLoadedFilePath = path
@@ -218,29 +217,38 @@ function retriveFile(path) {
 }
 
 function setCodeMirrorData(data, path) {
-  var val = path, m, mode, spec;
+  var val = path, m, mode, spec, name;
   if (m = /.+\.([^.]+)$/.exec(val)) {
     var info = CodeMirror.findModeByExtension(m[1]);
-    if (info) {
-      mode = info.mode;
-      spec = info.mime;
-    }
-  } else if (/\//.test(val)) {
-    var info = CodeMirror.findModeByMIME(val);
-    if (info) {
-      mode = info.mode;
-      spec = val;
-    }
   } else {
-    mode = spec = val;
+    m = /([^/]+$)/.exec(val)
+    var info = CodeMirror.findModeByFileName(m[1]);
   }
-  if (mode) {
-    globalValues.codemirrorInstance.setOption("mode", spec);
-    CodeMirror.autoLoadMode(globalValues.codemirrorInstance, mode);
+  if (info) {
+    name = info.name;
+    mode = info.mode;
+    spec = info.mime;
+  } else {
+    mode = spec = null;
   }
+  
+  setCurrentMode(mode, spec, name)
+
   globalValues.codemirrorInstance.setValue(data)
   globalValues.loadedFile = data
   globalValues.loadedFilePath = path
+}
+
+function setCurrentMode(mode, spec, name) {
+  if (mode) {
+    globalValues.codemirrorInstance.setOption("mode", spec)
+    CodeMirror.autoLoadMode(globalValues.codemirrorInstance, mode)
+    $('#footerMode').text(name)
+  } else {
+    globalValues.codemirrorInstance.setOption("mode", null)
+    CodeMirror.autoLoadMode(globalValues.codemirrorInstance, null)
+    $('#footerMode').text('text')
+  }
 }
 
 function updateTree(data) {
