@@ -144,7 +144,8 @@ $(function () {
     })
   });
 
-  function commitChanges(message) {
-
-  }
+  $('#menuOpenFindFileDialog').on('click', function (e) {
+    $('#searchFilesModal').modal('show')
+    $('#inputSearchFiles').focus()
+  });
 });

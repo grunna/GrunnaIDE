@@ -2,21 +2,6 @@
 
 $(function () {
 
-  $('#filetree').fancytree({
-    extensions: ["childcounter"],
-    activate: (event, data) => {
-      if (!data.node.isFolder()) {
-        retriveFile(data.node.key)
-      }
-    },
-    source: [],
-    childcounter: {
-      deep: true,
-      hideZeros: true,
-      hideExpanded: true
-    },
-  })
-
   $('#create-project-form').on('submit', function (e) {
     // if the validator does not prevent form submit
 
@@ -28,6 +13,7 @@ $(function () {
         data: formData
       }).done((data) => {
         $('#createProjectDialog').modal('hide')
+        globalValues.currentFileTree = data
         $('#filetree').fancytree('getTree').reload(createTree(data))
         createNewDocker()
       }).fail((data, textStatus, thrown) => {
@@ -133,6 +119,7 @@ $(function () {
       },
       success: function (data) {
         $('#openProjectDialog').modal('hide');
+        globalValues.currentFileTree = data
         $('#filetree').fancytree('getTree').reload(createTree(data))
         createNewDocker()
       }
@@ -150,7 +137,8 @@ $(function () {
       type: 'POST',
       url: '/api/project/removeProject',
       success: function (data) {
-        updateTree([])
+        globalValues.currentFileTree = []
+        $('#filetree').fancytree('getTree').reload(createTree([]))
         globalValues.codemirrorInstance.setValue("")
         globalValues.codemirrorInstance.clearHistory();
       }
@@ -196,26 +184,6 @@ function createNewDocker() {
   });
 }
 
-function retriveFile(path) {
-  console.log('path: ', path)
-  $.ajax({
-    type: 'POST',
-    url: '/api/file/downloadFile',
-    data: {
-      fileName: path
-    },
-    success: (data) => {
-      if (globalValues.codemirrorInstance.getValue() === globalValues.loadedFile || globalValues.loadedFile === '') {
-        setCodeMirrorData(data, path)
-      } else {
-        globalValues.tempLoadedFile = data
-        globalValues.tempLoadedFilePath = path
-        $('#unsavedFileModal').modal('show') 
-      }
-    }
-  });
-}
-
 function setCodeMirrorData(data, path) {
   var val = path, m, mode, spec, name;
   if (m = /.+\.([^.]+)$/.exec(val)) {
@@ -249,57 +217,4 @@ function setCurrentMode(mode, spec, name) {
     CodeMirror.autoLoadMode(globalValues.codemirrorInstance, null)
     $('#footerMode').text('text')
   }
-}
-
-function updateTree(data) {
-  $('#filetree').fancytree({
-    extensions: ["childcounter"],
-    activate: (event, data) => {
-      if (!data.node.isFolder()) {
-        retriveFile(data.node.key)
-      }
-    },
-    source: createTree(data),
-    childcounter: {
-      deep: true,
-      hideZeros: true,
-      hideExpanded: true
-    },
-  })
-}
-
-function createTree(array) {
-  let outputArray = []
-  if (Array.isArray(array)) {
-    array.forEach(a => {
-      if (a.children) {
-        outputArray.push({
-          title: a.name,
-          key: a.path,
-          folder: true,
-          children: createTree(a.children)
-        })
-      } else {
-        outputArray.push({
-          title: a.name,
-          key: a.path
-        })
-      }
-    })
-  } else {
-    if (array.children) {
-      outputArray.push({
-        title: array.name,
-        key: array.path,
-        folder: true,
-        children: createTree(array.children)
-      })
-    } else {
-      outputArray.push({
-        title: array.name,
-        key: array.path
-      })
-    }
-  }
-  return outputArray;
 }

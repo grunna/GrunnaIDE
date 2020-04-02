@@ -5,8 +5,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-body">
-	<label for="createDirectoryModalInput">New Directory:</label>
-	<input type="text" class="form-control" id="createDirectoryModalInput" aria-describedby="createDirectoryHelp" placeholder="Directory name">
+        <label for="createDirectoryModalInput">New Directory:</label>
+        <input type="text" class="form-control" id="createDirectoryModalInput" aria-describedby="createDirectoryHelp" placeholder="Directory name">
       </div>
     </div>
   </div>
@@ -15,13 +15,13 @@
 <div class="modal fade" id="unsavedFileModal" tabindex="-1" role="dialog" aria-labelledby="unsavedFileModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-       <div class="modal-header">
+      <div class="modal-header">
         <h5 class="modal-title" id="unsavedFileModalLabel">Unsaved changes</h5>
       </div>
       <div class="modal-body">
-				You have unsaved changes, press CTRL+S to save file
+        You have unsaved changes, press CTRL+S to save file
       </div>
-			<div class="modal-footer">
+      <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-danger" id="unsavedFileContinueModalBtn">Continue</button>
       </div>
@@ -33,8 +33,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-body">
-	<label for="createFileModalInput">New File:</label>
-	<input type="text" class="form-control" id="createFileModalInput" aria-describedby="createFileHelp" placeholder="File name">
+        <label for="createFileModalInput">New File:</label>
+        <input type="text" class="form-control" id="createFileModalInput" aria-describedby="createFileHelp" placeholder="File name">
       </div>
     </div>
   </div>
@@ -50,11 +50,24 @@
         </button>
       </div>
       <div class="modal-body">
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-danger" id="deleteFileDirectoryModalBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="searchFilesModal" tabindex="-1" role="dialog" aria-labelledby="searchFileModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <input type="text" class="form-control" oninput="inputSearchFilesListener()" id="inputSearchFiles" aria-describedby="searchFiles" placeholder="Search files and directories">
+        <div id="listOfSearchFiles">
+          
+        </div>
       </div>
     </div>
   </div>
