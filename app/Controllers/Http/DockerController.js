@@ -62,7 +62,7 @@ class DockerController {
     })
       .catch(err => {
       	console.log('Error pulling image:', err)
-      	sendToInfoChannel.write('Error when pulling image: ' + project.docker_image)
+      	sendToInfoChannel.write('Cant pull image, probobly already excist: ' + project.docker_image)
     })
     
     console.log('CreateContainer')
@@ -75,11 +75,9 @@ class DockerController {
     })
       .then(data => {
       const portBindings = Object.values(data.NetworkSettings.Ports)
-      console.log('data: ', portBindings)
       portBindings.forEach(hosts => {
         hosts.forEach(host => {
-          console.log('port: ', host)
-          sendToInfoChannel.write('Connect to: http://' + host.HostPort + '.ide.grunna.com:18088')
+          sendToInfoChannel.write('Connect to: http://' + host.HostPort + '.ide.grunna.com:18088 -> container 0.0.0.0:8080')
         })
       })
 

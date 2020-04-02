@@ -31,6 +31,7 @@ $(function() {
       })
       document.getElementById('terminal-continer').style.height = "100%";
       globalValues.xtermFitAddon.fit()
+      globalValues.xterm.writeln(shellprompt);
     }
   })
 
@@ -44,7 +45,7 @@ function startWs() {
   ws.on('open', () => {
     subscribeToOutputChannel();
     subscribeToTerminalChannel();
-  })
+  }) 
 }
 
 function subscribeToOutputChannel() {

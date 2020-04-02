@@ -47,8 +47,10 @@ function inputSearchFilesListener() {
       if (addedItems < 10) {
         let modeLink = document.createElement('a')
         modeLink.setAttribute('data-path', path)
-        modeLink.innerHTML = name + '<br/><small style="overflow:hidden; text-overflow: ellipsis;">' + path + '</small>'
+        modeLink.innerHTML = name + '<br/><small>' + path + '</small>'
         modeLink.classList.add("dropdown-item")
+        modeLink.style.overflow = "hidden";
+        modeLink.style.textOverflow = "ellipsis";
         modeLink.addEventListener("click", function(event) {
           const path = $(event.currentTarget).attr('data-path')
           retriveFile(path)
