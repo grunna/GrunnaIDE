@@ -4,6 +4,7 @@ var globalValues = {
   loadedProject: "",
   loadedFile: "",
   loadedFilePath: "",
+  currentFileTree: [],
   tempLoadedFile: "",
   tempLoadedFilePath: "",
   action: "",

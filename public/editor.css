@@ -5,6 +5,7 @@
   margin-left: auto;
   margin-right: auto;
   width: 90%;
+  z-index: 990;
 }
 
 ul.fancytree-container {
