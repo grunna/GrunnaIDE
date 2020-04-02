@@ -9,7 +9,7 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdownFile">
           <a class="dropdown-item" data-toggle="modal" data-target="#createProjectDialog">New project</a>
           <a class="dropdown-item" data-toggle="modal" data-target="#openProjectDialog">Open project</a>	  
-          <a class="dropdown-item" href="#">Preference</a>
+          <a class="dropdown-item disabled" href="#">Preference</a>
           <a class="dropdown-item" data-toggle="modal" data-target="#projectSettingsDialog">Project settings</a>
           <a class="dropdown-item" id="menuRemoveProject">Remove project</a>
           <div class="dropdown-divider"></div>
@@ -22,25 +22,15 @@
           Edit
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownEdit">
-          <a class="dropdown-item" href="#">Undo</a>
-          <a class="dropdown-item" href="#">Redo</a>
+          <a class="dropdown-item disabled" href="#">Undo (CTRL-Z)</a>
+          <a class="dropdown-item disabled" href="#">Redo</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Cut</a>
-          <a class="dropdown-item" href="#">Copy</a>
-          <a class="dropdown-item" href="#">Paste</a>
+          <a class="dropdown-item disabled" href="#">Cut</a>
+          <a class="dropdown-item disabled" href="#">Copy</a>
+          <a class="dropdown-item disabled" href="#">Paste</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" id="menuOpenFindFileDialog">Find file (CTRL-P)</a>
-          <a class="dropdown-item" href="#">Find in file</a>
-        </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link" id="navbarDropdownRun" role="button" data-toggle="dropdown" aria-haspopup="true"
-           aria-expanded="false">
-          Run
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownRun">
-          <a class="dropdown-item" id="run">Run</a>
-          <a class="dropdown-item" href="#">Debug</a>
+          <a class="dropdown-item disabled" href="#">Find in file</a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -49,12 +39,12 @@
           Terminal
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownTerminal">
-          <a class="dropdown-item" href="#">Open terminal</a>
+          <a class="dropdown-item disabled" href="#">Open terminal</a>
         </div>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link" id="navbarDropdownGit" role="button" data-toggle="dropdown" aria-haspopupt="true" aria-expanded="false">
-          Git
+          Git (Expermantal)
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownGit">
           <a class="dropdown-item" id="menuGitFetch">Fetch</a>
