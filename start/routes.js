@@ -30,6 +30,8 @@ Route.get('github/callback', 'LoginController.callback').as('github.callback')
 Route.on('/login').render('login', NODE_ENV).middleware('guest')
 
 Route.on('/ide').render('editor').as('editor').middleware('auth')
+Route.on('/dashboard').render('dashboard').as('dashboard').middleware('auth')
+
 Route.get('login/logout', 'LoginController.logout').as('login.logout').middleware('auth')
 
 Route.group(() => {

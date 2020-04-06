@@ -51,6 +51,7 @@ class Shared {
         "8080/tcp": { }
       },
       "HostConfig": {
+        "NetworkMode": Env.get('DOCKER_NETWORK'),
         "Binds": [
           binds + ":/src"
         ],
