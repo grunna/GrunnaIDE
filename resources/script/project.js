@@ -179,9 +179,23 @@ function createNewDocker() {
     url: '/api/docker/createDocker',
     data: { },
     success: function (data) {
-      ws.getSubscription('docker:terminal').emit('dockerAttach', { })
+      dockerAttach(5)
     }
   });
+}
+
+function dockerAttach(amontLeft) {
+  if (amontLeft > 0) {
+    try {
+      ws.getSubscription('docker:terminal').emit('dockerAttach', { })
+    } catch (e) {
+      amontLeft--
+      setTimeout(() => { dockerAttach(amontLeft) }, 1000)
+    }
+  } else {
+    let addNewData = 'Error when attached to WS terminal' + '<br/>' 
+    $('#outputData').append(addNewData)
+  }
 }
 
 function setCodeMirrorData(data, path) {

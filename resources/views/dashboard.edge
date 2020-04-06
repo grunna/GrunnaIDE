@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<style>
+      /* Sticky footer styles
+      -------------------------------------------------- */
+      html {
+        position: relative;
+        min-height: 100%;
+      }
+      body {
+        /* Margin bottom by footer height */
+        margin-bottom: 60px;
+      }
+      .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        /* Set the fixed height of the footer here */
+        height: 60px;
+        line-height: 60px; /* Vertically center the text there */
+        background-color: #f5f5f5;
+      }
+    </style>
+    <title>
+      Login Grunna IDE
+    </title>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div class="navbar-brand">Grunna dashboard</div>
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+        </ul>
+        <a class="text-white h5" href="{{ route('login.logout') }}">Logout</a>
+      </div>
+    </nav>
+    <main role="main">
+      <div class="container mt-5 pt-5">
+        <h3>
+          Create new project
+        </h3>
+        <div class="card-columns" id="createProject">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Node.JS</h5>
+              <p class="card-text">Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine.</p>
+              <a href="#" class="card-link" data-project="nodejs">Create project</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Java</h5>
+              <p class="card-text">Java is a general-purpose, concurrent, object-oriented, class-based, and the runtime environment(JRE) which consists of JVM which is the cornerstone of the Java platform.</p>
+              <a href="#" class="card-link" data-project="java">Create project</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Python</h5>
+              <p class="card-text">Python is a programming language that lets you work quickly and integrate systems more effectively.</p>
+              <a href="#" class="card-link" data-project="python">Create project</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Ruby</h5>
+              <p class="card-text">Ruby is a dynamic, open source programming language with a focus on simplicity and productivity. It has an elegant syntax that is natural to read and easy to write.</p>
+              <a href="#" class="card-link" data-project="ruby">Create project</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Golang</h5>
+              <p class="card-text">Go is an open source programming language that makes it easy to build simple, reliable, and efficient software.</p>
+              <a href="#" class="card-link" data-project="golang">Create project</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Mono</h5>
+              <p class="card-text">Mono is a software platform designed to allow developers to easily create cross platform applications part of the .NET Foundation.</p>
+              <a href="#" class="card-link" data-project="mono">Create project</a>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="card">
+              <h5 class="card-header">
+                Current projects
+              </h5>
+              <div class="card-body overflow-auto" style="height: 200px" >
+                <ul class="list-group list-group-flush" id="currentProjects">
+                </ul>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted" id="currentProjectsFooter"></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main> 
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    {{ script('script/dashboard') }}
+  </body>
+
+</html>

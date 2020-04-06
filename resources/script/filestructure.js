@@ -1,22 +1,7 @@
 "use strict";
 
 $(function () {
-  $('#filetree').fancytree({
-    extensions: ["childcounter"],
-    activate: (event, data) => {
-      if (!data.node.isFolder()) {
-        retriveFile(data.node.key)
-      }
-    },
-    source: [],
-    childcounter: {
-      deep: true,
-      hideZeros: true,
-      hideExpanded: true
-    },
-  })
-
-  $('#reloadFileTree').on('click', function (e) {
+	$('#reloadFileTree').on('click', function (e) {
     $.ajax({
       type: "GET",
       url: "/api/file/reloadFileTree",
