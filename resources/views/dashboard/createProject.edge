@@ -1,0 +1,56 @@
+<div class="modal fade" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="openCreateProjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    	<div class="modal-header">
+        <h5 class="modal-title">Create project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5>
+          Create Project
+        </h5>
+        Do you already have a reposity you want to connect to the<br/>
+        <form id="create-project-form" action="/api/project/createProject" method="POST" role="form">
+          <div class="form-group">
+            <label for="project-name" class="col-form-label">Project name:</label>
+            <input type="text" class="form-control" id="project-name" name="projectName" >
+            <label for="git-url" class="col-form-label">Git clone URL if you have any else leave blank:</label>
+            <input type="text" class="form-control" id="git-url" name="gitUrl" >
+            <label for="project-name" class="col-form-label">Docker image:</label>
+            <select class="form-control" id="createProjectImageSelect" name="dockerImage"></select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Create project</button>
+          </div>
+          <input type="hidden" id="createProjectUsername" name="username" value="">
+          <input type="hidden" id="createProjectPassword" name="password" value="">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="gitUsernameModal" tabindex="-1" role="dialog" aria-labelledby="openGitUsernameModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <label for="gitUsernameModalInput">Username:</label>
+        <input type="text" class="form-control" id="gitUsernameModalInput" aria-describedby="usernameHelp" placeholder="Git username">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="gitPasswordModal" tabindex="-1" role="dialog" aria-labelledby="openGitPasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <label for="gitPasswordModalInput">Password:</label>
+        <input type="password" class="form-control" id="gitPasswordModalInput" aria-describedby="passwordHelp" placeholder="Git password">
+      </div>
+    </div>
+  </div>
+</div>

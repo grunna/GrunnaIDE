@@ -137,10 +137,7 @@ $(function () {
       type: 'POST',
       url: '/api/project/removeProject',
       success: function (data) {
-        globalValues.currentFileTree = []
-        $('#filetree').fancytree('getTree').reload(createTree([]))
-        globalValues.codemirrorInstance.setValue("")
-        globalValues.codemirrorInstance.clearHistory();
+        window.location.href = '/dashboard';
       }
     })
     $('#removeProjectModal').modal('hide')
