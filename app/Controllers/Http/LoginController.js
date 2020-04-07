@@ -35,7 +35,7 @@ class LoginController {
       let accessToken = await auth.login(user)
       response.safeHeader('Authorization', accessToken.type + ' ' + accessToken.token)
 
-      return response.route('dashbord')
+      return response.route('dashboard')
     } catch (error) {
       return 'Unable to authenticate. Try again later: ' + error
     }
