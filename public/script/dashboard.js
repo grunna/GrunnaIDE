@@ -6,13 +6,26 @@
   
   $.ajax({
     type: "GET",
+    url: "/api/dashboard/summery",
+    success: function (data) {
+      $('#currentProjectsFooter').text(data.projects + ' / ' + data.maxProjects + ' Project created')
+      $('#directorySize').text('All your projects take ' + (data.directorySize / 1024 / 1024).toFixed(2) + ' MB')
+      $('#saveTimes').text('You have saved ' + data.statistics.saveTimes + ' times')
+      $('#reloadFileTree').text('You have reloaded the tree ' + data.statistics.reloadFileTree + ' times')
+      $('#filesDownloaded').text(data.statistics.filesDownloaded + ' files have been downloaded')
+      $('#fileCreated').text('You have created ' + data.statistics.fileCreated + ' files')
+      $('#deleteFileDirectory').text('You have deleted ' + data.statistics.deleteFileDirectory + ' times')
+    }
+  })
+  
+  $.ajax({
+    type: "GET",
     url: "/api/project/featchAllProjects",
     success: function (data) {
       $('#currentProjects').empty()
       data.forEach(project => {
         $('#currentProjects').append('<li class="list-group-item"><a href="/ide?project=' + project.id + '">' + project.name + '</a></li>')
       })
-      $('#currentProjectsFooter').text(data.length + ' / 10 Project created')
     }
   })
 

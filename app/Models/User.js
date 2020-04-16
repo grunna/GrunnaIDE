@@ -47,6 +47,13 @@ class User extends Model {
   projects () {
     return this.hasMany('App/Models/Project')
   }
+  
+  /**
+  * Link to all the statics a user have
+  */
+  statistics () {
+    return this.hasOne('App/Models/Statistics')
+  }
 }
 
 module.exports = User

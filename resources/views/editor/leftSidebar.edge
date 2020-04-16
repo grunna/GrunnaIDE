@@ -65,7 +65,8 @@
     <div class="modal-content">
       <div class="modal-body">
         <input type="text" class="form-control" oninput="inputSearchFilesListener()" id="inputSearchFiles" aria-describedby="searchFiles" placeholder="Search files and directories">
-        <div id="listOfSearchFiles">
+        <small id="searchFilesResults" style="padding-left: 10px">0 files found</small>
+        <div id="listOfSearchFiles" style="max-height: 500px; overflow: auto;">
           
         </div>
       </div>

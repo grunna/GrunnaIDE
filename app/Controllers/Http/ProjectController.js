@@ -35,6 +35,9 @@ class ProjectController {
   async createProject({response, request, auth, session}) {
     let user = await User.findBy('uuid', auth.user.uuid)
     let projects = await user.projects().fetch()
+    if (user.max_projects <= projects.rows.length) {
+      return response.notAcceptable('Cant create more projects')
+    }
     let projectExcist = projects.rows.filter(project => project.name.toLowerCase() === request.post().projectName.toLowerCase())
     if (projectExcist.length > 0) {
       return response.notAcceptable('Project name already used')
