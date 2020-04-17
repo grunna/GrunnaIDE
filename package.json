@@ -1,21 +1,25 @@
 {
-  "name": "adonis-fullstack-app",
-  "version": "4.1.0",
+  "name": "GrunnaIDE",
+  "version": "1.0.0",
   "adonis-version": "4.1.0",
-  "description": "The fullstack application boilerplate for Adonisjs",
+  "description": "Grunna IDE is a open source web IDE",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "test": "node ace test",
     "uglify": "./node_modules/terser/bin/uglifyjs ./resources/script/*.js -o ./public/script/app.min.js",
+    "terser": "./node_modules/terser/bin/terser ./resources/script/*.js --source-map \"root='http://grunna.com/script/',url='app.min.js.map'\" --output ./public/script/app.min.js",
     "js:watch": "onchange \"./resources/script/*.js\" -- npm run uglify"
   },
   "keywords": [
     "adonisjs",
-    "adonis-app"
+    "adonis-app",
+    "web-ide",
+    "online-ide",
+    "grunna"
   ],
-  "author": "",
-  "license": "UNLICENSED",
+  "author": "Daniel Ekedahl <npm@grunna.com> (https://grunna.com)",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@adonisjs/ace": "^5.0.8",
@@ -34,8 +38,10 @@
     "directory-tree": "^2.2.3",
     "dockerode": "^2.5.8",
     "fs-extra": "^8.1.0",
+    "get-folder-size": "^2.0.1",
     "isomorphic-git": "^0.57.1",
     "mysql": "^2.17.1",
+    "promise": "^8.1.0",
     "sqlite3": "^4.1.1",
     "strip-ansi": "^5.2.0",
     "uuid": "^3.3.3",
@@ -44,7 +50,7 @@
   },
   "devDependencies": {
     "onchange": "^6.0.0",
-    "terser": "^4.6.6"
+    "terser": "^4.6.11"
   },
   "autoload": {
     "App": "./app"

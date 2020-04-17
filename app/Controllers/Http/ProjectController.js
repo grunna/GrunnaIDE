@@ -35,6 +35,9 @@ class ProjectController {
   async createProject({response, request, auth, session}) {
     let user = await User.findBy('uuid', auth.user.uuid)
     let projects = await user.projects().fetch()
+    if (user.max_projects <= projects.rows.length) {
+      return response.notAcceptable('Cant create more projects')
+    }
     let projectExcist = projects.rows.filter(project => project.name.toLowerCase() === request.post().projectName.toLowerCase())
     if (projectExcist.length > 0) {
       return response.notAcceptable('Project name already used')
@@ -43,13 +46,14 @@ class ProjectController {
     if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newPath)) {
       return response.badRequest('error in path')
     }
-		
+
     if (request.post().gitUrl) {
       await git.clone({dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
         .then(() => {
         console.log('Project created' + request.post().projectName)
       })
         .catch((error) => {
+        console.log('error', error)
         return response.unauthorized() 
       })
     } else {
@@ -65,9 +69,9 @@ class ProjectController {
     project.user_id = user.id
     project.owner = user.id
     project.docker_image = (acceptedDockerImages.includes(request.post().dockerImage) > 0) ? request.post().dockerImage : 'node:10'
-    project.save()
-    session.put('currentProject', request.post().projectName)
-    return response.send(await shared.getTree(user.uuid, request.post().projectName))
+    await project.save()
+    console.log('Server projectId', project)
+    return response.send({ projectId: project.id })
   }
 
   async removeProject({response, request, auth, session}) {

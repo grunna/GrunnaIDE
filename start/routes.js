@@ -61,6 +61,8 @@ Route.group(() => {
   Route.post('/git/add', 'GitController.add')
   Route.post('/git/push', 'GitController.push')
   Route.post('/git/test', 'GitController.testGit')
+  
+  Route.get('/dashboard/summery', 'DashboardController.summery')
 }).prefix('api')
 
 Route.any('*', ({ response }) => { response.redirect('/login') }).middleware('guest')

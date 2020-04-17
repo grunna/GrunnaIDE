@@ -7,12 +7,11 @@
           File
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownFile">
-          <a class="dropdown-item" data-toggle="modal" data-target="#createProjectDialog">New project</a>
-          <a class="dropdown-item" data-toggle="modal" data-target="#openProjectDialog">Open project</a>	  
           <a class="dropdown-item disabled" href="#">Preference</a>
           <a class="dropdown-item" data-toggle="modal" data-target="#projectSettingsDialog">Project settings</a>
           <a class="dropdown-item" id="menuRemoveProject">Remove project</a>
           <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ route('dashboard') }}">Close project</a>
           <a class="dropdown-item" href="{{ route('login.logout') }}">Logout</a>
         </div>
       </li>

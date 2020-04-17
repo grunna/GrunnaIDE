@@ -1,10 +1,92 @@
 "use strict";
 
+let ws = null;
 
 (function () {
+  startWs();
   WsNotice();
+  initFancyTree();
   fileMenu();
+  openProject();
 })()
+
+function startWs() {
+  console.log('Start Ws');
+
+  ws = adonis.Ws().connect();
+
+  ws.on('open', () => {
+    subscribeToOutputChannel();
+    subscribeToTerminalChannel();
+  }) 
+}
+
+function subscribeToOutputChannel() {
+  const infoChannel = ws.subscribe('docker:infoChannel');
+  console.log('infoChannel; ', infoChannel);
+
+  infoChannel.on('output', (output) => {
+    let addNewData = output + '<br/>' 
+    $('#outputData').append(addNewData)
+  })
+}
+
+function subscribeToTerminalChannel() {
+  const terminalChannel = ws.subscribe('docker:terminal');
+  console.log('terminalChannel: ', terminalChannel);
+
+  terminalChannel.on('terminal', (terminal) => {
+    if (globalValues.xterm) {
+      globalValues.xterm.write(terminal);
+    }
+    $('#terminalOutput').append(terminal)
+    $('#terminalOutput').scrollTop($('#terminalOutput').prop('scrollHeight'))
+  })
+}
+
+function initFancyTree () {
+  $('#filetree').fancytree({
+    extensions: ["childcounter"],
+    activate: (event, data) => {
+      if (!data.node.isFolder()) {
+        retriveFile(data.node.key)
+      }
+    },
+    source: [],
+    childcounter: {
+      deep: true,
+      hideZeros: true,
+      hideExpanded: true
+    },
+  })
+}
+
+function openProject() {
+  const getQueryParams = ( params, url ) => {
+
+    let href = url;
+    //this expression is to get the query strings
+    let reg = new RegExp( '[?&]' + params + '=([^&#]*)', 'i' );
+    let queryString = reg.exec(href);
+    return queryString ? queryString[1] : null;
+  };
+  
+  const projectId = getQueryParams('project', window.location.href)
+  
+  $.ajax({
+    type: "GET",
+    url: "/api/project/getAllFiles",
+    data: {
+      projectId: projectId
+    },
+    success: function (data) {
+      $('#openProjectDialog').modal('hide');
+      globalValues.currentFileTree = data
+      $('#filetree').fancytree('getTree').reload(createTree(data))
+      createNewDocker()
+    }
+  })
+}
 
 function WsNotice() {
   let ws = adonis.Ws().connect();

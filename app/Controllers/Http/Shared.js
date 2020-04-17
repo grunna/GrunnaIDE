@@ -3,6 +3,8 @@
 const PATH = require('path');
 const Env = use('Env')
 const dirTree = require("directory-tree");
+const getSize = require('get-folder-size');
+const Statistic = use('App/Models/Statistic')
 
 class Shared {
 
@@ -66,6 +68,37 @@ class Shared {
       }
     }
     return config
+  }
+
+  getDirectorySize(auth) {
+    return new Promise((resolve, reject) => {
+      getSize(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', (err, size) => {
+        if (err) { 
+          reject(err) 
+        } else {
+          resolve(size)
+        }
+      });
+    });
+  }
+  
+  async addValueStatistics(key, userId) {
+    await Statistic.findOrCreate(
+      { user_id: userId },
+      { user_id: userId, statistics: JSON.stringify({ key: 0 }) })
+      .then((data) => {
+      let stat = JSON.parse(data.statistics)
+      if (stat[key]) {
+      	stat[key] = stat[key] + 1
+      } else {
+        stat[key] = 1
+      }
+      data.statistics = JSON.stringify(stat)
+      data.save()
+    })
+      .catch(err => {
+      console.log('err: ', err)
+    })
   }
 }
 

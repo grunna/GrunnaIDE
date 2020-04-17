@@ -1,22 +1,7 @@
 "use strict";
 
 $(function () {
-  $('#filetree').fancytree({
-    extensions: ["childcounter"],
-    activate: (event, data) => {
-      if (!data.node.isFolder()) {
-        retriveFile(data.node.key)
-      }
-    },
-    source: [],
-    childcounter: {
-      deep: true,
-      hideZeros: true,
-      hideExpanded: true
-    },
-  })
-
-  $('#reloadFileTree').on('click', function (e) {
+	$('#reloadFileTree').on('click', function (e) {
     $.ajax({
       type: "GET",
       url: "/api/file/reloadFileTree",
@@ -41,27 +26,26 @@ $(function () {
 function inputSearchFilesListener() {
   let value = $('#inputSearchFiles').val()
   $('#listOfSearchFiles').empty()
+  let addedItems = 0
   if (value.length >= 1) {
-    let addedItems = 0
     let addToList = (path, name) => {
-      if (addedItems < 10) {
-        let modeLink = document.createElement('a')
-        modeLink.setAttribute('data-path', path)
-        modeLink.innerHTML = name + '<br/><small>' + path + '</small>'
-        modeLink.classList.add("dropdown-item")
-        modeLink.style.overflow = "hidden";
-        modeLink.style.textOverflow = "ellipsis";
-        modeLink.addEventListener("click", function(event) {
-          const path = $(event.currentTarget).attr('data-path')
-          retriveFile(path)
-          $('#searchFilesModal').modal('hide')
-          let filetree = $("#filetree").fancytree("getTree");
-          let node = filetree.getNodeByKey(path);
-          node.setActive(true)
-        })
-        $('#listOfSearchFiles').append(modeLink)
-        addedItems = addedItems + 1
-      }
+      let modeLink = document.createElement('a')
+      modeLink.setAttribute('data-path', path)
+      modeLink.innerHTML = name + '<br/><small>' + path + '</small>'
+      modeLink.classList.add("dropdown-item")
+      modeLink.style.overflow = "hidden";
+      modeLink.style.textOverflow = "ellipsis";
+      modeLink.addEventListener("click", function(event) {
+        const path = $(event.currentTarget).attr('data-path')
+        retriveFile(path)
+        $('#searchFilesModal').modal('hide')
+        let filetree = $("#filetree").fancytree("getTree");
+        let node = filetree.getNodeByKey(path);
+        node.setActive(true)
+      })
+      $('#listOfSearchFiles').append(modeLink)
+      addedItems = addedItems + 1
+      
     }
     let printArray = function(arr) {
       if (Array.isArray(arr)) {
@@ -88,6 +72,7 @@ function inputSearchFilesListener() {
     }
     printArray(globalValues.currentFileTree)
   }
+  $('#searchFilesResults').text(addedItems + ' files found')
 }
 
 function retriveFile(path) {

@@ -4,6 +4,7 @@ const Env = use('Env')
 const fs = require('fs-extra')
 const Shared = require('./Shared')
 const shared = new Shared()
+const Database = use('Database')
 
 class FileController {
 
@@ -15,6 +16,7 @@ class FileController {
     await fs.readFile(path, 'utf8')
       .then(contents => {
       response.type('application/octet-stream')
+      shared.addValueStatistics('filesDownloaded', auth.user.id)
       return response.send(contents)
     })
       .catch(err => {
@@ -28,17 +30,16 @@ class FileController {
       return response.badRequest('error in path')
     }
     await fs.outputFile(path, request.post().data)
-      .then(() => {
-      console.log('all good')
-    })
       .catch(err => {
       console.log('err: ', err)
       return response.badRequest(err)
     })
-    return response.ok(request.post().fileName + ' Created')
+    await shared.addValueStatistics('saveTimes', auth.user.id)
+    return response.ok(request.post().fileName + ' updated')
   }
 
   async reloadFileTree({session, auth, response}) {
+    await shared.addValueStatistics('reloadFileTree', auth.user.id)
     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 
@@ -51,6 +52,7 @@ class FileController {
       .catch((err) => {
       return response.badRequest(err)
     })
+    await shared.addValueStatistics('fileCreated', auth.user.id)
     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 
@@ -63,6 +65,7 @@ class FileController {
       .catch((err) => {
       return response.badRequest(err)
     })
+    await shared.addValueStatistics('directoryCreated', auth.user.id)
     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 
@@ -77,6 +80,7 @@ class FileController {
       console.log('err: ', err)
       return response.badRequest(err)
     })
+    await shared.addValueStatistics('deleteFileDirectory', auth.user.id)
     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 }
