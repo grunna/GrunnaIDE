@@ -46,6 +46,9 @@ function subscribeToTerminalChannel() {
 
 function initFancyTree () {
   $('#filetree').fancytree({
+    minExpandLevel: 2,
+    autoScroll: true,
+    clickFolderMode: 3,
     extensions: ["childcounter"],
     activate: (event, data) => {
       if (!data.node.isFolder()) {
@@ -142,6 +145,15 @@ function fileMenu() {
           $('#createFileModal').modal('show')
         }
       },
+      "rename": {
+        name: "Rename", icon: "copy", callback: function(key, opt) {
+          var node = $.ui.fancytree.getNode(opt.$trigger)
+          globalValues.postData = {}
+          globalValues.postData.fromDirectory = node.key
+          $('#renameModalInput').val(node.key)
+          $('#renameModal').modal('show')
+        }
+      },
       "delete": {
         name: "Delete", icon: "trash", callback: function(key, opt) {
           var node = $.ui.fancytree.getNode(opt.$trigger);
@@ -184,6 +196,22 @@ function fileMenu() {
       $.ajax({
         type: 'POST',
         url: '/api/file/createFile',
+        data: globalValues.postData,
+        success: (data) => {
+          $('#filetree').fancytree('getTree').reload(createTree(data))
+        }
+      })
+    }
+  });
+  
+  $('#renameModalInput').keypress(function (event) {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == '13') {
+      $('#renameModal').modal('hide')
+      globalValues.postData.newName = $('#renameModalInput').val()
+      $.ajax({
+        type: 'POST',
+        url: '/api/file/rename',
         data: globalValues.postData,
         success: (data) => {
           $('#filetree').fancytree('getTree').reload(createTree(data))

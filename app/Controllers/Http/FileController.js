@@ -69,6 +69,23 @@ class FileController {
     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 
+  async rename({session, request, response, auth}) {
+    let oldName = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fromDirectory
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, oldName)) {
+      return response.badRequest('error in path')
+    }
+    let newName = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().newName
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newName)) {
+      return response.badRequest('error in path')
+    }
+    await fs.rename(oldName, newName, (err) => {
+      if (err) {
+        return response.badRequest('error change name')
+      }
+    });
+    return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
+  }
+
   async deleteFileDirectory({session, request, response, auth}) {
     let deletePath = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fileOrDirectory
     console.log('path: ', deletePath)

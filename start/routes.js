@@ -48,6 +48,7 @@ Route.group(() => {
   Route.post('/file/saveFile', 'FileController.saveFile')
   Route.post('/file/createDirectory', 'FileController.createDirectory')
   Route.post('/file/createFile', 'FileController.createFile')
+  Route.post('/file/rename', 'FileController.rename')
   Route.delete('/file/deleteFileDirectory', 'FileController.deleteFileDirectory')
   Route.get('/file/reloadFileTree', 'FileController.reloadFileTree')
 
