@@ -46,11 +46,12 @@ class ProjectController {
     if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newPath)) {
       return response.badRequest('error in path')
     }
-
+    let createProject = false
     if (request.post().gitUrl) {
       await git.clone({dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
         .then(() => {
         console.log('Project created' + request.post().projectName)
+        createProject = true
       })
         .catch((error) => {
         console.log('error', error)
@@ -58,20 +59,24 @@ class ProjectController {
       })
     } else {
       await fs.mkdir(newPath, { recursive: true })
+        .then(() => {
+        createProject = true
+      })
         .catch((err) => {
         return response.badRequest(err)
       })
     }
-    let project = new Project()
-    project.name = request.post().projectName
-    project.gitUrl = request.post().gitUrl
-    project.gitUsername = request.post().gitUsername
-    project.user_id = user.id
-    project.owner = user.id
-    project.docker_image = (acceptedDockerImages.includes(request.post().dockerImage) > 0) ? request.post().dockerImage : 'node:10'
-    await project.save()
-    console.log('Server projectId', project)
-    return response.send({ projectId: project.id })
+    if (createProject) {
+      let project = new Project()
+      project.name = request.post().projectName
+      project.gitUrl = request.post().gitUrl
+      project.gitUsername = request.post().gitUsername
+      project.user_id = user.id
+      project.owner = user.id
+      project.docker_image = (acceptedDockerImages.includes(request.post().dockerImage) > 0) ? request.post().dockerImage : 'node:10'
+      await project.save()
+      return response.send({ projectId: project.id })
+    }
   }
 
   async removeProject({response, request, auth, session}) {
