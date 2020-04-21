@@ -51,12 +51,7 @@ class DockerController {
     if (this.socket.topic === 'docker:terminal') {
       await container.stop()
         .then(data => {
-        if (project.keep_docker_name) {
-          console.log('Only stop container')
-        } else {
-          console.log('onClose: Container have been stoped')
           return container.remove()
-        }
       })
         .then(data => {
         console.log('onClose: Container have been removed')

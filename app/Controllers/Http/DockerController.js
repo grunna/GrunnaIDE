@@ -41,73 +41,53 @@ class DockerController {
     let container = docker.getContainer(Env.get('DOCKER_NAME') + auth.user.id)
     let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
 
-    if (project.keep_docker_name) {
-      console.log('Docker already running')
-      await container.start()
-        .then(data => {
-        return container.inspect()
-      })
-        .then(data => {
-        const portBindings = Object.values(data.NetworkSettings.Ports)
-        portBindings.forEach(hosts => {
-          hosts.forEach(host => {
-            sendToInfoChannel.write('Connect to: http://' + host.HostPort + '.ide.grunna.com:18088 -> container 0.0.0.0:8080')
-          })
+    await container.stop()
+      .then(data => {
+      console.log('createDocker: Container have been stoped')
+      return container.remove()
+    })
+      .then(data => {
+      console.log('createDocker: Container have been removed')
+    })
+      .catch(err => {
+      console.log('createDocker: Container error -> ' + err)
+    })
+
+    let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), Env.get('DOCKER_NAME') + auth.user.id, project) 
+
+    console.log('Pull docker image: ', project.docker_image)
+    await docker.pull(project.docker_image)
+      .then(stream => {
+      sendToInfoChannel.write(stream)
+    })
+      .catch(err => {
+      console.log('Error pulling image:', err)
+      sendToInfoChannel.write('Cant pull image, probobly already excist: ' + project.docker_image)
+    })
+
+    console.log('CreateContainer')
+    await docker.createContainer(dockerConfig)
+      .then(container => {
+      return container.start()
+    })
+      .then(data => {
+      return container.inspect()
+    })
+      .then(data => {
+      const portBindings = Object.values(data.NetworkSettings.Ports)
+      portBindings.forEach(hosts => {
+        hosts.forEach(host => {
+          sendToInfoChannel.write('Connect to: http://' + host.HostPort + '.ide.grunna.com:18088 -> container 0.0.0.0:8080')
+          project.docker_port = host.HostPort
+          project.save()
         })
-
-      })
-        .catch(err => {
-        console.log('err: ', err)
-        return response.ok('Container already running')
-      })
-      return response.ok('Container started')
-    } else {
-      await container.stop()
-        .then(data => {
-        console.log('createDocker: Container have been stoped')
-        return container.remove()
-      })
-        .then(data => {
-        console.log('createDocker: Container have been removed')
-      })
-        .catch(err => {
-        console.log('createDocker: Container error -> ' + err)
       })
 
-      let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), Env.get('DOCKER_NAME') + auth.user.id) 
-
-      console.log('Pull docker image: ', project.docker_image)
-      await docker.pull(project.docker_image)
-        .then(stream => {
-        sendToInfoChannel.write(stream)
-      })
-        .catch(err => {
-        console.log('Error pulling image:', err)
-        sendToInfoChannel.write('Cant pull image, probobly already excist: ' + project.docker_image)
-      })
-
-      console.log('CreateContainer')
-      await docker.createContainer(dockerConfig)
-        .then(container => {
-        return container.start()
-      })
-        .then(data => {
-        return container.inspect()
-      })
-        .then(data => {
-        const portBindings = Object.values(data.NetworkSettings.Ports)
-        portBindings.forEach(hosts => {
-          hosts.forEach(host => {
-            sendToInfoChannel.write('Connect to: http://' + host.HostPort + '.ide.grunna.com:18088 -> container 0.0.0.0:8080')
-          })
-        })
-
-      })
-        .catch(err => {
-        console.log('err: ', err)
-        return response.ok('Container already running')
-      })
-    }
+    })
+      .catch(err => {
+      console.log('err: ', err)
+      return response.ok('Container already running')
+    })
   }
 }
 
