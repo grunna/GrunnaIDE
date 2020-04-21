@@ -37,8 +37,12 @@ class Shared {
     }
   }
 
-  dockerConfig(image, binds, name) {
+  dockerConfig(image, binds, name, project) {
     console.log('image: ', image)
+    let docker_port = null
+    if (project.keep_docker_name) {
+      docker_port = project.docker_port
+    }
     let config = {
       Image: image,
       Cmd: ['/bin/bash'],
@@ -60,46 +64,46 @@ class Shared {
         "PortBindings": {
           "8080/tcp": [
             {
-              "HostPort": "0"
+              "HostPort": docker_port ? docker_port : "0"
             }
-          ]
-        },
-        "AutoRemove": true,
+              ]
+            },
+            "AutoRemove": true,
+            }
       }
+      return config
     }
-    return config
-  }
 
-  getDirectorySize(auth) {
-    return new Promise((resolve, reject) => {
-      getSize(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', (err, size) => {
-        if (err) { 
-          reject(err) 
-        } else {
-          resolve(size)
-        }
+    getDirectorySize(auth) {
+      return new Promise((resolve, reject) => {
+        getSize(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', (err, size) => {
+          if (err) { 
+            reject(err) 
+          } else {
+            resolve(size)
+          }
+        });
       });
-    });
-  }
-  
-  async addValueStatistics(key, userId) {
-    await Statistic.findOrCreate(
-      { user_id: userId },
-      { user_id: userId, statistics: JSON.stringify({ key: 0 }) })
-      .then((data) => {
-      let stat = JSON.parse(data.statistics)
-      if (stat[key]) {
-      	stat[key] = stat[key] + 1
-      } else {
-        stat[key] = 1
-      }
-      data.statistics = JSON.stringify(stat)
-      data.save()
-    })
-      .catch(err => {
-      console.log('err: ', err)
-    })
-  }
-}
+    }
 
-module.exports = Shared
+    async addValueStatistics(key, userId) {
+      await Statistic.findOrCreate(
+        { user_id: userId },
+        { user_id: userId, statistics: JSON.stringify({ key: 0 }) })
+        .then((data) => {
+        let stat = JSON.parse(data.statistics)
+        if (stat[key]) {
+          stat[key] = stat[key] + 1
+        } else {
+          stat[key] = 1
+        }
+        data.statistics = JSON.stringify(stat)
+        data.save()
+      })
+        .catch(err => {
+        console.log('err: ', err)
+      })
+    }
+  }
+
+  module.exports = Shared

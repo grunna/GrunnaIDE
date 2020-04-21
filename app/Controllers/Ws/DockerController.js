@@ -1,6 +1,7 @@
 'use strict'
 
 const Env = use('Env')
+const Project = use('App/Models/Project')
 const Docker = require('dockerode');
 const Ws = use('Ws')
 const { Writable, Readable } = require('stream');
@@ -35,21 +36,22 @@ class WsDockerTerminal extends Writable {
 
 
 class DockerController {
-  constructor ({ socket, request, auth }) {
+  constructor ({ socket, request, auth, session }) {
     this.socket = socket
     this.request = request
     this.auth = auth
+    this.session = session
     console.log('user joined with %s socket id, Topic %s', socket.id, socket.topic)
   }
 
   async onClose() {
     let container = docker.getContainer(Env.get('DOCKER_NAME') + this.auth.user.id)
+    let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
 
     if (this.socket.topic === 'docker:terminal') {
       await container.stop()
         .then(data => {
-        console.log('onClose: Container have been stoped')
-        return container.remove()
+          return container.remove()
       })
         .then(data => {
         console.log('onClose: Container have been removed')

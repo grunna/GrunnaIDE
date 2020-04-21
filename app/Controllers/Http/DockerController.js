@@ -23,7 +23,7 @@ class WsDockerInfoChannel extends Writable {
         dockerChannel.topic('docker:infoChannel').broadcast('output', data)
       }
     } catch (err) {
-			process.stdout.write('Docker WsDockerInfoChannel error: ', err)
+      process.stdout.write('Docker WsDockerInfoChannel error: ', err)
     }
     callback();
   }
@@ -39,6 +39,7 @@ class DockerController {
     const projectPath = Env.get('SAVEDIRECTORY') + '/' + auth.user.uuid + '/' + session.get('currentProject')
 
     let container = docker.getContainer(Env.get('DOCKER_NAME') + auth.user.id)
+    let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
 
     await container.stop()
       .then(data => {
@@ -52,19 +53,18 @@ class DockerController {
       console.log('createDocker: Container error -> ' + err)
     })
 
-    let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
-    let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), Env.get('DOCKER_NAME') + auth.user.id) 
+    let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), Env.get('DOCKER_NAME') + auth.user.id, project) 
 
     console.log('Pull docker image: ', project.docker_image)
     await docker.pull(project.docker_image)
       .then(stream => {
-      	sendToInfoChannel.write(stream)
+      sendToInfoChannel.write(stream)
     })
       .catch(err => {
-      	console.log('Error pulling image:', err)
-      	sendToInfoChannel.write('Cant pull image, probobly already excist: ' + project.docker_image)
+      console.log('Error pulling image:', err)
+      sendToInfoChannel.write('Cant pull image, probobly already excist: ' + project.docker_image)
     })
-    
+
     console.log('CreateContainer')
     await docker.createContainer(dockerConfig)
       .then(container => {
@@ -78,6 +78,8 @@ class DockerController {
       portBindings.forEach(hosts => {
         hosts.forEach(host => {
           sendToInfoChannel.write('Connect to: http://' + host.HostPort + '.ide.grunna.com:18088 -> container 0.0.0.0:8080')
+          project.docker_port = host.HostPort
+          project.save()
         })
       })
 
