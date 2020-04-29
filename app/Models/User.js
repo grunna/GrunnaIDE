@@ -44,8 +44,14 @@ class User extends Model {
   /**
    * All the project a user belongs to
    */
-  projects () {
+  /*projects () {
     return this.hasMany('App/Models/Project')
+  }*/
+  
+  projects () {
+    return this
+      .belongsToMany('App/Models/Project')
+      .pivotModel('App/Models/ProjectUser')
   }
   
   /**

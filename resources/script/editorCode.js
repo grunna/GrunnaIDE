@@ -14,6 +14,19 @@ $(function () {
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
     showTrailingSpace: true,
   });
+  
+  $.ajax({
+    type: "GET",
+    url: "/api/project/projectSettings",
+    data: {
+      projectId: getQueryParams('project', window.location.href)
+    },
+    success: function (data) {
+      $('head').append('<link rel="stylesheet" type="text/css" href="/codemirror/theme/' + data.ideTheme +'.css">')
+      globalValues.codemirrorInstance.setOption('theme', data.ideTheme)
+    }
+  })
+  
 
   $(document).keydown(function(event) {
     if (event.ctrlKey && event.keyCode == 83) {

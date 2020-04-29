@@ -65,16 +65,20 @@ function initFancyTree () {
 }
 
 function openProject() {
-  const getQueryParams = ( params, url ) => {
-
-    let href = url;
-    //this expression is to get the query strings
-    let reg = new RegExp( '[?&]' + params + '=([^&#]*)', 'i' );
-    let queryString = reg.exec(href);
-    return queryString ? queryString[1] : null;
-  };
+  
   
   const projectId = getQueryParams('project', window.location.href)
+  
+  /*$.ajax({
+    type: "GET",
+    url: "/api/project/projectSettings",
+    data: {
+      projectId: projectId
+    },
+    success: function (data) {
+      console.log('data', data)
+    }
+  })*/
   
   $.ajax({
     type: "GET",
