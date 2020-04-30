@@ -6,6 +6,7 @@ const Ws = use('Ws')
 const path = use('path')
 const Shared = require('./Shared')
 const shared = new Shared()
+const User = use('App/Models/User')
 const Project = use('App/Models/Project')
 const {
   Writable
@@ -39,7 +40,8 @@ class DockerController {
     const projectPath = Env.get('SAVEDIRECTORY') + '/' + auth.user.uuid + '/' + session.get('currentProject')
 
     let container = docker.getContainer(Env.get('DOCKER_NAME') + auth.user.id)
-    let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
+    let user = await User.find(auth.user.id)
+    let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
 
     await container.stop()
       .then(data => {

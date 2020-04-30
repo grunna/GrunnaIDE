@@ -12,9 +12,9 @@ class DashboardController {
     let summery = { projects: 0, maxProjects: 0, directorySize: 0, statistics: {saveTimes: 0, reloadFileTree: 0, filesDownloaded: 0, fileCreated: 0, deleteFileDirectory: 0}}
     let user = await User.findBy('uuid', auth.user.uuid)
     summery.maxProjects = user.max_projects
-    console.log('user', user)
+
     if (user.projects()) {
-      let projects = await user.projects().getCount()
+      let projects = await user.projects().wherePivot('owner', true).getCount()
       summery.projects = projects
     } else {
       summery.projects = 0

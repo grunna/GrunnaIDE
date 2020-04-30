@@ -7,6 +7,7 @@ const fs = require('fs-extra')
 git.plugins.set('fs', fs)
 const User = use('App/Models/User')
 const Project = use('App/Models/Project')
+const ProjectUser = use('App/Models/ProjectUser')
 const Shared = use('./Shared')
 const shared = new Shared()
 
@@ -25,8 +26,9 @@ class ProjectController {
   }
 
   async getAllFiles({session, response, request, auth}) {
-    let user = await User.findBy('uuid', auth.user.uuid)
-    let project = await Database.select('name').table('projects').where('id', request.get().projectId).where('user_id', user.id).first()
+    let user = await User.find(auth.user.id)
+    let project = await user.projects().wherePivot('project_id', request.get().projectId).firstOrFail()
+
     session.put('currentProject', project.name)
     const tree = await shared.getTree(user.uuid, project.name)
     response.send(tree)
@@ -34,7 +36,7 @@ class ProjectController {
 
   async createProject({response, request, auth, session}) {
     let user = await User.findBy('uuid', auth.user.uuid)
-    let projects = await user.projects().fetch()
+    let projects = await user.projects().wherePivot('owner', true).fetch()
     if (user.max_projects <= projects.rows.length) {
       return response.notAcceptable('Cant create more projects')
     }
@@ -67,24 +69,28 @@ class ProjectController {
       })
     }
     if (createProject) {
+
       let project = new Project()
       project.name = request.post().projectName
       project.gitUrl = request.post().gitUrl
       project.gitUsername = request.post().gitUsername
-      project.user_id = user.id
+      // project.user_id = user.id
       project.owner = user.id
       project.docker_image = (acceptedDockerImages.includes(request.post().dockerImage) > 0) ? request.post().dockerImage : 'node:10'
-      await project.save()
+      await user.projects().save(project, (row) => {
+        row.owner = true
+        row.settings = JSON.stringify({})
+      })
       return response.send({ projectId: project.id })
     }
   }
 
   async removeProject({response, request, auth, session}) {
-    console.log('project', session.get('currentProject'))
-    let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
+    let user = await User.find(auth.user.id)
+    let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
 
     if (project) {
-      await project.delete()
+      await user.projects().where('name', session.get('currentProject')).delete()
       await fs.remove(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid +'/' + session.get('currentProject'))
         .then(() => {
         console.log('success')     
@@ -103,7 +109,8 @@ class ProjectController {
   }
 
   async changeDockerImage({response, request, auth, session}) {
-    let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
+    let user = await User.find(auth.user.id)
+    let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
 
     if (project) {
       if (acceptedDockerImages.includes(request.post().dockerImage) > 0) {
@@ -116,14 +123,30 @@ class ProjectController {
     return response.badRequest()
   }
 
-  async projectSettings({response, request, auth, session}) {
-    let project = await Project.query().where({name: session.get('currentProject'), user_id: auth.user.id}).firstOrFail()
+  async projectSettingsGet({session, response, request, auth}) {
+    let projectUser = await ProjectUser.query().where('user_id','=', auth.user.id).where('project_id','=', request.get().projectId).first()
+    if (projectUser.settings == null) {
+      projectUser.settings = {}
+    }
+    response.send(JSON.parse(projectUser.settings))
+  }
+
+  async projectSettingsPost({response, request, auth, session}) {
+    let user = await User.find(auth.user.id)
+    let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
+    let projectUser = await ProjectUser.query().where('user_id','=', auth.user.id).where('project_id','=', project.id).first()
 
     if (project) {
       if ((acceptedDockerImages.includes(request.post().dockerImage) > 0)) {
         project.docker_image = request.post().dockerImage
       }
       project.save()
+
+      let settingsData = JSON.stringify({ideTheme: request.post().ideTheme})
+      await user.projects().pivotQuery()
+        .where('project_id', project.id)
+        .update({ settings: settingsData })
+
       return response.ok()
     }
     return response.badRequest()
