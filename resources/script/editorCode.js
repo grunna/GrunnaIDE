@@ -22,8 +22,10 @@ $(function () {
       projectId: getQueryParams('project', window.location.href)
     },
     success: function (data) {
-      $('head').append('<link rel="stylesheet" type="text/css" href="/codemirror/theme/' + data.ideTheme +'.css">')
-      globalValues.codemirrorInstance.setOption('theme', data.ideTheme)
+      if (data.ideTheme) {
+        $('head').append('<link rel="stylesheet" type="text/css" href="/codemirror/theme/' + data.ideTheme +'.css">')
+        globalValues.codemirrorInstance.setOption('theme', data.ideTheme)
+      }
     }
   })
   
