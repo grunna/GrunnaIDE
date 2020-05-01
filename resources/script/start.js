@@ -131,6 +131,7 @@ function WsNotice() {
 function fileMenu() {
   $.contextMenu({
     selector: "#filetree span.fancytree-title",
+    zIndex: 1000,
     items: {
       "createDirectory": {
         name: "Create Directory", icon: "copy", callback: function(key, opt) {
