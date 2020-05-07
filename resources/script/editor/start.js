@@ -28,7 +28,6 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.js'
 import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
 
 (function () {
-	let ws = null;
   startWs();
   WsNotice();
   initFancyTree();
@@ -42,9 +41,9 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
   function startWs() {
     console.log('Start Ws');
 
-    ws = Ws().connect();
+    globalValues.ws = Ws().connect();
 
-    ws.on('open', () => {
+    globalValues.ws.on('open', () => {
       subscribeToOutputChannel();
       subscribeToTerminalChannel();
     }) 
@@ -115,7 +114,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
     let ws = Ws().connect();
     let error = false;
 
-    ws.on('open', () => {
+    globalValues.ws.on('open', () => {
       $('<div class="alert alert-success">' +
         '<button type="button" class="close" data-dismiss="alert">' +
         '&times;</button>Connected to Ws</div>').hide().appendTo('#alerts').fadeIn(1000);
@@ -128,7 +127,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
       error = false;
     })
 
-    ws.on('error', (event) => {
+    globalValues.ws.on('error', (event) => {
       if (!error) {
         $('<div class="alert alert-error">' +
           '<button type="button" class="close" data-dismiss="alert">' +

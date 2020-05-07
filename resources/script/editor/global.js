@@ -14,7 +14,8 @@ export var globalValues = {
   codemirrorInstance: null,
   codemirrorSettings: {},
   xterm: null,
-  xtermFitAddon: null
+  xtermFitAddon: null,
+  ws: null
 }
 
 export const getQueryParams = ( params, url ) => {

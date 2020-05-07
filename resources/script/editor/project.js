@@ -198,7 +198,7 @@ export function createNewDocker() {
 export function dockerAttach(amontLeft) {
   if (amontLeft > 0) {
     try {
-      ws.getSubscription('docker:terminal').emit('dockerAttach', { })
+      globalValues.ws.getSubscription('docker:terminal').emit('dockerAttach', { })
     } catch (e) {
       amontLeft--
       setTimeout(() => { dockerAttach(amontLeft) }, 1000)

@@ -29,7 +29,7 @@ export function docker() {
       var input = "";
       globalValues.xterm.onData(function(data) {
         const code = data.charCodeAt(0);
-        ws.getSubscription('docker:terminal').emit('dockerInput', {
+        globalValues.ws.getSubscription('docker:terminal').emit('dockerInput', {
           character: data
         })
       })
