@@ -1,6 +1,8 @@
 "use strict";
 
-$(function () {
+import {globalValues, getQueryParams} from './global.js'
+
+export function editorCode() {
 
   CodeMirror.modeURL = "/codemirror/mode/%N/%N.js";
   globalValues.codemirrorInstance = CodeMirror.fromTextArea(document.getElementById("allMyCode"), {
@@ -14,7 +16,7 @@ $(function () {
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
     showTrailingSpace: true,
   });
-  
+
   $.ajax({
     type: "GET",
     url: "/api/project/projectSettings",
@@ -28,13 +30,13 @@ $(function () {
       }
     }
   })
-  
+
 
   $(document).keydown(function(event) {
     if (event.ctrlKey && event.keyCode == 83) {
       event.preventDefault()
       //action here
-      
+
       $.ajax({
         type: 'POST',
         url: '/api/file/saveFile',
@@ -53,6 +55,5 @@ $(function () {
       })
     }
   });
-
-});
+}
 

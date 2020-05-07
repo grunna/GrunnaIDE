@@ -1,6 +1,12 @@
 "use strict";
 
-$(function() {
+import {globalValues} from './global.js'
+import { Terminal } from 'xterm';
+import 'xterm/css/xterm.css'
+import { FitAddon } from 'xterm-addon-fit';
+import { WebLinksAddon } from 'xterm-addon-web-links';
+
+export function docker() {
   var shellprompt = '$ ';
 
   window.addEventListener("resize", function () {
@@ -10,13 +16,15 @@ $(function() {
 
   $('#terminal-tab').on('shown.bs.tab', function () {
     if (!globalValues.xterm) {
+      console.log('test')
       let termContainer = document.getElementById('terminal-continer');
       globalValues.xterm = new Terminal({
         cursorBlink: true
       });
-      globalValues.xterm.open(termContainer);
       globalValues.xtermFitAddon = new FitAddon();
       globalValues.xterm.loadAddon(globalValues.xtermFitAddon);
+      globalValues.xterm.loadAddon(new WebLinksAddon());
+      globalValues.xterm.open(termContainer);
 
       var input = "";
       globalValues.xterm.onData(function(data) {
@@ -30,7 +38,6 @@ $(function() {
       globalValues.xterm.writeln(shellprompt);
     }
   })
-
-})
+}
 
 

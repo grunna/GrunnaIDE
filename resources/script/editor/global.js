@@ -1,9 +1,10 @@
 "use strict";
 
-var globalValues = {
+export var globalValues = {
   loadedProject: "",
   loadedFile: "",
   loadedFilePath: "",
+  fancyTree: null,
   currentFileTree: [],
   tempLoadedFile: "",
   tempLoadedFilePath: "",
@@ -16,7 +17,7 @@ var globalValues = {
   xtermFitAddon: null
 }
 
-const getQueryParams = ( params, url ) => {
+export const getQueryParams = ( params, url ) => {
 
   let href = url;
   //this expression is to get the query strings
@@ -25,7 +26,7 @@ const getQueryParams = ( params, url ) => {
   return queryString ? queryString[1] : null;
 };
 
-const allThemes = [
+export const allThemes = [
   '3024-day',
   '3024-night',
   'abcdef',

@@ -38,11 +38,20 @@ class Shared {
   }
 
   dockerConfig(image, binds, name, project) {
-    console.log('image: ', image)
     let docker_port = null
-    if (project.keep_docker_name) {
+    let docker_name = null
+    if (project.docker_name) {
       docker_port = project.docker_port
+    	if (project.docker_name) {
+        docker_name = project.docker_name
+      } else {
+    		docker_name = this.makeRandomString(5) + "-" + this.makeRandomString(5)
+      }
+    } else {
+      docker_name = this.makeRandomString(5) + "-" + this.makeRandomString(5)
     }
+    let traefikName = "traefik.http.routers." + docker_name + ".rule"
+    let traefikHost = "Host(`" + docker_name + ".ide.grunna.com`)"
     let config = {
       Image: image,
       Cmd: ['/bin/bash'],
@@ -56,6 +65,9 @@ class Shared {
       "ExposedPorts": {
         "8080/tcp": { }
       },
+      "Labels": {
+        traefikName: traefikHost
+      },
       "HostConfig": {
         "NetworkMode": Env.get('DOCKER_NETWORK'),
         "Binds": [
@@ -66,44 +78,54 @@ class Shared {
             {
               "HostPort": docker_port ? docker_port : "0"
             }
-              ]
-            },
-            "AutoRemove": true,
-            }
+          ]
+        },
+        "AutoRemove": true,
       }
-      return config
     }
-
-    getDirectorySize(auth) {
-      return new Promise((resolve, reject) => {
-        getSize(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', (err, size) => {
-          if (err) { 
-            reject(err) 
-          } else {
-            resolve(size)
-          }
-        });
-      });
-    }
-
-    async addValueStatistics(key, userId) {
-      await Statistic.findOrCreate(
-        { user_id: userId },
-        { user_id: userId, statistics: JSON.stringify({ key: 0 }) })
-        .then((data) => {
-        let stat = JSON.parse(data.statistics)
-        if (stat[key]) {
-          stat[key] = stat[key] + 1
-        } else {
-          stat[key] = 1
-        }
-        data.statistics = JSON.stringify(stat)
-        data.save()
-      })
-        .catch(err => {
-        console.log('err: ', err)
-      })
-    }
+    return config
   }
 
-  module.exports = Shared
+  makeRandomString(length) {
+    var result           = '';
+    var characters       = 'abcdefghijklmnopqrstuvwxyz';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
+  getDirectorySize(auth) {
+    return new Promise((resolve, reject) => {
+      getSize(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', (err, size) => {
+        if (err) { 
+          reject(err) 
+        } else {
+          resolve(size)
+        }
+      });
+    });
+  }
+
+  async addValueStatistics(key, userId) {
+    await Statistic.findOrCreate(
+      { user_id: userId },
+      { user_id: userId, statistics: JSON.stringify({ key: 0 }) })
+      .then((data) => {
+      let stat = JSON.parse(data.statistics)
+      if (stat[key]) {
+        stat[key] = stat[key] + 1
+      } else {
+        stat[key] = 1
+      }
+      data.statistics = JSON.stringify(stat)
+      data.save()
+    })
+      .catch(err => {
+      console.log('err: ', err)
+    })
+  }
+}
+
+module.exports = Shared

@@ -1,7 +1,6 @@
 "use strict";
 
-$(function () {
-  
+export function footer() {
   let sortedModeInfo = CodeMirror.modeInfo.slice().sort((a,b) => {
     const nameA = a.name.toUpperCase();
     const nameB = b.name.toUpperCase();
@@ -27,6 +26,4 @@ $(function () {
     let selectedMode = CodeMirror.findModeByName(modeName)
     setCurrentMode(selectedMode.mode, selectedMode.mime, modeName)
   })
-  
-
-});
+}

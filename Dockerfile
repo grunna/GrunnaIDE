@@ -3,6 +3,6 @@ USER root
 WORKDIR /app
 COPY . /app
 RUN npm install
-RUN npm run terser
+RUN npm run buildProd
 EXPOSE 8080
 CMD [ "node", "server.js" ]

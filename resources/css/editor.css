@@ -9,14 +9,14 @@
 }
 
 ul.fancytree-container {
-  border: 0px;
+  border: 0px !important;
 }
 
 ul.fancytree-container:focus {
-  outline: none;
+  outline: none !important;
 }
 
 .CodeMirror {
-  border: 1px solid #eee;
-  height: auto;
+  border: 1px solid #eee !important;
+  height: auto !important;
 }

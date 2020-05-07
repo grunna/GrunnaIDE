@@ -1,7 +1,8 @@
 "use strict";
 
-$(function () {
+import {inputSearchFilesListener} from './filestructure.js'
 
+export function navbar() {
   $('#run').on('click', function (e) {
     $.ajax({
       type: "POST",
@@ -146,6 +147,6 @@ $(function () {
 
   $('#menuOpenFindFileDialog').on('click', function (e) {
     $('#searchFilesModal').modal('show')
-    $('#inputSearchFiles').focus()
+    $('#searchFilesModal').focus()
   });
-});
+}
