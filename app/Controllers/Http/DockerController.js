@@ -81,7 +81,9 @@ class DockerController {
       return container.inspect()
     })
       .then(data => {
-      let displayName = data.Config.Labels.['traefik.http.routers.grunnaide.rule']
+      let displayLables = data.Config.Labels
+      console.log('displayLables', displayLables)
+      let displayName = displayLables['traefik.http.routers.grunnaide.rule']
       if (displayName) {
         sendToInfoChannel.write('Connect to: http://' + data.name + '.ide.grunna.com -> container 0.0.0.0:8080')
         project.docker_name = data.name
