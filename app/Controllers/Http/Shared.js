@@ -66,7 +66,7 @@ class Shared {
         "8080/tcp": { }
       },
       "Labels": {
-        traefikName: traefikHost
+        [traefikName]: traefikHost
       },
       "HostConfig": {
         "NetworkMode": Env.get('DOCKER_NETWORK'),
