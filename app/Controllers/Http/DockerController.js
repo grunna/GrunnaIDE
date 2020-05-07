@@ -82,11 +82,8 @@ class DockerController {
     })
       .then(data => {
       let displayLables = data.Config.Labels
-      console.log('displayLables', displayLables)
       let displayKey = Object.keys(displayLables)[0]
-      console.log('displayKey', displayKey)
       let displayName = displayLables[displayKey]
-      console.log('displayName', displayName)
       if (displayName) {
         sendToInfoChannel.write('Connect to: ' + displayName + ' -> container 0.0.0.0:8080')
         project.docker_name = data.name

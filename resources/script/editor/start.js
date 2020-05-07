@@ -50,7 +50,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
   }
 
   function subscribeToOutputChannel() {
-    const infoChannel = ws.subscribe('docker:infoChannel');
+    const infoChannel = globalValues.ws.subscribe('docker:infoChannel');
     console.log('infoChannel; ', infoChannel);
 
     infoChannel.on('output', (output) => {
@@ -60,7 +60,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
   }
 
   function subscribeToTerminalChannel() {
-    const terminalChannel = ws.subscribe('docker:terminal');
+    const terminalChannel = globalValues.ws.subscribe('docker:terminal');
     console.log('terminalChannel: ', terminalChannel);
 
     terminalChannel.on('terminal', (terminal) => {
