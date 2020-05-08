@@ -72,7 +72,7 @@ class DockerController {
       sendToInfoChannel.write('Cant pull image, probobly already excist: ' + project.docker_image)
     })
     let network = null
-    docker.getNetwork('traefik')
+    await docker.getNetwork('traefik')
       .then(net => {
         console.log('get network', net)
         network = net
