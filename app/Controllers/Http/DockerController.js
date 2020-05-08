@@ -71,14 +71,24 @@ class DockerController {
       console.log('Error pulling image:', err)
       sendToInfoChannel.write('Cant pull image, probobly already excist: ' + project.docker_image)
     })
+    let network = null
+    docker.getNetwork('traefik')
+      .then(net => {
+        console.log('get network', net)
+        network = net
+      })
+      .catch(err => {
+      console.log('Network err: ', err)
+    })
 
     console.log('CreateContainer')
     await docker.createContainer(dockerConfig)
-      .then(container => {
-        let network = docker.getNetwork('traefik')
-        return network.connect({Container: container});
+      .then(c => {
+        container = c
+        return network.connect({Container: c.id});
     })
       .then(data => {
+        console.log('data1', data)
         return container.start()
       })
       .then(data => {
