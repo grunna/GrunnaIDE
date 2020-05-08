@@ -50,7 +50,8 @@ class Shared {
     } else {
       docker_name = this.makeRandomString(5) + "-" + this.makeRandomString(5)
     }
-    let traefikName = "traefik.http.routers." + docker_name + ".rule"
+    let traefikRuleName = "traefik.http.routers." + docker_name + ".rule"
+    let traefikEntrypointsName = "traefik.http.routers." + docker_name + ".entrypoints"
     let traefikHost = "Host(`" + docker_name + ".ide.grunna.com`)"
     let config = {
       Image: image,
@@ -66,20 +67,15 @@ class Shared {
         "8080/tcp": { }
       },
       "Labels": {
-        [traefikName]: traefikHost
+        "traefik.docker.network": "traefik",
+        [traefikRuleName]: traefikHost,
+        [traefikEntrypointsName]: "web"
       },
       "HostConfig": {
         "NetworkMode": Env.get('DOCKER_NETWORK'),
         "Binds": [
           binds + ":/src"
         ],
-        "PortBindings": {
-          "8080/tcp": [
-            {
-              "HostPort": docker_port ? docker_port : "0"
-            }
-          ]
-        },
         "AutoRemove": true,
       }
     }

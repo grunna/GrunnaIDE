@@ -75,8 +75,12 @@ class DockerController {
     console.log('CreateContainer')
     await docker.createContainer(dockerConfig)
       .then(container => {
-      return container.start()
+        let network = docker.getNetwork('traefik')
+        return network.connect({Container: container});
     })
+      .then(data => {
+        return container.start()
+      })
       .then(data => {
       return container.inspect()
     })
