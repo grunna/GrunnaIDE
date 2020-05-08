@@ -98,7 +98,7 @@ class DockerController {
       return container.inspect()
     })
       .then(data => {
-        sendToInfoChannel.write('Connect to: <a href="' + docker_name + 'ide.grunna.com" target="_blank">' + docker_name + 'ide.grunna.com</a> -> container 0.0.0.0:8080')
+        sendToInfoChannel.write('Connect to: <a href="http://' + docker_name + '.ide.grunna.com" target="_blank">' + docker_name + 'ide.grunna.com</a> -> container 0.0.0.0:8080')
     })
       .catch(err => {
       console.log('err: ', err)
