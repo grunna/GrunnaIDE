@@ -98,14 +98,7 @@ class DockerController {
       return container.inspect()
     })
       .then(data => {
-      let displayLables = data.Config.Labels
-      let displayKey = Object.keys(displayLables)[0]
-      let displayName = displayLables[displayKey]
-      if (displayName) {
-        sendToInfoChannel.write('Connect to: <a href="' + docker_image + 'ide.grunna.com" target="_blank">' + docker_image + 'ide.grunna.com</a> -> container 0.0.0.0:8080')
-      } else {
-        sendToInfoChannel.write('Error connecting to host')
-      }
+        sendToInfoChannel.write('Connect to: <a href="' + docker_name + 'ide.grunna.com" target="_blank">' + docker_name + 'ide.grunna.com</a> -> container 0.0.0.0:8080')
     })
       .catch(err => {
       console.log('err: ', err)
