@@ -37,19 +37,7 @@ class Shared {
     }
   }
 
-  dockerConfig(image, binds, name, project) {
-    let docker_port = null
-    let docker_name = null
-    if (project.docker_name) {
-      docker_port = project.docker_port
-    	if (project.docker_name) {
-        docker_name = project.docker_name
-      } else {
-    		docker_name = this.makeRandomString(5) + "-" + this.makeRandomString(5)
-      }
-    } else {
-      docker_name = this.makeRandomString(5) + "-" + this.makeRandomString(5)
-    }
+  dockerConfig(image, binds, name, docker_name) {
     let traefikRuleName = "traefik.http.routers." + docker_name + ".rule"
     let traefikEntrypointsName = "traefik.http.routers." + docker_name + ".entrypoints"
     let traefikHost = "Host(`" + docker_name + ".ide.grunna.com`)"

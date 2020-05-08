@@ -55,12 +55,22 @@ class DockerController {
       console.log('createDocker: Container error -> ' + err)
     })
 
-
+    let docker_name = null
+    if (project.keep_docker_name) {
+    	if (project.docker_name) {
+        docker_name = project.docker_name
+      } else {
+    		docker_name = this.makeRandomString(5) + "-" + this.makeRandomString(5)
+        project.docker_name = docker_name
+      }
+    } else {
+      docker_name = this.makeRandomString(5) + "-" + this.makeRandomString(5)
+    }
 
     let dockerConfig = shared.dockerConfig(project.docker_image,
                                            path.resolve(projectPath),
                                            Env.get('DOCKER_NAME') + auth.user.id,
-                                           project) 
+                                           docker_name) 
 
     console.log('Pull docker image: ', project.docker_image)
     await docker.pull(project.docker_image)
@@ -92,15 +102,7 @@ class DockerController {
       let displayKey = Object.keys(displayLables)[0]
       let displayName = displayLables[displayKey]
       if (displayName) {
-        sendToInfoChannel.write('Connect to: ' + displayName + ' -> container 0.0.0.0:8080')
-        project.docker_name = data.name
-        const portBindings = Object.values(data.NetworkSettings.Ports)
-        portBindings.forEach(hosts => {
-          hosts.forEach(host => {
-            project.docker_port = host.HostPort
-            project.save()
-          })
-        })
+        sendToInfoChannel.write('Connect to: <a href="' + docker_image + 'ide.grunna.com" target="_blank">' + docker_image + 'ide.grunna.com</a> -> container 0.0.0.0:8080')
       } else {
         sendToInfoChannel.write('Error connecting to host')
       }
