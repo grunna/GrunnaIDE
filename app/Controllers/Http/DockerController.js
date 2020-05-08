@@ -60,11 +60,11 @@ class DockerController {
     	if (project.docker_name) {
         docker_name = project.docker_name
       } else {
-    		docker_name = this.makeRandomString(5) + "-" + this.makeRandomString(5)
+    		docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
         project.docker_name = docker_name
       }
     } else {
-      docker_name = this.makeRandomString(5) + "-" + this.makeRandomString(5)
+      docker_name = thsharedis.makeRandomString(5) + "-" + shared.makeRandomString(5)
     }
 
     let dockerConfig = shared.dockerConfig(project.docker_image,
