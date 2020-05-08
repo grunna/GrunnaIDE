@@ -1,7 +1,9 @@
 "use strict";
 
-$(function () {
+import {globalValues, allThemes} from './global.js'
+import {createTree} from './filestructure.js'
 
+export function project() {
   $('#create-project-form').on('submit', function (e) {
     // if the validator does not prevent form submit
 
@@ -14,7 +16,7 @@ $(function () {
       }).done((data) => {
         $('#createProjectDialog').modal('hide')
         globalValues.currentFileTree = data
-        $('#filetree').fancytree('getTree').reload(createTree(data))
+        globalValues.fancyTree.reload(createTree(data))
         createNewDocker()
       }).fail((data, textStatus, thrown) => {
         console.log('dataError', data)
@@ -153,7 +155,7 @@ $(function () {
       success: function (data) {
         $('#openProjectDialog').modal('hide');
         globalValues.currentFileTree = data
-        $('#filetree').fancytree('getTree').reload(createTree(data))
+        globalValues.fancyTree.reload(createTree(data))
         createNewDocker()
       }
     })
@@ -180,9 +182,9 @@ $(function () {
     setCodeMirrorData(globalValues.tempLoadedFile, globalValues.tempLoadedFilePath)
     $('#unsavedFileModal').modal('hide')
   })
-});
+}
 
-function createNewDocker() {
+export function createNewDocker() {
   $.ajax({
     type: 'POST',
     url: '/api/docker/createDocker',
@@ -193,10 +195,10 @@ function createNewDocker() {
   });
 }
 
-function dockerAttach(amontLeft) {
+export function dockerAttach(amontLeft) {
   if (amontLeft > 0) {
     try {
-      ws.getSubscription('docker:terminal').emit('dockerAttach', { })
+      globalValues.ws.getSubscription('docker:terminal').emit('dockerAttach', { })
     } catch (e) {
       amontLeft--
       setTimeout(() => { dockerAttach(amontLeft) }, 1000)
@@ -207,7 +209,7 @@ function dockerAttach(amontLeft) {
   }
 }
 
-function setCodeMirrorData(data, path) {
+export function setCodeMirrorData(data, path) {
   var val = path, m, mode, spec, name;
   if (m = /.+\.([^.]+)$/.exec(val)) {
     var info = CodeMirror.findModeByExtension(m[1]);
@@ -230,7 +232,7 @@ function setCodeMirrorData(data, path) {
   globalValues.loadedFilePath = path
 }
 
-function setCurrentMode(mode, spec, name) {
+export function setCurrentMode(mode, spec, name) {
   if (mode) {
     globalValues.codemirrorInstance.setOption("mode", spec)
     CodeMirror.autoLoadMode(globalValues.codemirrorInstance, mode)

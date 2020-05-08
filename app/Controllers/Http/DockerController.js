@@ -55,7 +55,22 @@ class DockerController {
       console.log('createDocker: Container error -> ' + err)
     })
 
-    let dockerConfig = shared.dockerConfig(project.docker_image, path.resolve(projectPath), Env.get('DOCKER_NAME') + auth.user.id, project) 
+    let docker_name = null
+    if (project.keep_docker_name) {
+    	if (project.docker_name) {
+        docker_name = project.docker_name
+      } else {
+    		docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
+        project.docker_name = docker_name
+      }
+    } else {
+      docker_name = thsharedis.makeRandomString(5) + "-" + shared.makeRandomString(5)
+    }
+
+    let dockerConfig = shared.dockerConfig(project.docker_image,
+                                           path.resolve(projectPath),
+                                           Env.get('DOCKER_NAME') + auth.user.id,
+                                           docker_name) 
 
     console.log('Pull docker image: ', project.docker_image)
     await docker.pull(project.docker_image)
@@ -66,25 +81,24 @@ class DockerController {
       console.log('Error pulling image:', err)
       sendToInfoChannel.write('Cant pull image, probobly already excist: ' + project.docker_image)
     })
+    
+    let network = docker.getNetwork('traefik')
 
     console.log('CreateContainer')
     await docker.createContainer(dockerConfig)
-      .then(container => {
-      return container.start()
+      .then(c => {
+        container = c
+        return network.connect({Container: c.id});
     })
+      .then(data => {
+        console.log('data1', data)
+        return container.start()
+      })
       .then(data => {
       return container.inspect()
     })
       .then(data => {
-      const portBindings = Object.values(data.NetworkSettings.Ports)
-      portBindings.forEach(hosts => {
-        hosts.forEach(host => {
-          sendToInfoChannel.write('Connect to: http://' + host.HostPort + '.ide.grunna.com:18088 -> container 0.0.0.0:8080')
-          project.docker_port = host.HostPort
-          project.save()
-        })
-      })
-
+        sendToInfoChannel.write('Connect to: <a href="http://' + docker_name + '.ide.grunna.com" target="_blank">' + docker_name + 'ide.grunna.com</a> -> container 0.0.0.0:8080')
     })
       .catch(err => {
       console.log('err: ', err)

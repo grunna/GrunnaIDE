@@ -5,30 +5,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <!-- Font Awesome JS -->
-  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
-    integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous">
-  </script>
-  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
-    integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous">
-  </script>
-
-  <!-- fancytree -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.32.0/skin-lion/ui.fancytree.css" rel="stylesheet">
-
   <!-- CodeMirror css -->
   {{ style('codemirror/lib/codemirror.css') }}
   {{ style('codemirror/addon/dialog/dialog.css') }}
   {{ style('codemirror/addon/fold/foldgutter.css') }}
   {{ style('codemirror/addon/hint/show-hint.css') }}
   {{ style('codemirror/addon/search/matchesonscrollbar.css') }}
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.1/jquery.contextMenu.min.css" />
-  {{ style('editor.css') }}
-  {{ style('xterm/xterm.css') }}
+    
   <title>
     Grunna IDE
   </title>
@@ -77,19 +60,7 @@
   </main>
   @include('editor.footer')
 
-  {{ script('https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js') }}
-  {{ script('https://unpkg.com/@adonisjs/websocket-client@1.0.9/dist/Ws.browser.js') }}
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-  </script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-  </script>
-  <!-- Fancytree js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.32.0/jquery.fancytree-all-deps.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.1/jquery.contextMenu.min.js"></script>
-  
-   <!-- CodeMirror JS -->
+  <!-- CodeMirror JS -->
   {{ script('codemirror/lib/codemirror.js') }}
   
   <!-- CodeMirror JS Addons -->
@@ -134,12 +105,8 @@
   {{ script('codemirror/mode/scheme/scheme.js') }}
   {{ script('codemirror/mode/yaml/yaml.js') }}
   -->
-  <!-- XTermJs -->
-  <script type="text/javascript" src="/xterm/xterm.js"></script>
-  <script>var exports = {};</script>
-  <script type="text/javascript" src="/xterm/FitAddon.js"></script>
-
-  {{ script('script/app.min.js') }}
+  
+  {{ script('script/editor.js') }}
 </body>
 
 </html>
