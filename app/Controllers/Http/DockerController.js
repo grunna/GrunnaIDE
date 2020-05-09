@@ -42,6 +42,7 @@ class DockerController {
     let container = docker.getContainer(Env.get('DOCKER_NAME') + auth.user.id)
     let user = await User.find(auth.user.id)
     console.log('currentProject', session.get('currentProject'))
+    console.log('allCookies', session.all())
     let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
 
     await container.stop()
