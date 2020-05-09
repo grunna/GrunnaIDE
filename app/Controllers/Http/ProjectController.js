@@ -29,6 +29,7 @@ class ProjectController {
     let user = await User.find(auth.user.id)
     let project = await user.projects().wherePivot('project_id', request.get().projectId).firstOrFail()
 
+    console.log('getAllfiles', project.name)
     session.put('currentProject', project.name)
     const tree = await shared.getTree(user.uuid, project.name)
     response.send(tree)

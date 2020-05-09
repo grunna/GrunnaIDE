@@ -78,6 +78,7 @@ class DockerController {
     console.log('Pull docker image: ', project.docker_image)
     await docker.pull(project.docker_image)
       .then(stream => {
+        console.log('docker_pull_then', stream)
       sendToInfoChannel.write(stream)
     })
       .catch(err => {
