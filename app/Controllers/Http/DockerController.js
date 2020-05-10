@@ -55,6 +55,7 @@ class DockerController {
       console.log('createDocker: Container error -> ' + err)
     })
 
+    console.log('create dockername')
     let docker_name = null
     if (project.keep_docker_name) {
     	if (project.docker_name) {
@@ -64,9 +65,10 @@ class DockerController {
         project.docker_name = docker_name
       }
     } else {
-      docker_name = thsharedis.makeRandomString(5) + "-" + shared.makeRandomString(5)
+      docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
     }
 
+    console.log('dockername', docker_name)
     let dockerConfig = shared.dockerConfig(project.docker_image,
                                            path.resolve(projectPath),
                                            Env.get('DOCKER_NAME') + auth.user.id,

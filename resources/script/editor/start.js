@@ -13,12 +13,12 @@ import "regenerator-runtime/runtime.js";
 import Ws from '@adonisjs/websocket-client'
 
 import {globalValues, getQueryParams} from './global.js'
-import {docker} from './docker.js'
 import {editorCode} from './editorCode.js'
 import {filestructure, inputSearchFilesListener, createTree, retriveFile} from './filestructure.js'
 import {footer} from './footer.js'
 import {navbar} from './navbar.js'
 import {project, createNewDocker} from './project.js'
+import {docker} from './docker.js'
 
 import('jquery.fancytree/dist/skin-lion/ui.fancytree.css');
 import {createTree as fancyTreeCreate} from 'jquery.fancytree';
