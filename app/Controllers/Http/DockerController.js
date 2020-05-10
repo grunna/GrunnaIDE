@@ -41,8 +41,6 @@ class DockerController {
 
     let container = docker.getContainer(Env.get('DOCKER_NAME') + auth.user.id)
     let user = await User.find(auth.user.id)
-    console.log('currentProject', session.get('currentProject'))
-    console.log('allCookies', session.all())
     let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
 
     await container.stop()
@@ -79,7 +77,6 @@ class DockerController {
     console.log('Pull docker image: ', project.docker_image)
     await docker.pull(project.docker_image)
       .then(stream => {
-        console.log('docker_pull_then', stream)
       sendToInfoChannel.write(stream)
     })
       .catch(err => {
