@@ -1,7 +1,30 @@
 "use strict";
 
-import {globalValues, allThemes} from './global.js'
+import {globalValues, allThemes, getQueryParams} from './global.js'
 import {createTree} from './filestructure.js'
+
+export function openProject() {
+  return new Promise((resolve, reject) => {
+    const projectId = getQueryParams('project', window.location.href)
+
+    $.ajax({
+      type: "GET",
+      url: "/api/project/getAllFiles",
+      data: {
+        projectId: projectId
+      },
+      success: function (data) {
+        $('#openProjectDialog').modal('hide');
+        globalValues.currentFileTree = data
+        globalValues.fancyTree.reload(createTree(data))
+        resolve()
+      },
+      error: function(error) {
+        reject(error)
+      }
+    })
+  })
+}
 
 export function project() {
   $('#create-project-form').on('submit', function (e) {
@@ -112,7 +135,7 @@ export function project() {
       }
     })
   })
-  
+
   $("#IDETheme").on('change', function(e){
     let test = $('link[href*="' + this.value +'.css"]');
     if (test.length === 0) {
@@ -121,7 +144,7 @@ export function project() {
     }
     globalValues.codemirrorInstance.setOption('theme', this.value)
   })
-  
+
   $('#project-settings-form').on('submit', function (e) {
     // if the validator does not prevent form submit
 
@@ -182,31 +205,6 @@ export function project() {
     setCodeMirrorData(globalValues.tempLoadedFile, globalValues.tempLoadedFilePath)
     $('#unsavedFileModal').modal('hide')
   })
-}
-
-export function createNewDocker() {
-  $.ajax({
-    type: 'POST',
-    url: '/api/docker/createDocker',
-    data: { },
-    success: function (data) {
-      dockerAttach(5)
-    }
-  });
-}
-
-export function dockerAttach(amontLeft) {
-  if (amontLeft > 0) {
-    try {
-      globalValues.ws.getSubscription('docker:terminal').emit('dockerAttach', { })
-    } catch (e) {
-      amontLeft--
-      setTimeout(() => { dockerAttach(amontLeft) }, 1000)
-    }
-  } else {
-    let addNewData = 'Error when attached to WS terminal' + '<br/>' 
-    $('#outputData').append(addNewData)
-  }
 }
 
 export function setCodeMirrorData(data, path) {
