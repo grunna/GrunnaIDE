@@ -11,7 +11,8 @@ We more then Welcome All the help we can get in all the areas, but we need you t
 
 ## Other thoughts
 
-This is very early so a lot of things isn't done or documented but we are working on that.
+All the code are at gitlab and is replicated over to github at the moment. I haven't decided if I should move over to github or not.
+This is very early but I have get the basic up and running so at the moment I will focus on adding new feature and clean up bad code. Documentation is another area that I haven't prioritazed yet.
 You can come to our [Discord server](https://discord.gg/4U5ZeMb) and have a chat how things are going. If you want to help that is a good starting point. Checking the issues are another good place to find out what is needed to be done 
 
 Hope you will like this project

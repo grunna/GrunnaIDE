@@ -17,8 +17,8 @@ import {editorCode} from './editorCode.js'
 import {filestructure, inputSearchFilesListener, createTree, retriveFile} from './filestructure.js'
 import {footer} from './footer.js'
 import {navbar} from './navbar.js'
-import {project, createNewDocker} from './project.js'
-import {docker} from './docker.js'
+import {project, openProject} from './project.js'
+import {docker, createNewDocker, dockerAttach} from './docker.js'
 
 import('jquery.fancytree/dist/skin-lion/ui.fancytree.css');
 import {createTree as fancyTreeCreate} from 'jquery.fancytree';
@@ -28,25 +28,34 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.js'
 import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
 
 (function () {
-  startWs();
-  WsNotice();
+  start()
   initFancyTree();
   fileMenu();
-  openProject();
-  docker();
   editorCode();
   filestructure();
   project();
 
+  async function start() {
+    await startWs()
+    await WsNotice()
+    await openProject()
+    await createNewDocker()
+    await docker()
+    await dockerAttach(5)
+  }
+
   function startWs() {
-    console.log('Start Ws');
+    return new Promise((resolve, reject) => {
+      console.log('Start Ws');
 
-    globalValues.ws = Ws().connect();
+      globalValues.ws = Ws().connect();
 
-    globalValues.ws.on('open', () => {
-      subscribeToOutputChannel();
-      subscribeToTerminalChannel();
-    }) 
+      globalValues.ws.on('open', () => {
+        subscribeToOutputChannel();
+        subscribeToTerminalChannel();
+      })
+      resolve()
+    })
   }
 
   function subscribeToOutputChannel() {
@@ -67,13 +76,40 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
       if (globalValues.xterm) {
         globalValues.xterm.write(terminal);
       }
-      $('#terminalOutput').append(terminal)
-      $('#terminalOutput').scrollTop($('#terminalOutput').prop('scrollHeight'))
+    })
+  }
+
+  function WsNotice() {
+    return new Promise((resolve, reject) => {
+      globalValues.ws.on('open', () => {
+        $('<div class="alert alert-success">' +
+          '<button type="button" class="close" data-dismiss="alert">' +
+          '&times;</button>Connected to Ws</div>').hide().appendTo('#alerts').fadeIn(1000);
+
+        $(".alert").delay(3000).fadeOut(
+          "normal",
+          function(){
+            $(this).alert('close')
+          });
+      })
+
+      globalValues.ws.on('error', (event) => {
+        $('<div class="alert alert-error">' +
+          '<button type="button" class="close" data-dismiss="alert">' +
+          '&times;</button>Error with connection to WS</div>').hide().appendTo('#alerts').fadeIn(1000);
+
+        $(".alert").delay(3000).fadeOut(
+          "normal",
+          function(){
+            $(this).alert('close')
+          });
+      })
+      resolve()
     })
   }
 
   function initFancyTree () {
-      globalValues.fancyTree = fancyTreeCreate('#filetree', {
+    globalValues.fancyTree = fancyTreeCreate('#filetree', {
       minExpandLevel: 2,
       autoScroll: true,
       clickFolderMode: 3,
@@ -89,57 +125,6 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
         hideZeros: true,
         hideExpanded: true
       },
-    })
-  }
-
-  function openProject() {
-    const projectId = getQueryParams('project', window.location.href)
-
-    $.ajax({
-      type: "GET",
-      url: "/api/project/getAllFiles",
-      data: {
-        projectId: projectId
-      },
-      success: function (data) {
-        $('#openProjectDialog').modal('hide');
-        globalValues.currentFileTree = data
-        globalValues.fancyTree.reload(createTree(data))
-        createNewDocker()
-      }
-    })
-  }
-
-  function WsNotice() {
-    let ws = Ws().connect();
-    let error = false;
-
-    globalValues.ws.on('open', () => {
-      $('<div class="alert alert-success">' +
-        '<button type="button" class="close" data-dismiss="alert">' +
-        '&times;</button>Connected to Ws</div>').hide().appendTo('#alerts').fadeIn(1000);
-
-      $(".alert").delay(3000).fadeOut(
-        "normal",
-        function(){
-          $(this).alert('close')
-        });
-      error = false;
-    })
-
-    globalValues.ws.on('error', (event) => {
-      if (!error) {
-        $('<div class="alert alert-error">' +
-          '<button type="button" class="close" data-dismiss="alert">' +
-          '&times;</button>Error with connection to WS</div>').hide().appendTo('#alerts').fadeIn(1000);
-
-        $(".alert").delay(3000).fadeOut(
-          "normal",
-          function(){
-            $(this).alert('close')
-          });
-        error = true;
-      }
     })
   }
 
@@ -253,9 +238,5 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
       })
     })
   }
+
 })()
-
-
-
-
-
