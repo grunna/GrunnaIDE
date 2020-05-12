@@ -22,6 +22,7 @@ export function docker() {
           cursorBlink: true
         });
         globalValues.xtermFitAddon = new FitAddon();
+        console.log('xtermFitAddon', globalValues.xtermFitAddon)
         globalValues.xterm.loadAddon(globalValues.xtermFitAddon);
         globalValues.xterm.loadAddon(new WebLinksAddon());
         globalValues.xterm.open(termContainer);

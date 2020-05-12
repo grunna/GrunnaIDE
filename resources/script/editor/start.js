@@ -1,6 +1,7 @@
 "use strict";
 
-import '@fortawesome/fontawesome-free'
+import '@fortawesome/fontawesome-free/js/all.min.js'
+import '@fortawesome/fontawesome-free/css/all.min.css'
 
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
