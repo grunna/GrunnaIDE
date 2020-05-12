@@ -91,7 +91,7 @@ export function inputSearchFilesListener() {
   let addedItems = 0
   if (value.length >= 1) {
     let addToList = (path, name) => {
-      if (addedItems < 1000) {
+      if (addedItems < 5000) {
         let retriveFileListener = (event) => {
           const path = $(event.currentTarget).attr('data-path')
           retriveFile(path)
@@ -134,8 +134,10 @@ export function inputSearchFilesListener() {
         }
       }
     }
+    console.time("searchFile")
     printArray(globalValues.currentFileTree)
     $('#listOfSearchFiles').append(container)
+    console.timeEnd("searchFile")
   }
   $('#searchFilesResults').text(addedItems + ' files found')
 }
