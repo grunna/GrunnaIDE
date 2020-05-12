@@ -87,24 +87,26 @@ export function createTree(array) {
 export function inputSearchFilesListener() {
   let value = $('#inputSearchFiles').val()
   $('#listOfSearchFiles').empty()
+  let container = document.createDocumentFragment();
   let addedItems = 0
   if (value.length >= 1) {
     let addToList = (path, name) => {
-      if (addedItems < 50) { 
+      if (addedItems < 1000) {
+        let retriveFileListener = (event) => {
+          const path = $(event.currentTarget).attr('data-path')
+          retriveFile(path)
+          $('#searchFilesModal').modal('hide')
+          let node = globalValues.fancyTree.getNodeByKey(path);
+          node.setActive(true)
+        }
         let modeLink = document.createElement('a')
         modeLink.setAttribute('data-path', path)
         modeLink.innerHTML = name + '<br/><small>' + path + '</small>'
         modeLink.classList.add("dropdown-item")
         modeLink.style.overflow = "hidden";
         modeLink.style.textOverflow = "ellipsis";
-        modeLink.addEventListener("click", function(event) {
-          const path = $(event.currentTarget).attr('data-path')
-          retriveFile(path)
-          $('#searchFilesModal').modal('hide')
-          let node = globalValues.fancyTree.getNodeByKey(path);
-          node.setActive(true)
-        })
-        $('#listOfSearchFiles').append(modeLink)
+        modeLink.addEventListener("click", retriveFileListener)
+        container.appendChild(modeLink)
       }
       addedItems = addedItems + 1
 
@@ -133,6 +135,7 @@ export function inputSearchFilesListener() {
       }
     }
     printArray(globalValues.currentFileTree)
+    $('#listOfSearchFiles').append(container)
   }
   $('#searchFilesResults').text(addedItems + ' files found')
 }
