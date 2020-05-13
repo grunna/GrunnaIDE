@@ -25,6 +25,7 @@ export function filestructure() {
   $('#searchFilesModal').on('shown.bs.modal', function (e) {
     $('#inputSearchFiles').on('input', inputSearchFilesListener)
     $('#inputSearchFiles').focus()
+    $('#inputSearchFiles').select()
   })
   $('#searchFilesModal').on('hide.bs.modal', (e) => {
     $('#inputSearchFiles').off('input')
@@ -124,7 +125,7 @@ export function inputSearchFilesListener() {
             if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
               addToList(arr[i].path, arr[i].name)
             }
-            printArray(arr[i].children);
+            printArray(arr[i].children)
           } else {
             if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
               addToList(arr[i].path, arr[i].name)
@@ -136,7 +137,7 @@ export function inputSearchFilesListener() {
           if (arr.name.toLowerCase().includes(value.toLowerCase())) {
             addToList(arr.path, arr.name)
           }
-          printArray(arr.children);
+          printArray(arr.children)
         }
       }
     }
