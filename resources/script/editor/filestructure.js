@@ -96,7 +96,7 @@ export function inputSearchFilesListener() {
   let container = document.createDocumentFragment();
   let addedItems = 0
   if (value.length >= 1) {
-    $('#searchFilesResults').addClass('spinner-border')
+    $('#searchFilesResults').addClass('spinner-border spinner-border-sm')
     let addToList = (path, name) => {
       if (addedItems < 5000) {
         let retriveFileListener = (event) => {
@@ -123,26 +123,26 @@ export function inputSearchFilesListener() {
         for (var i = 0; i < arr.length; i++) {
           if (arr[i].children) {
             if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
-              setTimeout(addToList(arr[i].path, arr[i].name),0)
+              setTimeout(addToList(arr[i].path, arr[i].name),1)
             }
             printArray(arr[i].children);
           } else {
             if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
-              setTimeout(addToList(arr[i].path, arr[i].name), 0)
+              setTimeout(addToList(arr[i].path, arr[i].name), 1)
             }
           }
         }
       } else {
         if (arr.children) {
           if (arr.name.toLowerCase().includes(value.toLowerCase())) {
-            setTimeout(addToList(arr.path, arr.name), 0)
+            setTimeout(addToList(arr.path, arr.name), 1)
           }
           printArray(arr.children);
         }
       }
     }
     printArray(globalValues.currentFileTree)
-    $('#searchFilesResults').removeClass('spinner-border')
+    $('#searchFilesResults').removeClass('spinner-border spinner-border-sm')
     $('#listOfSearchFiles').append(container)
     $('#searchFilesResults').text(addedItems + ' files found')
   }
