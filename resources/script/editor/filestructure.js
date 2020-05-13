@@ -123,19 +123,19 @@ export function inputSearchFilesListener() {
         for (var i = 0; i < arr.length; i++) {
           if (arr[i].children) {
             if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
-              setTimeout(addToList(arr[i].path, arr[i].name),1)
+              setTimeout(() => addToList(arr[i].path, arr[i].name),1)
             }
             printArray(arr[i].children);
           } else {
             if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
-              setTimeout(addToList(arr[i].path, arr[i].name), 1)
+              setTimeout(() => addToList(arr[i].path, arr[i].name), 1)
             }
           }
         }
       } else {
         if (arr.children) {
           if (arr.name.toLowerCase().includes(value.toLowerCase())) {
-            setTimeout(addToList(arr.path, arr.name), 1)
+            setTimeout(() => addToList(arr.path, arr.name), 1)
           }
           printArray(arr.children);
         }
