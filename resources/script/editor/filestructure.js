@@ -26,6 +26,11 @@ export function filestructure() {
     $('#inputSearchFiles').on('input', inputSearchFilesListener)
     $('#inputSearchFiles').focus()
   })
+  $('#searchFilesModal').on('hide.bs.modal', (e) => {
+    $('#inputSearchFiles').off('input')
+  })
+
+
 }
 
 export function retriveFile(path) {
@@ -87,58 +92,65 @@ export function createTree(array) {
 export function inputSearchFilesListener() {
   let value = $('#inputSearchFiles').val()
   $('#listOfSearchFiles').empty()
+  $('#searchFilesResults').text('')
   let container = document.createDocumentFragment();
   let addedItems = 0
   if (value.length >= 1) {
-    let addToList = (path, name) => {
-      if (addedItems < 5000) {
-        let retriveFileListener = (event) => {
-          const path = $(event.currentTarget).attr('data-path')
-          retriveFile(path)
-          $('#searchFilesModal').modal('hide')
-          let node = globalValues.fancyTree.getNodeByKey(path);
-          node.setActive(true)
+    $('#searchFilesResults').addClass('spinner-border')
+    let runStuff = () => new Promise((resolve, reject) => {
+      let addToList = (path, name) => {
+        if (addedItems < 5000) {
+          let retriveFileListener = (event) => {
+            const path = $(event.currentTarget).attr('data-path')
+            retriveFile(path)
+            $('#searchFilesModal').modal('hide')
+            let node = globalValues.fancyTree.getNodeByKey(path);
+            node.setActive(true)
+          }
+          let modeLink = document.createElement('a')
+          modeLink.setAttribute('data-path', path)
+          modeLink.innerHTML = name + '<br/><small>' + path + '</small>'
+          modeLink.classList.add("dropdown-item")
+          modeLink.style.overflow = "hidden";
+          modeLink.style.textOverflow = "ellipsis";
+          modeLink.addEventListener("click", retriveFileListener)
+          container.appendChild(modeLink)
         }
-        let modeLink = document.createElement('a')
-        modeLink.setAttribute('data-path', path)
-        modeLink.innerHTML = name + '<br/><small>' + path + '</small>'
-        modeLink.classList.add("dropdown-item")
-        modeLink.style.overflow = "hidden";
-        modeLink.style.textOverflow = "ellipsis";
-        modeLink.addEventListener("click", retriveFileListener)
-        container.appendChild(modeLink)
-      }
-      addedItems = addedItems + 1
+        addedItems = addedItems + 1
 
-    }
-    let printArray = function(arr) {
-      if (Array.isArray(arr)) {
-        for (var i = 0; i < arr.length; i++) {
-          if (arr[i].children) {
-            if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
-              addToList(arr[i].path, arr[i].name)
-            }
-            printArray(arr[i].children);
-          } else {
-            if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
-              addToList(arr[i].path, arr[i].name)
+      }
+      let printArray = function(arr) {
+        if (Array.isArray(arr)) {
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].children) {
+              if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
+                addToList(arr[i].path, arr[i].name)
+              }
+              printArray(arr[i].children);
+            } else {
+              if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
+                addToList(arr[i].path, arr[i].name)
+              }
             }
           }
-        }
-      } else {
-        if (arr.children) {
-          if (arr.name.toLowerCase().includes(value.toLowerCase())) {
-            addToList(arr.path, arr.name)
+        } else {
+          if (arr.children) {
+            if (arr.name.toLowerCase().includes(value.toLowerCase())) {
+              addToList(arr.path, arr.name)
+            }
+            printArray(arr.children);
           }
-          printArray(arr.children);
         }
       }
-    }
-    console.time("searchFile")
-    printArray(globalValues.currentFileTree)
-    $('#listOfSearchFiles').append(container)
-    console.timeEnd("searchFile")
+      printArray(globalValues.currentFileTree)
+      resolve(container)
+    })
+    runStuff()
+    .then(data => {
+      $('#searchFilesResults').removeClass('spinner-border')
+      $('#listOfSearchFiles').append(container)
+      $('#searchFilesResults').text(addedItems + ' files found')
+    })
   }
-  $('#searchFilesResults').text(addedItems + ' files found')
 }
 
