@@ -1,6 +1,6 @@
 "use strict";
 
-import {globalValues} from './global.js'
+import {globalValues, processLargeArrayAsync} from './global.js'
 import {setCodeMirrorData} from './project.js'
 
 export function filestructure() {
@@ -25,7 +25,13 @@ export function filestructure() {
   $('#searchFilesModal').on('shown.bs.modal', function (e) {
     $('#inputSearchFiles').on('input', inputSearchFilesListener)
     $('#inputSearchFiles').focus()
+    $('#inputSearchFiles').select()
   })
+  $('#searchFilesModal').on('hide.bs.modal', (e) => {
+    $('#inputSearchFiles').off('input')
+  })
+
+
 }
 
 export function retriveFile(path) {
@@ -87,24 +93,27 @@ export function createTree(array) {
 export function inputSearchFilesListener() {
   let value = $('#inputSearchFiles').val()
   $('#listOfSearchFiles').empty()
+  $('#searchFilesResults').text('')
+  let container = document.createDocumentFragment();
   let addedItems = 0
   if (value.length >= 1) {
     let addToList = (path, name) => {
-      if (addedItems < 50) { 
+      if (addedItems < 500) {
+        let retriveFileListener = (event) => {
+          const path = $(event.currentTarget).attr('data-path')
+          retriveFile(path)
+          $('#searchFilesModal').modal('hide')
+          let node = globalValues.fancyTree.getNodeByKey(path);
+          node.setActive(true)
+        }
         let modeLink = document.createElement('a')
         modeLink.setAttribute('data-path', path)
         modeLink.innerHTML = name + '<br/><small>' + path + '</small>'
         modeLink.classList.add("dropdown-item")
         modeLink.style.overflow = "hidden";
         modeLink.style.textOverflow = "ellipsis";
-        modeLink.addEventListener("click", function(event) {
-          const path = $(event.currentTarget).attr('data-path')
-          retriveFile(path)
-          $('#searchFilesModal').modal('hide')
-          let node = globalValues.fancyTree.getNodeByKey(path);
-          node.setActive(true)
-        })
-        $('#listOfSearchFiles').append(modeLink)
+        modeLink.addEventListener("click", retriveFileListener)
+        container.appendChild(modeLink)
       }
       addedItems = addedItems + 1
 
@@ -116,7 +125,7 @@ export function inputSearchFilesListener() {
             if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
               addToList(arr[i].path, arr[i].name)
             }
-            printArray(arr[i].children);
+            printArray(arr[i].children)
           } else {
             if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
               addToList(arr[i].path, arr[i].name)
@@ -128,12 +137,13 @@ export function inputSearchFilesListener() {
           if (arr.name.toLowerCase().includes(value.toLowerCase())) {
             addToList(arr.path, arr.name)
           }
-          printArray(arr.children);
+          printArray(arr.children)
         }
       }
     }
     printArray(globalValues.currentFileTree)
+    $('#listOfSearchFiles').append(container)
+    $('#searchFilesResults').text(addedItems + ' files found')
   }
-  $('#searchFilesResults').text(addedItems + ' files found')
 }
 
