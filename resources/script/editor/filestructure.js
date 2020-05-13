@@ -1,6 +1,6 @@
 "use strict";
 
-import {globalValues} from './global.js'
+import {globalValues, processLargeArrayAsync} from './global.js'
 import {setCodeMirrorData} from './project.js'
 
 export function filestructure() {
@@ -97,60 +97,54 @@ export function inputSearchFilesListener() {
   let addedItems = 0
   if (value.length >= 1) {
     $('#searchFilesResults').addClass('spinner-border')
-    let runStuff = () => new Promise((resolve, reject) => {
-      let addToList = (path, name) => {
-        if (addedItems < 5000) {
-          let retriveFileListener = (event) => {
-            const path = $(event.currentTarget).attr('data-path')
-            retriveFile(path)
-            $('#searchFilesModal').modal('hide')
-            let node = globalValues.fancyTree.getNodeByKey(path);
-            node.setActive(true)
-          }
-          let modeLink = document.createElement('a')
-          modeLink.setAttribute('data-path', path)
-          modeLink.innerHTML = name + '<br/><small>' + path + '</small>'
-          modeLink.classList.add("dropdown-item")
-          modeLink.style.overflow = "hidden";
-          modeLink.style.textOverflow = "ellipsis";
-          modeLink.addEventListener("click", retriveFileListener)
-          container.appendChild(modeLink)
+    let addToList = (path, name) => {
+      if (addedItems < 5000) {
+        let retriveFileListener = (event) => {
+          const path = $(event.currentTarget).attr('data-path')
+          retriveFile(path)
+          $('#searchFilesModal').modal('hide')
+          let node = globalValues.fancyTree.getNodeByKey(path);
+          node.setActive(true)
         }
-        addedItems = addedItems + 1
+        let modeLink = document.createElement('a')
+        modeLink.setAttribute('data-path', path)
+        modeLink.innerHTML = name + '<br/><small>' + path + '</small>'
+        modeLink.classList.add("dropdown-item")
+        modeLink.style.overflow = "hidden";
+        modeLink.style.textOverflow = "ellipsis";
+        modeLink.addEventListener("click", retriveFileListener)
+        container.appendChild(modeLink)
+      }
+      addedItems = addedItems + 1
 
-      }
-      let printArray = function(arr) {
-        if (Array.isArray(arr)) {
-          for (var i = 0; i < arr.length; i++) {
-            if (arr[i].children) {
-              if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
-                addToList(arr[i].path, arr[i].name)
-              }
-              printArray(arr[i].children);
-            } else {
-              if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
-                addToList(arr[i].path, arr[i].name)
-              }
+    }
+    let printArray = function(arr) {
+      if (Array.isArray(arr)) {
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i].children) {
+            if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
+              setTimeout(addToList(arr[i].path, arr[i].name),0)
             }
-          }
-        } else {
-          if (arr.children) {
-            if (arr.name.toLowerCase().includes(value.toLowerCase())) {
-              addToList(arr.path, arr.name)
+            printArray(arr[i].children);
+          } else {
+            if (arr[i].name.toLowerCase().includes(value.toLowerCase())) {
+              setTimeout(addToList(arr[i].path, arr[i].name), 0)
             }
-            printArray(arr.children);
           }
         }
+      } else {
+        if (arr.children) {
+          if (arr.name.toLowerCase().includes(value.toLowerCase())) {
+            setTimeout(addToList(arr.path, arr.name), 0)
+          }
+          printArray(arr.children);
+        }
       }
-      printArray(globalValues.currentFileTree)
-      resolve(container)
-    })
-    runStuff()
-    .then(data => {
-      $('#searchFilesResults').removeClass('spinner-border')
-      $('#listOfSearchFiles').append(container)
-      $('#searchFilesResults').text(addedItems + ' files found')
-    })
+    }
+    printArray(globalValues.currentFileTree)
+    $('#searchFilesResults').removeClass('spinner-border')
+    $('#listOfSearchFiles').append(container)
+    $('#searchFilesResults').text(addedItems + ' files found')
   }
 }
 
