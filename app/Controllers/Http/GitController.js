@@ -1,6 +1,7 @@
 'use strict'
 
 const git = require('isomorphic-git')
+const http = require('isomorphic-git/http/node')
 const PATH = require('path')
 const Env = use('Env')
 const fs = require('fs')
@@ -15,7 +16,7 @@ class GitController {
 
   async fetch({session, response, request, auth}) {
     console.log('test: ', Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'))
-    await git.fetch({dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), username: request.post().username, password: request.post().password})
+    await git.fetch({fs, http, dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), username: request.post().username, password: request.post().password})
       .then(fetchData => {
       return response.ok(fetchData)
     })
@@ -32,7 +33,7 @@ class GitController {
   async status({session, response, request, auth}) {
     let returnData = {}
     returnData.stage = []
-    let listFiles = await git.listFiles({dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject')})
+    let listFiles = await git.listFiles({fs, dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject')})
     for (let i = 0; i < listFiles.length; i++) {
       await git.status({
         dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), 
@@ -51,7 +52,7 @@ class GitController {
 
   async pull({session, response, request, auth}) {
     try {
-      await git.pull({dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), username: request.post().username, password: request.post().password})
+      await git.pull({fs, http, dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), username: request.post().username, password: request.post().password})
       return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
     } catch (error) {
       console.log(error)
@@ -64,13 +65,15 @@ class GitController {
   }
 
   async add({session, response, request, auth}) {
-    await git.add({ dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), filepath: request.post().file })
+    await git.add({ fs, http, dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), filepath: request.post().file })
       .then(() => response.ok())
       .catch(error => response.badRequest(error))
   }
 
   async commit({session, response, request, auth}) {
     let sha = await git.commit({
+      fs,
+      http,
       dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'),
       author: {
         name: '',
@@ -83,7 +86,7 @@ class GitController {
     }
 
   async push({session, response, request, auth}) {
-    await git.push({dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), username: request.post().username, password: request.post().password})
+    await git.push({ fs, http, dir: Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/' + session.get('currentProject'), username: request.post().username, password: request.post().password})
       .then(pushResponse => {
       console.log('pushResponse: ', pushResponse)
       if (pushResponse.error) {

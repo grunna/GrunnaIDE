@@ -6,14 +6,14 @@ const Hash = use('Hash')
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-const uuid = use('uuid/v4')
+const { v4: uuidv4 } = require('uuid');
 
 class User extends Model {
   static boot () {
     super.boot()
 
     this.addHook('beforeCreate', async (userInstance) => {
-      userInstance.uuid = uuid()
+      userInstance.uuid = uuidv4()
     })
     
     /**

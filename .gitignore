@@ -18,3 +18,7 @@ database/*.sqlite
 
 # Testing directory
 gitTest
+
+# Public that is generated when building
+public/fonts/*
+
