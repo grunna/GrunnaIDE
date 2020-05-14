@@ -2,9 +2,9 @@
 
 const Database = use('Database')
 const Env = use('Env')
-const git = require('isomorphic-git');
+const git = require('isomorphic-git')
+const http = require('isomorphic-git/http/node')
 const fs = require('fs-extra')
-git.plugins.set('fs', fs)
 const User = use('App/Models/User')
 const Project = use('App/Models/Project')
 const ProjectUser = use('App/Models/ProjectUser')
@@ -36,7 +36,8 @@ class ProjectController {
   }
 
   async createProject({response, request, auth, session}) {
-    let user = await User.findBy('uuid', auth.user.uuid)
+    try {
+    let user = await User.find(auth.user.id)
     let projects = await user.projects().wherePivot('owner', true).fetch()
     if (user.max_projects <= projects.rows.length) {
       return response.notAcceptable('Cant create more projects')
@@ -51,7 +52,7 @@ class ProjectController {
     }
     let createProject = false
     if (request.post().gitUrl) {
-      await git.clone({dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
+      await git.clone({fs, http, dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
         .then(() => {
         console.log('Project created' + request.post().projectName)
         createProject = true
@@ -83,6 +84,10 @@ class ProjectController {
         row.settings = JSON.stringify({})
       })
       return response.send({ projectId: project.id })
+    }
+    }catch (e) {
+      console.log('log', e)
+      esponse.badRequest()
     }
   }
 

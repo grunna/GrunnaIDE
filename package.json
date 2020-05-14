@@ -34,18 +34,17 @@
     "@adonisjs/session": "^1.0.29",
     "@adonisjs/shield": "^1.0.8",
     "@adonisjs/websocket": "^1.0.11",
-    "codemirror": "^5.52.0",
     "crypto-js": "^4.0.0",
     "directory-tree": "^2.2.3",
-    "dockerode": "^2.5.8",
-    "fs-extra": "^8.1.0",
+    "dockerode": "^3.2.0",
+    "fs-extra": "^9.0.0",
     "get-folder-size": "^2.0.1",
-    "isomorphic-git": "^0.57.1",
+    "isomorphic-git": "^1.4.0",
     "mysql": "^2.17.1",
     "promise": "^8.1.0",
     "sqlite3": "^4.2.0",
-    "strip-ansi": "^5.2.0",
-    "uuid": "^3.3.3"
+    "strip-ansi": "^6.0.0",
+    "uuid": "^8.0.0"
   },
   "devDependencies": {
     "@adonisjs/websocket-client": "^1.0.9",
@@ -55,11 +54,13 @@
     "@babel/preset-env": "^7.9.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "babel-loader": "^8.1.0",
-    "bootstrap": "^4.4.1",
+    "bootstrap": "^4.5.0",
+    "codemirror": "^5.53.0",
+    "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.5.3",
     "file-loader": "^6.0.0",
-    "jquery": "^3.5.0",
-    "jquery-contextmenu": "^2.9.0",
+    "jquery": "^3.5.1",
+    "jquery-contextmenu": "^2.9.2",
     "jquery-ui": "^1.12.1",
     "jquery.fancytree": "^2.35.0",
     "mini-css-extract-plugin": "^0.9.0",
@@ -69,9 +70,9 @@
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
     "worker-loader": "^2.0.0",
-    "xterm": "^4.4.0",
-    "xterm-addon-fit": "^0.3.0",
-    "xterm-addon-web-links": "^0.3.0"
+    "xterm": "^4.6.0",
+    "xterm-addon-fit": "^0.4.0",
+    "xterm-addon-web-links": "^0.4.0"
   },
   "autoload": {
     "App": "./app"
