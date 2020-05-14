@@ -2,6 +2,7 @@
 
 import {globalValues, allThemes, getQueryParams} from './global.js'
 import {createTree} from './filestructure.js'
+import {createNewDocker} from './docker.js'
 
 export function openProject() {
   return new Promise((resolve, reject) => {
