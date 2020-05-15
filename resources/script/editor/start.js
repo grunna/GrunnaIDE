@@ -136,7 +136,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
       items: {
         "createDirectory": {
           name: "Create Directory", icon: "copy", callback: function(key, opt) {
-            var node = globalValues.fancyTree.getNode(opt.$trigger);
+            var node = $.ui.fancytree.getNode(opt.$trigger);
             globalValues.postData = {}
             globalValues.postData.fromDirectory = node.key
             $('#createDirectoryModalInput').val('')
@@ -145,7 +145,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
         },
         "createFile": {
           name: "Create file", icon: "copy", callback: function(key, opt) {
-            var node = globalValues.fancyTree.getNode(opt.$trigger);
+            var node = $.ui.fancytree.getNode(opt.$trigger);
             globalValues.postData = {}
             globalValues.postData.fromDirectory = node.key
             $('#createFileModal').modal('show')
@@ -153,7 +153,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
         },
         "rename": {
           name: "Rename", icon: "copy", callback: function(key, opt) {
-            var node = globalValues.fancyTree.getNode(opt.$trigger)
+            var node = $.ui.fancytree.getNode(opt.$trigger)
             globalValues.postData = {}
             globalValues.postData.fromDirectory = node.key
             $('#renameModalInput').val(node.key)
@@ -162,7 +162,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
         },
         "delete": {
           name: "Delete", icon: "trash", callback: function(key, opt) {
-            var node = globalValues.fancyTree.getNode(opt.$trigger);
+            var node = $.ui.fancytree.getNode(opt.$trigger);
             globalValues.postData = {}
             globalValues.postData.fileOrDirectory = node.key
 
