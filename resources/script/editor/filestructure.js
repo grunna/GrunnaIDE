@@ -10,7 +10,7 @@ export function filestructure() {
       url: "/api/file/reloadFileTree",
       success: function (data) {
         globalValues.currentFileTree = data
-        $('#filetree').fancytree('getTree').reload(createTree(data))
+        globalValues.fancyTree.reload(createTree(data))
       }
     })
   });

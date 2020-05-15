@@ -221,6 +221,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
           data: globalValues.postData,
           success: (data) => {
             globalValues.fancyTree.reload(createTree(data))
+            globalValues.loadedFilePath = globalValues.postData.newName
           }
         })
       }
