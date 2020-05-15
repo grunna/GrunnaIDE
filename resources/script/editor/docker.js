@@ -12,7 +12,9 @@ export function docker() {
 
     window.addEventListener("resize", function () {
       document.getElementById('terminal-continer').style.height = "100%";
-      globalValues.xtermFitAddon.fit()    
+      if (globalValues.xtermFitAddon) {
+        globalValues.xtermFitAddon.fit() 
+      }
     });
 
     $('#terminal-tab').on('shown.bs.tab', function () {
