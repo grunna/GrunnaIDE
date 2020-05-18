@@ -61,18 +61,17 @@ class DockerController {
     	if (project.docker_name) {
         docker_name = project.docker_name
       } else {
-    		docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
-        project.docker_name = docker_name
+    		project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
       }
     } else {
-      docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
+      project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
     }
 
-    console.log('dockername', docker_name)
+    console.log('dockername', project.docker_name)
     let dockerConfig = shared.dockerConfig(project.docker_image,
                                            path.resolve(projectPath),
                                            Env.get('DOCKER_NAME') + auth.user.id,
-                                           docker_name) 
+                                           project.docker_name) 
 
     console.log('Pull docker image: ', project.docker_image)
     await docker.pull(project.docker_image)
@@ -100,7 +99,7 @@ class DockerController {
       return container.inspect()
     })
       .then(data => {
-        sendToInfoChannel.write('Connect to: <a href="http://' + docker_name + '.ide.grunna.com" target="_blank">' + docker_name + 'ide.grunna.com</a> -> container 0.0.0.0:8080')
+        sendToInfoChannel.write('Connect to: <a href="http://' + project.docker_name + '.ide.grunna.com" target="_blank">' + docker_name + 'ide.grunna.com</a> -> container 0.0.0.0:8080')
     })
       .catch(err => {
       console.log('err: ', err)
