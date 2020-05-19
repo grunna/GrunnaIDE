@@ -58,13 +58,11 @@ class DockerController {
     console.log('create dockername')
     let docker_name = null
     if (project.keep_docker_name) {
-      console.log('keep_docker')
     	if (project.docker_name === null) {
-        console.log('no dockername', project.docker_name)
     		project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
+        await project.save()
       }
     } else {
-      console.log('do not keep docker name')
       project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
     }
 
