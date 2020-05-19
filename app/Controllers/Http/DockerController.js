@@ -58,12 +58,13 @@ class DockerController {
     console.log('create dockername')
     let docker_name = null
     if (project.keep_docker_name) {
-    	if (project.docker_name) {
-        docker_name = project.docker_name
-      } else {
+      console.log('keep_docker')
+    	if (project.docker_name === null) {
+        console.log('no dockername', project.docker_name)
     		project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
       }
     } else {
+      console.log('do not keep docker name')
       project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
     }
 
@@ -99,7 +100,7 @@ class DockerController {
       return container.inspect()
     })
       .then(data => {
-        sendToInfoChannel.write('Connect to: <a href="http://' + project.docker_name + '.ide.grunna.com" target="_blank">' + docker_name + 'ide.grunna.com</a> -> container 0.0.0.0:8080')
+        sendToInfoChannel.write('Connect to: <a href="http://' + project.docker_name + '.ide.grunna.com" target="_blank">' + project.docker_name + '.ide.grunna.com</a> -> container 0.0.0.0:8080')
     })
       .catch(err => {
       console.log('err: ', err)
