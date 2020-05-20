@@ -1,5 +1,7 @@
 "use strict";
 
+import {setCurrentMode} from './project.js'
+
 export function footer() {
   let sortedModeInfo = CodeMirror.modeInfo.slice().sort((a,b) => {
     const nameA = a.name.toUpperCase();
