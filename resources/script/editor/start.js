@@ -30,11 +30,12 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
 
 (function () {
   start()
-  initFancyTree();
-  fileMenu();
-  editorCode();
-  filestructure();
-  project();
+  initFancyTree()
+  fileMenu()
+  editorCode()
+  filestructure()
+  project()
+  footer()
 
   async function start() {
     await startWs()
