@@ -44,7 +44,7 @@
     "promise": "^8.1.0",
     "sqlite3": "^4.2.0",
     "strip-ansi": "^6.0.0",
-    "uuid": "^8.0.0"
+    "uuid": "^8.1.0"
   },
   "devDependencies": {
     "@adonisjs/websocket-client": "^1.0.9",
@@ -55,7 +55,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "babel-loader": "^8.1.0",
     "bootstrap": "^4.5.0",
-    "codemirror": "^5.53.0",
+    "codemirror": "^5.54.0",
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.5.3",
     "file-loader": "^6.0.0",

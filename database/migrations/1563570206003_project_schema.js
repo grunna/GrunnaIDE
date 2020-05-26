@@ -2,7 +2,6 @@
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
-const uuid = use('uuid/v4')
 
 class ProjectSchema extends Schema {
   up () {
@@ -13,7 +12,6 @@ class ProjectSchema extends Schema {
       table.string('name', 255).notNullable()
       table.string('gitUrl', 1024)
       table.string('gitUsername', 100)
-      table.integer('user_id').unsigned().references('id').inTable('users')
       table.integer('owner').notNullable()
       table.string('docker_image').defaultTo('node:10')
     })

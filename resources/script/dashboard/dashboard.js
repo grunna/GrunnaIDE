@@ -46,7 +46,7 @@ import 'popper.js'
         $('#createProjectImageSelect').empty()
         data.forEach(project => {
           $('#createProjectImageSelect').append(
-            '<option value="' + project + '"' + (project.includes(projectBtn) ? ' selected="selected"' : '') + '>' + project + '</option>'
+            '<option value="' + project.name + '"' + (project.name.includes(projectBtn) ? ' selected="selected"' : '') + '>' + project.description + '</option>'
           )
         })
       }
