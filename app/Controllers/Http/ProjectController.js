@@ -73,13 +73,14 @@ class ProjectController {
       })
     }
     if (createProject) {
-
+			let images = await DockerImage.all()
+      
       let project = new Project()
       project.name = request.post().projectName
       project.gitUrl = request.post().gitUrl
       project.gitUsername = request.post().gitUsername
       project.owner = user.id
-      project.docker_image = (acceptedDockerImages.includes(request.post().dockerImage) > 0) ? request.post().dockerImage : 'node:10'
+      project.docker_image = (images.rows.some(image => image.name === request.post().dockerImage)) ? request.post().dockerImage : 'node:10'
       await user.projects().save(project, (row) => {
         row.owner = true
         row.settings = JSON.stringify({})
@@ -127,7 +128,8 @@ class ProjectController {
     let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
 
     if (project) {
-      if (acceptedDockerImages.includes(request.post().dockerImage) > 0) {
+      let images = await DockerImage.all()
+      if (images.rows.some(image => image.name === request.post().dockerImage)) {
         project.docker_image = request.post().dockerImage
         return response.ok()
       } else {
@@ -158,7 +160,8 @@ class ProjectController {
     let projectUser = await ProjectUser.query().where('user_id','=', auth.user.id).where('project_id','=', project.id).first()
 
     if (project) {
-      if ((acceptedDockerImages.includes(request.post().dockerImage) > 0)) {
+      let images = await DockerImage.all()
+      if (images.rows.some(image => image.name === request.post().dockerImage)) {
         project.docker_image = request.post().dockerImage
       }
       project.save()
