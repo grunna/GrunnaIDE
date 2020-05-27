@@ -114,7 +114,7 @@ export function project() {
       success: function (data) {
         $('#createProjectImageSelect').empty()
         data.forEach(project => {
-          $('#createProjectImageSelect').append('<option value="' + project + '">' + project + '</option>')
+          $('#createProjectImageSelect').append('<option value="' + project.name + '">' + project.description + '</option>')
         })
       }
     })
@@ -131,7 +131,7 @@ export function project() {
       success: function (data) {
         $('#projectSettingsImageSelect').empty()
         data.forEach(project => {
-          $('#projectSettingsImageSelect').append('<option value="' + project + '">' + project + '</option>')
+          $('#projectSettingsImageSelect').append('<option value="' + project.name + '">' + project.description + '</option>')
         })
       }
     })

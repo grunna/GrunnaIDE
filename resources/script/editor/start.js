@@ -34,6 +34,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
   fileMenu()
   editorCode()
   filestructure()
+  navbar()
   project()
   footer()
 

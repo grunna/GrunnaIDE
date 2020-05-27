@@ -1,6 +1,7 @@
 "use strict";
 
 import {inputSearchFilesListener} from './filestructure.js'
+import {saveFile} from './editorCode.js'
 
 export function navbar() {
   $('#run').on('click', function (e) {
@@ -149,4 +150,9 @@ export function navbar() {
     $('#searchFilesModal').modal('show')
     $('#searchFilesModal').focus()
   });
+  
+  $('#menuSaveFile').on('click', function (e) {
+    saveFile()
+  });
+  
 }

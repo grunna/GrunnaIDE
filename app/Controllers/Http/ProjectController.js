@@ -8,10 +8,12 @@ const fs = require('fs-extra')
 const User = use('App/Models/User')
 const Project = use('App/Models/Project')
 const ProjectUser = use('App/Models/ProjectUser')
+const DockerImage = use('App/Models/DockerImage')
+const Template = use('App/Models/Template')
 const Shared = use('./Shared')
 const shared = new Shared()
-
-const acceptedDockerImages = ['node:10', 'node:12', 'node:13', 'openjdk:8', 'openjdk:11.0', 'golang:1.13', 'python:3.8', 'ruby:2.7', 'mono:6.8']
+const InitDbValues = require('../../../database/InitialValues')
+const initDbValues = new InitDbValues()
 
 class ProjectController {
 
@@ -71,14 +73,14 @@ class ProjectController {
       })
     }
     if (createProject) {
-
+			let images = await DockerImage.all()
+      
       let project = new Project()
       project.name = request.post().projectName
       project.gitUrl = request.post().gitUrl
       project.gitUsername = request.post().gitUsername
-      // project.user_id = user.id
       project.owner = user.id
-      project.docker_image = (acceptedDockerImages.includes(request.post().dockerImage) > 0) ? request.post().dockerImage : 'node:10'
+      project.docker_image = (images.rows.some(image => image.name === request.post().dockerImage)) ? request.post().dockerImage : 'node:10'
       await user.projects().save(project, (row) => {
         row.owner = true
         row.settings = JSON.stringify({})
@@ -111,7 +113,14 @@ class ProjectController {
   }
 
   async listAllAvailibleImages({response, auth, session}) {
-    return response.ok(acceptedDockerImages)
+    let images = await DockerImage.all()
+    if (images.rows.length === 0) {
+      await initDbValues.dockerImages()
+    }
+    images = await DockerImage.all()
+    let returnImages = []
+    images.rows.forEach(image => { returnImages.push({ name: image.name, description: image.description}) })
+    return response.ok(returnImages)
   }
 
   async changeDockerImage({response, request, auth, session}) {
@@ -119,7 +128,8 @@ class ProjectController {
     let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
 
     if (project) {
-      if (acceptedDockerImages.includes(request.post().dockerImage) > 0) {
+      let images = await DockerImage.all()
+      if (images.rows.some(image => image.name === request.post().dockerImage)) {
         project.docker_image = request.post().dockerImage
         return response.ok()
       } else {
@@ -127,6 +137,13 @@ class ProjectController {
       }
     }
     return response.badRequest()
+  }
+  
+  async template({ response, request, auth }) {
+    const allTemplate = Template.all()
+    if (allTemplate.rows.length === 0) {
+      await initDbValues.templates()
+    }
   }
 
   async projectSettingsGet({session, response, request, auth}) {
@@ -143,7 +160,8 @@ class ProjectController {
     let projectUser = await ProjectUser.query().where('user_id','=', auth.user.id).where('project_id','=', project.id).first()
 
     if (project) {
-      if ((acceptedDockerImages.includes(request.post().dockerImage) > 0)) {
+      let images = await DockerImage.all()
+      if (images.rows.some(image => image.name === request.post().dockerImage)) {
         project.docker_image = request.post().dockerImage
       }
       project.save()
@@ -157,6 +175,7 @@ class ProjectController {
     }
     return response.badRequest()
   }
+  
 }
 
 module.exports = ProjectController
