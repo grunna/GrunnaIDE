@@ -10,7 +10,7 @@ class FileController {
 
   async downloadFile({request, response, auth}) {
     let path = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fileName
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, path)) {
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', path)) {
       return response.badRequest('error in path')
     }
     await fs.readFile(path, 'utf8')
@@ -26,7 +26,7 @@ class FileController {
 
   async saveFile({request, response, auth}) {
     let path = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fileName
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, path)) {
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', path)) {
       return response.badRequest('error in path')
     }
     await fs.outputFile(path, request.post().data)
@@ -45,7 +45,7 @@ class FileController {
 
   async createFile({session, request, response, auth}) {
     let newPath = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fromDirectory + '/' + request.post().newFile
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newPath)) {
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', newPath)) {
       return response.badRequest('error in path')
     }
     await fs.ensureFile(newPath)
@@ -58,7 +58,7 @@ class FileController {
 
   async createDirectory({session, request, response, auth}) {
     let newPath = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fromDirectory + '/' + request.post().newDirectory
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newPath)) {
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', newPath)) {
       return response.badRequest('error in path')
     }
     await fs.mkdir(newPath)
@@ -71,11 +71,11 @@ class FileController {
 
   async rename({session, request, response, auth}) {
     let oldName = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fromDirectory
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, oldName)) {
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', oldName)) {
       return response.badRequest('error in path')
     }
     let newName = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().newName
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newName)) {
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', newName)) {
       return response.badRequest('error in path')
     }
     await fs.rename(oldName, newName, (err) => {
@@ -89,7 +89,7 @@ class FileController {
   async deleteFileDirectory({session, request, response, auth}) {
     let deletePath = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fileOrDirectory
     console.log('path: ', deletePath)
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, deletePath)) {
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', deletePath)) {
       return response.badRequest('error in path: ', request.post().fileOrDirectory)
     }
     await fs.remove(deletePath)
@@ -98,6 +98,28 @@ class FileController {
       return response.badRequest(err)
     })
     await shared.addValueStatistics('deleteFileDirectory', auth.user.id)
+    return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
+  }
+
+  async upload({session, request, response, auth}) {
+    let uploadPath = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().uploadFilePath
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', uploadPath)) {
+      return response.badRequest('error in path')
+    }
+    const files = request.file('files', {
+      size: '5mb'
+    })
+
+    await files.moveAll(uploadPath, (file) => {
+      return {
+        overwrite: true
+      }
+    })
+    
+    if (!files.movedAll()) {
+      return files.errors()
+    }
+    await shared.addValueStatistics('filesUploaded', auth.user.id)
     return response.ok(await shared.getTree(auth.user.uuid, session.get('currentProject')))
   }
 }

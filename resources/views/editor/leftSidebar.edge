@@ -12,6 +12,17 @@
   </div>
 </div>
 
+<div class="modal fade" id="createFileModal" tabindex="-1" role="dialog" aria-labelledby="openCreateFileModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <label for="createFileModalInput">New File:</label>
+        <input type="text" class="form-control" id="createFileModalInput" aria-describedby="createFileHelp" placeholder="File name">
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="unsavedFileModal" tabindex="-1" role="dialog" aria-labelledby="unsavedFileModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -29,13 +40,22 @@
   </div>
 </div>
 
-<div class="modal fade" id="createFileModal" tabindex="-1" role="dialog" aria-labelledby="openCreateFileModalLabel" aria-hidden="true">
+<div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="openUploadFileModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-body">
-        <label for="createFileModalInput">New File:</label>
-        <input type="text" class="form-control" id="createFileModalInput" aria-describedby="createFileHelp" placeholder="File name">
-      </div>
+      <form method="POST" id="uploadFileForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <label for="createFileModalInput">Upload files:</label>
+          <div class="custom-file">
+            <input type="file" id="myfiles" name="files[]" multiple>
+            <input type="hidden" id="uploadFilePath" name="uploadFilePath" value="">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="uploadFileBtn">Upload</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -78,7 +98,7 @@
         <input type="text" class="form-control" id="inputSearchFiles" aria-describedby="searchFiles" placeholder="Search files and directories">
         <small id="searchFilesResults" style="padding-left: 10px">0 files found</small>
         <div id="listOfSearchFiles" style="max-height: 500px; overflow: auto;">
-          
+
         </div>
       </div>
     </div>

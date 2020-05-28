@@ -153,6 +153,14 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
             $('#createFileModal').modal('show')
           }
         },
+        "upload": {
+          name: "Upload", icon: "copy", callback: function(key, opt) {
+            var node = $.ui.fancytree.getNode(opt.$trigger);
+						$('#myfiles').val('')
+            $('#uploadFilePath').val(node.folder ? node.key : node.parent.key)
+            $('#uploadFileModal').modal('show')
+          }
+        },
         "rename": {
           name: "Rename", icon: "copy", callback: function(key, opt) {
             var node = $.ui.fancytree.getNode(opt.$trigger)

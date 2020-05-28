@@ -31,6 +31,30 @@ export function filestructure() {
     $('#inputSearchFiles').off('input')
   })
 
+  $('#uploadFileBtn').on('click', function (e) {
+    let form_data = new FormData();
+
+    // Read selected files
+    var totalfiles = document.getElementById('myfiles').files.length;
+    for (var index = 0; index < totalfiles; index++) {
+      form_data.append("files[]", document.getElementById('myfiles').files[index]);
+    }
+    form_data.append("uploadFilePath", document.getElementById('uploadFilePath').value)
+
+    // AJAX request
+    $.ajax({
+      url: '/api/file/upload', 
+      type: 'post',
+      data: form_data,
+      dataType: 'json',
+      contentType: false,
+      processData: false,
+      success: function (data) {
+        globalValues.fancyTree.reload(createTree(data))
+        $('#uploadFileModal').modal('hide')
+      }
+    });
+  })
 
 }
 
@@ -48,7 +72,7 @@ export function retriveFile(path) {
       } else {
         globalValues.tempLoadedFile = data
         globalValues.tempLoadedFilePath = path
-        $('#unsavedFileModal').modal('show') 
+        $('#unsavedFileModal').modal('show')
       }
     }
   });
