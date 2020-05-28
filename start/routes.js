@@ -51,6 +51,7 @@ Route.group(() => {
   Route.post('/file/rename', 'FileController.rename')
   Route.delete('/file/deleteFileDirectory', 'FileController.deleteFileDirectory')
   Route.get('/file/reloadFileTree', 'FileController.reloadFileTree')
+  Route.post('/file/upload', 'FileController.upload')
 
   Route.post('/docker/createDocker', 'DockerController.createDocker')
   Route.post('/docker/compile', 'DockerController.compileCode')

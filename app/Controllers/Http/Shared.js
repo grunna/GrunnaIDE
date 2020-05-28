@@ -92,16 +92,16 @@ class Shared {
     });
   }
 
-  async addValueStatistics(key, userId) {
+  async addValueStatistics(key, userId, amountToAdd = 1) {
     await Statistic.findOrCreate(
       { user_id: userId },
       { user_id: userId, statistics: JSON.stringify({ key: 0 }) })
       .then((data) => {
       let stat = JSON.parse(data.statistics)
       if (stat[key]) {
-        stat[key] = stat[key] + 1
+        stat[key] = stat[key] + amountToAdd
       } else {
-        stat[key] = 1
+        stat[key] = amountToAdd
       }
       data.statistics = JSON.stringify(stat)
       data.save()
