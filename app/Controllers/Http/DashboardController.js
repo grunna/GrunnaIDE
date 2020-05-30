@@ -10,6 +10,7 @@ class DashboardController {
   
   async summery({response, request, auth}) {
     let summery = { projects: 0, maxProjects: 0, directorySize: 0, statistics: {saveTimes: 0, reloadFileTree: 0, filesDownloaded: 0, fileCreated: 0, deleteFileDirectory: 0}}
+    console.log('summery_auth', auth.user)
     let user = await User.findBy('uuid', auth.user.uuid)
     summery.maxProjects = user.max_projects
 
