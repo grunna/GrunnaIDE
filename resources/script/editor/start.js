@@ -44,7 +44,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
     await openProject()
     await createNewDocker()
     await docker()
-    await dockerAttach(5)
+    //await dockerAttach(5)
   }
 
   function startWs() {
@@ -74,6 +74,14 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
         globalValues.xterm.write(terminal);
       }
     })
+    
+    dockerChannel.on('dockerCommands' , (data) => {
+      if (data === 'dockerAttach') {
+        dockerAttach(5)
+      }
+    })
+    
+    dockerChannel.on('dockerCreated', )
 
   }
 
