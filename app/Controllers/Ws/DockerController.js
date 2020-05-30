@@ -126,11 +126,11 @@ class DockerController {
     })
       .then(data => {
       	this.socket.emit('output', 'Connect to: <a href="http://' + project.docker_name + '.ide.grunna.com" target="_blank">' + project.docker_name + '.ide.grunna.com</a> -> container 0.0.0.0:8080')
-    		this.socket.emit('dockerCommand', 'dockerAttach')
     })
       .catch(err => {
       console.log('err: ', err)
     })
+    this.socket.emit('dockerCommand', 'dockerAttach')
   }
 
   async onDockerAttach() {

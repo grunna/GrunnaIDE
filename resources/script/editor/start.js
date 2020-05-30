@@ -75,7 +75,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
       }
     })
     
-    dockerChannel.on('dockerCommands' , (data) => {
+    dockerChannel.on('dockerCommand' , (data) => {
       if (data === 'dockerAttach') {
         dockerAttach(5)
       }
