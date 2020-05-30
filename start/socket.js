@@ -15,7 +15,7 @@
 
 const Ws = use('Ws')
 
-Ws.channel('docker:*', 'DockerController').middleware(['auth'])
+Ws.channel('docker', 'DockerController').middleware(['auth'])
 
 /* Ws.channel('chat', ({ socket }) => {
   console.log('user joined with %s socket id', socket.id)

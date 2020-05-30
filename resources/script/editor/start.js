@@ -54,32 +54,27 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
       globalValues.ws = Ws().connect();
 
       globalValues.ws.on('open', () => {
-        subscribeToOutputChannel();
-        subscribeToTerminalChannel();
+        subscribeToDockerChannel();
+        resolve()
       })
-      resolve()
     })
   }
 
-  function subscribeToOutputChannel() {
-    const infoChannel = globalValues.ws.subscribe('docker:infoChannel');
-    console.log('infoChannel; ', infoChannel);
+  function subscribeToDockerChannel() {
+    const dockerChannel = globalValues.ws.subscribe('docker');
+    console.log('dockerChannel; ', dockerChannel);
 
-    infoChannel.on('output', (output) => {
+    dockerChannel.on('output', (output) => {
       let addNewData = output + '<br/>' 
       $('#outputData').append(addNewData)
     })
-  }
-
-  function subscribeToTerminalChannel() {
-    const terminalChannel = globalValues.ws.subscribe('docker:terminal');
-    console.log('terminalChannel: ', terminalChannel);
-
-    terminalChannel.on('terminal', (terminal) => {
+    
+    dockerChannel.on('terminal', (terminal) => {
       if (globalValues.xterm) {
         globalValues.xterm.write(terminal);
       }
     })
+
   }
 
   function WsNotice() {

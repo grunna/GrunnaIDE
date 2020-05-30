@@ -32,7 +32,7 @@ export function docker() {
         var input = "";
         globalValues.xterm.onData(function(data) {
           const code = data.charCodeAt(0);
-          globalValues.ws.getSubscription('docker:terminal').emit('dockerInput', {
+          globalValues.ws.getSubscription('docker').emit('dockerInput', {
             character: data
           })
         })
@@ -47,17 +47,13 @@ export function docker() {
 
 export function createNewDocker() {
   return new Promise((resolve, reject) => {
-    $.ajax({
-      type: 'POST',
-      url: '/api/docker/createDocker',
-      data: { },
-      success: function (data) {
-        resolve()
-      },
-      error: function(error) {
-        reject(error)
-      }
-    });
+    try {
+      globalValues.ws.getSubscription('docker').emit('dockerCreate', { })
+      resolve()
+    } catch (e) {
+      console.log('Error create docker', e)
+      reject('Error create docker')
+    }
   })
 }
 
@@ -66,7 +62,7 @@ export function dockerAttach(amountLeft) {
     let attachToDocker = (leftToRun) => {
       if (leftToRun > 0) {
         try {
-          globalValues.ws.getSubscription('docker:terminal').emit('dockerAttach', { })
+          globalValues.ws.getSubscription('docker').emit('dockerAttach', { })
           resolve()
         } catch (e) {
           leftToRun--

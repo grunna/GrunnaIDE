@@ -24,6 +24,7 @@ Route.on('/welcome').render('welcome').middleware('guest')
 Route.get('login/github', 'LoginController.redirect').as('login.github')
 if (NODE_ENV !== 'production') {
   Route.get('login/loginDev', 'LoginController.loginDev').as('login.loginDev')
+  Route.get('login/loginDev2', 'LoginController.loginDev2').as('login.loginDev2')
 }
 Route.get('github/callback', 'LoginController.callback').as('github.callback')
 
@@ -52,9 +53,6 @@ Route.group(() => {
   Route.delete('/file/deleteFileDirectory', 'FileController.deleteFileDirectory')
   Route.get('/file/reloadFileTree', 'FileController.reloadFileTree')
   Route.post('/file/upload', 'FileController.upload')
-
-  Route.post('/docker/createDocker', 'DockerController.createDocker')
-  Route.post('/docker/compile', 'DockerController.compileCode')
 
   Route.post('/git/fetch', 'GitController.fetch')
   Route.post('/git/status', 'GitController.status')
