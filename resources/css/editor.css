@@ -16,6 +16,11 @@ ul.fancytree-container:focus {
   outline: none !important;
 }
 
+.tabCross {
+  display: block;
+  font-size: smaller;
+}
+
 .CodeMirror {
   border: 1px solid #eee !important;
   height: auto !important;

@@ -5,6 +5,7 @@ const fs = require('fs-extra')
 const Shared = require('./Shared')
 const shared = new Shared()
 const Database = use('Database')
+const sha256 = require('crypto-js/sha256')
 
 class FileController {
 
@@ -115,7 +116,7 @@ class FileController {
         overwrite: true
       }
     })
-    
+
     if (!files.movedAll()) {
       return files.errors()
     }
