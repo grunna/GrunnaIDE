@@ -96,6 +96,9 @@ function displayFileInCodeEditor(data, path, fromTab) {
     }
     let removeFileTab = (event) => {
       event.stopPropagation()
+      if ($('#fileTabs li').length <= 1) {
+      	return
+      }
       let currentTab = $(event.currentTarget).closest('li')
       let tabBefore = currentTab.prev()
       let tabNext = currentTab.next()
