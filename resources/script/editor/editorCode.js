@@ -42,14 +42,14 @@ export function editorCode() {
 }
 
 export function saveFile() {
-  if (JSON.parse(window.localStorage.getItem(globalValues.loadedFilePath))?.hash !== sha256(globalValues.codemirrorInstance.getValue()).toString()) {
+  if (JSON.parse(window.sessionStorage.getItem(globalValues.loadedFilePath))?.hash !== sha256(globalValues.codemirrorInstance.getValue()).toString()) {
     $.ajax({
       type: 'POST',
       url: '/api/file/saveFile',
       data: { fileName: globalValues.loadedFilePath, data: globalValues.codemirrorInstance.getValue(), oldHash: JSON.parse(window.localStorage.getItem(globalValues.loadedFilePath))?.hash },
       success: (data) => {
         globalValues.loadedFile = globalValues.codemirrorInstance.getValue()
-        window.localStorage.setItem(globalValues.loadedFilePath, JSON.stringify({data: globalValues.loadedFile, hash: sha256(globalValues.loadedFile).toString()}))
+        window.sessionStorage.setItem(globalValues.loadedFilePath, JSON.stringify({data: globalValues.loadedFile, hash: sha256(globalValues.loadedFile).toString()}))
       }
     })
 

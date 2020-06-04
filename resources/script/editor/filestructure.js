@@ -61,14 +61,14 @@ export function filestructure() {
 
 export function retriveFile(path, fromTab = false) {
   if (fromTab) {
-    displayFileInCodeEditor(JSON.parse(window.localStorage.getItem(path))?.data, path, fromTab)
+    displayFileInCodeEditor(JSON.parse(window.sessionStorage.getItem(path))?.data, path, fromTab)
   } else {
     $.ajax({
       type: 'POST',
       url: '/api/file/downloadFile',
       data: {
         fileName: path,
-        hash: JSON.parse(window.localStorage.getItem(path))?.hash
+        hash: JSON.parse(window.sessionStorage.getItem(path))?.hash
       },
       success: (data) => {
         if (globalValues.codemirrorInstance.getValue() === globalValues.loadedFile || globalValues.loadedFile === '') {
@@ -85,7 +85,7 @@ export function retriveFile(path, fromTab = false) {
 
 function displayFileInCodeEditor(data, path, fromTab) {
   setCodeMirrorData(data, path)
-  window.localStorage.setItem(path, JSON.stringify({data: data, hash: sha256(data).toString()}))
+  window.sessionStorage.setItem(path, JSON.stringify({data: data, hash: sha256(data).toString()}))
   if (!fromTab) {
     let retriveFileListener = (event) => {
       const path = $(event.currentTarget).attr('data-path')

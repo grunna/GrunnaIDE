@@ -39,55 +39,55 @@ class ProjectController {
 
   async createProject({response, request, auth, session}) {
     try {
-    let user = await User.find(auth.user.id)
-    let projects = await user.projects().wherePivot('owner', true).fetch()
-    if (user.max_projects <= projects.rows.length) {
-      return response.notAcceptable('Cant create more projects')
-    }
-    let projectExcist = projects.rows.filter(project => project.name.toLowerCase() === request.post().projectName.toLowerCase())
-    if (projectExcist.length > 0) {
-      return response.notAcceptable('Project name already used')
-    }
-    let newPath = Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newPath)) {
-      return response.badRequest('error in path')
-    }
-    let createProject = false
-    if (request.post().gitUrl) {
-      await git.clone({fs, http, dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
-        .then(() => {
-        console.log('Project created' + request.post().projectName)
-        createProject = true
-      })
-        .catch((error) => {
-        console.log('error', error)
-        return response.unauthorized() 
-      })
-    } else {
-      await fs.mkdir(newPath, { recursive: true })
-        .then(() => {
-        createProject = true
-      })
-        .catch((err) => {
-        return response.badRequest(err)
-      })
-    }
-    if (createProject) {
-			let images = await DockerImage.all()
-      
-      let project = new Project()
-      project.name = request.post().projectName
-      project.gitUrl = request.post().gitUrl
-      project.gitUsername = request.post().gitUsername
-      project.owner = user.id
-      project.docker_image = (images.rows.some(image => image.name === request.post().dockerImage)) ? request.post().dockerImage : 'node:10'
-      await user.projects().save(project, (row) => {
-        row.owner = true
-        row.settings = JSON.stringify({})
-      })
-      return response.send({ projectId: project.id })
-    }
-    }catch (e) {
+      let user = await User.find(auth.user.id)
+      let projects = await user.projects().wherePivot('owner', true).fetch()
+      if (user.max_projects <= projects.rows.length) {
+        return response.notAcceptable('Cant create more projects')
+      }
+      let projectExcist = projects.rows.filter(project => project.name.toLowerCase() === request.post().projectName.toLowerCase())
+      if (projectExcist.length > 0) {
+        return response.notAcceptable('Project name already used')
+      }
+      let newPath = Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName
+      if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid, newPath)) {
+        return response.badRequest('error in path')
+      }
+      let createProject = false
+      if (request.post().gitUrl) {
+        await git.clone({fs, http, dir: Env.get('GITPROJECTDIR') + '/' + user.uuid + '/' + request.post().projectName, url: request.post().gitUrl, username: request.post().username, password: request.post().password})
+          .then(() => {
+          console.log('Project created' + request.post().projectName)
+          createProject = true
+        })
+          .catch((error) => {
+          console.log('error', error)
+          return response.unauthorized() 
+        })
+      } else {
+        await fs.mkdir(newPath, { recursive: true })
+          .then(() => {
+          createProject = true
+        })
+          .catch((err) => {
+          return response.badRequest(err)
+        })
+      }
+      if (createProject) {
+        let images = await DockerImage.all()
+
+        let project = new Project()
+        project.name = request.post().projectName
+        project.gitUrl = request.post().gitUrl
+        project.gitUsername = request.post().gitUsername
+        project.owner = user.id
+        project.docker_image = (images.rows.some(image => image.name === request.post().dockerImage)) ? request.post().dockerImage : 'node:10'
+        await user.projects().save(project, (row) => {
+          row.owner = true
+          row.settings = JSON.stringify({})
+        })
+        return response.send({ projectId: project.id })
+      }
+    } catch (e) {
       console.log('log', e)
       esponse.badRequest()
     }
@@ -138,7 +138,7 @@ class ProjectController {
     }
     return response.badRequest()
   }
-  
+
   async template({ response, request, auth }) {
     const allTemplate = Template.all()
     if (allTemplate.rows.length === 0) {
@@ -175,7 +175,7 @@ class ProjectController {
     }
     return response.badRequest()
   }
-  
+
 }
 
 module.exports = ProjectController
