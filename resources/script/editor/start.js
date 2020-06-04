@@ -119,7 +119,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
       clickFolderMode: 3,
       extensions: ["childcounter"],
       activate: (event, data) => {
-        if (!data.node.isFolder()) {
+        if (!data.node.isFolder() && event.currentTarget) {
           retriveFile(data.node.key)
         }
       },

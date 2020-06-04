@@ -2,6 +2,7 @@
 
 import {globalValues, processLargeArrayAsync} from './global.js'
 import {setCodeMirrorData} from './project.js'
+import sha256 from 'crypto-js/sha256';
 
 export function filestructure() {
   $('#reloadFileTree').on('click', function (e) {
@@ -58,24 +59,97 @@ export function filestructure() {
 
 }
 
-export function retriveFile(path) {
-  console.log('path: ', path)
-  $.ajax({
-    type: 'POST',
-    url: '/api/file/downloadFile',
-    data: {
-      fileName: path
-    },
-    success: (data) => {
-      if (globalValues.codemirrorInstance.getValue() === globalValues.loadedFile || globalValues.loadedFile === '') {
-        setCodeMirrorData(data, path)
-      } else {
-        globalValues.tempLoadedFile = data
-        globalValues.tempLoadedFilePath = path
-        $('#unsavedFileModal').modal('show')
+export function retriveFile(path, fromTab = false) {
+  if (fromTab) {
+    displayFileInCodeEditor(JSON.parse(window.sessionStorage.getItem(path))?.data, path, fromTab)
+  } else {
+    $.ajax({
+      type: 'POST',
+      url: '/api/file/downloadFile',
+      data: {
+        fileName: path,
+        hash: JSON.parse(window.sessionStorage.getItem(path))?.hash
+      },
+      success: (data) => {
+        if (globalValues.codemirrorInstance.getValue() === globalValues.loadedFile || globalValues.loadedFile === '') {
+          displayFileInCodeEditor(data, path, fromTab)
+        } else {
+          globalValues.tempLoadedFile = data
+          globalValues.tempLoadedFilePath = path
+          $('#unsavedFileModal').modal('show')
+        }
       }
+    });
+  }
+}
+
+function displayFileInCodeEditor(data, path, fromTab) {
+  setCodeMirrorData(data, path)
+  window.sessionStorage.setItem(path, JSON.stringify({data: data, hash: sha256(data).toString()}))
+  if (!fromTab) {
+    let retriveFileListener = (event) => {
+      const path = $(event.currentTarget).attr('data-path')
+      retriveFile(path, true)
+      let node = globalValues.fancyTree.getNodeByKey(path);
+      node.setActive(true)
+      $(event.currentTarget).tab('show')
     }
-  });
+    let removeFileTab = (event) => {
+      event.stopPropagation()
+      if ($('#fileTabs li').length <= 1) {
+      	return
+      }
+      let currentTab = $(event.currentTarget).closest('li')
+      let tabBefore = currentTab.prev()
+      let tabNext = currentTab.next()
+      if (currentTab.children('.active').length > 0) {
+        if (tabBefore.length > 0) {
+          const path = tabBefore.children('a').first().attr('data-path')
+          retriveFile(path, true)
+          let node = globalValues.fancyTree.getNodeByKey(path);
+          node.setActive(true)
+          tabBefore.children('a').first().tab('show')
+        } else if (tabNext.length > 0) {
+          const path = tabNext.children('a').first().attr('data-path')
+          retriveFile(path, true)
+          let node = globalValues.fancyTree.getNodeByKey(path);
+          node.setActive(true)
+          tabNext.children('a').first().tab('show')
+        }
+      }
+      currentTab.remove()
+    }
+    let inTabList = false
+    $('#fileTabs li').each((idx, li) => {
+      const liPath = $(li).children('a').first().attr('data-path')
+      if (liPath === path) {
+        $(li).children('a').first().tab('show')
+        inTabList = true
+        return false
+      }
+    })
+    if (!inTabList) {
+      if ($('#fileTabs li').length >= 10) {
+        $('#fileTabs li').last().remove()
+      }
+      let liElement = document.createElement('li')
+      liElement.classList.add("nav-item")
+      let cross = document.createElement('button')
+      cross.type = 'button'
+      cross.innerHTML = '<span aria-hidden="true" class="tabCross"> &times;</span>'
+      cross.classList.add("close")
+      cross.addEventListener("click", removeFileTab)
+      let modeLink = document.createElement('a')
+      modeLink.setAttribute('data-path', path)
+      modeLink.innerHTML = path.substring(path.lastIndexOf('/') + 1);
+      modeLink.classList.add("nav-link")
+      modeLink.addEventListener("click", retriveFileListener)
+      modeLink.append(cross)
+      liElement.append(modeLink)
+      $('#fileTabs').prepend(liElement)
+      $('#fileTabs li:first-child a').tab('show')
+    }
+  }
 }
 
 export function createTree(array) {
