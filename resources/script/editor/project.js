@@ -7,12 +7,12 @@ import {createNewDocker} from './docker.js'
 export function openProject() {
   return new Promise((resolve, reject) => {
     const projectId = getQueryParams('project', window.location.href)
-
     $.ajax({
       type: "GET",
       url: "/api/project/getAllFiles",
       data: {
-        projectId: projectId
+        projectId: projectId,
+        shared: window.location.pathname.startsWith('/shared')
       },
       success: function (data) {
         $('#openProjectDialog').modal('hide');
@@ -200,6 +200,17 @@ export function project() {
       }
     })
     $('#removeProjectModal').modal('hide')
+  })
+  
+  $('#shareProjectModalBtn').on('click', function (event) {
+    $.ajax({
+      type: 'POST',
+      url: '/api/project/shareProject',
+      success: function (data) {
+        $('#outputData').append('Project shared and can be find <a href="ide.grunna.com/shared?project=' + data + '">ide.grunna.com/shared?project=' + data + '</a><br/>')
+      }
+    })
+    $('#shareProjectModal').modal('hide')
   })
 
   $('#unsavedFileContinueModalBtn').on('click', function (event) {

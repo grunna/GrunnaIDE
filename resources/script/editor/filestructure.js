@@ -1,6 +1,6 @@
 "use strict";
 
-import {globalValues, processLargeArrayAsync} from './global.js'
+import {globalValues, processLargeArrayAsync, getQueryParams} from './global.js'
 import {setCodeMirrorData} from './project.js'
 import sha256 from 'crypto-js/sha256';
 
@@ -63,12 +63,14 @@ export function retriveFile(path, fromTab = false) {
   if (fromTab) {
     displayFileInCodeEditor(JSON.parse(window.sessionStorage.getItem(path))?.data, path, fromTab)
   } else {
+    const projectId = getQueryParams('project', window.location.href)
     $.ajax({
       type: 'POST',
       url: '/api/file/downloadFile',
       data: {
         fileName: path,
-        hash: JSON.parse(window.sessionStorage.getItem(path))?.hash
+        hash: JSON.parse(window.sessionStorage.getItem(path))?.hash,
+        sharedId: window.location.pathname.startsWith('/shared') ? projectId : null
       },
       success: (data) => {
         if (globalValues.codemirrorInstance.getValue() === globalValues.loadedFile || globalValues.loadedFile === '') {

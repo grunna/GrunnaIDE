@@ -10,6 +10,7 @@ const Project = use('App/Models/Project')
 const ProjectUser = use('App/Models/ProjectUser')
 const DockerImage = use('App/Models/DockerImage')
 const Template = use('App/Models/Template')
+const ShareProject = use('App/Models/ShareProject')
 const Shared = use('./Shared')
 const shared = new Shared()
 const InitDbValues = require('../../../database/InitialValues')
@@ -28,13 +29,25 @@ class ProjectController {
   }
 
   async getAllFiles({session, response, request, auth}) {
-    let user = await User.find(auth.user.id)
-    let project = await user.projects().wherePivot('project_id', request.get().projectId).firstOrFail()
-
-    console.log('getAllfiles', project.name)
-    session.put('currentProject', project.name)
-    const tree = await shared.getTree(user.uuid, project.name)
-    response.send(tree)
+    if (request.get().shared === 'true') {
+      let shareProject = await ShareProject.query().where('uuid', request.get().projectId).firstOrFail()
+      let project = await shareProject.project().fetch()
+      let user = await User.find(project.owner)
+      session.put('currentProject', project.name)
+      const tree = await shared.getTree(user.uuid, project.name)
+      return response.send(tree)
+    } else {
+      let user = await User.find(auth.user.id)
+      try {
+        let project = await user.projects().wherePivot('project_id', request.get().projectId).firstOrFail()
+        session.put('currentProject', project.name)
+        const tree = await shared.getTree(user.uuid, project.name)
+        return response.send(tree)
+      } catch (err) {
+        console.log('Error get all files', err)
+        return response.badRequest()
+      }
+    }
   }
 
   async createProject({response, request, auth, session}) {
@@ -147,33 +160,50 @@ class ProjectController {
   }
 
   async projectSettingsGet({session, response, request, auth}) {
-    let projectUser = await ProjectUser.query().where('user_id','=', auth.user.id).where('project_id','=', request.get().projectId).first()
-    if (projectUser.settings == null) {
-      projectUser.settings = {}
+    if (auth.user) {
+      try {
+        let projectUser = await ProjectUser.query().where('user_id','=', auth.user.id).where('project_id','=', request.get().projectId).first()
+        return response.send(JSON.parse(projectUser.settings))
+      } catch (err) {
+        console.log('Error get project settings', err)
+        return response.badRequest()
+      }
+    } else {
+      return response.ok()
     }
-    response.send(JSON.parse(projectUser.settings))
   }
 
   async projectSettingsPost({response, request, auth, session}) {
-    let user = await User.find(auth.user.id)
-    let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
-    let projectUser = await ProjectUser.query().where('user_id','=', auth.user.id).where('project_id','=', project.id).first()
+    if (auth.user) {
+      let user = await User.find(auth.user.id)
+      let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
+      let projectUser = await ProjectUser.query().where('user_id','=', auth.user.id).where('project_id','=', project.id).first()
 
-    if (project) {
-      let images = await DockerImage.all()
-      if (images.rows.some(image => image.name === request.post().dockerImage)) {
-        project.docker_image = request.post().dockerImage
+      if (project) {
+        let images = await DockerImage.all()
+        if (images.rows.some(image => image.name === request.post().dockerImage)) {
+          project.docker_image = request.post().dockerImage
+        }
+        project.save()
+
+        let settingsData = JSON.stringify({ideTheme: request.post().ideTheme})
+        await user.projects().pivotQuery()
+          .where('project_id', project.id)
+          .update({ settings: settingsData })
+
+        return response.ok()
       }
-      project.save()
-
-      let settingsData = JSON.stringify({ideTheme: request.post().ideTheme})
-      await user.projects().pivotQuery()
-        .where('project_id', project.id)
-        .update({ settings: settingsData })
-
-      return response.ok()
     }
     return response.badRequest()
+  }
+
+  async shareProject({response, request, auth, session}) {
+    await ShareProject.truncate()
+    let user = await User.find(auth.user.id)
+    let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
+    let newShareProject = new ShareProject()
+    await project.shareProject().save(newShareProject)
+    return response.ok(newShareProject.uuid)
   }
 
 }

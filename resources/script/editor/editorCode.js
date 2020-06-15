@@ -4,7 +4,7 @@ import {globalValues, getQueryParams} from './global.js'
 import sha256 from 'crypto-js/sha256';
 
 export function editorCode() {
-
+  let shared = window.location.pathname.startsWith('/shared') 
   CodeMirror.modeURL = "/codemirror/mode/%N/%N.js";
   globalValues.codemirrorInstance = CodeMirror.fromTextArea(document.getElementById("allMyCode"), {
     lineNumbers : true,
@@ -16,6 +16,7 @@ export function editorCode() {
     foldGutter: true,
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
     showTrailingSpace: true,
+    readOnly: shared
   });
 
   $.ajax({
@@ -32,13 +33,14 @@ export function editorCode() {
     }
   })
 
-
-  $(document).keydown(function(event) {
-    if (event.ctrlKey && event.keyCode == 83) {
-      event.preventDefault()
-      saveFile()
-    }
-  });
+  if (!shared) {
+    $(document).keydown(function(event) {
+      if (event.ctrlKey && event.keyCode == 83) {
+        event.preventDefault()
+        saveFile()
+      }
+    });
+  }
 }
 
 export function saveFile() {
