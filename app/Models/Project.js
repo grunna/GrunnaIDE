@@ -13,6 +13,10 @@ class Project extends Model {
       projectInstance.uuid = uuidv4()
     })
   }
+  
+  shareProject () {
+    return this.hasMany('App/Models/ShareProject')
+  }
 
 }
 

@@ -29,6 +29,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.js'
 import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
 
 (function () {
+  let shared = window.location.pathname.startsWith('/shared')
   start()
   initFancyTree()
   fileMenu()
@@ -39,12 +40,15 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
   footer()
 
   async function start() {
-    await startWs()
-    await WsNotice()
+    if (!shared) {
+      await startWs()
+      await WsNotice()
+    }
     await openProject()
-    await createNewDocker()
-    await docker()
-    //await dockerAttach(5)
+    if (!shared) {
+      await createNewDocker()
+      await docker()
+    }
   }
 
   function startWs() {
@@ -68,13 +72,13 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
       let addNewData = output + '<br/>' 
       $('#outputData').append(addNewData)
     })
-    
+
     dockerChannel.on('terminal', (terminal) => {
       if (globalValues.xterm) {
         globalValues.xterm.write(terminal);
       }
     })
-    
+
     dockerChannel.on('dockerCommand' , (data) => {
       if (data === 'dockerAttach') {
         dockerAttach(5)
@@ -157,7 +161,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
         "upload": {
           name: "Upload", icon: "copy", callback: function(key, opt) {
             var node = $.ui.fancytree.getNode(opt.$trigger);
-						$('#myfiles').val('')
+            $('#myfiles').val('')
             $('#uploadFilePath').val(node.folder ? node.key : node.parent.key)
             $('#uploadFileModal').modal('show')
           }

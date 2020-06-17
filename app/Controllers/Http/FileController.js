@@ -6,23 +6,37 @@ const Shared = require('./Shared')
 const shared = new Shared()
 const Database = use('Database')
 const sha256 = require('crypto-js/sha256')
+const User = use('App/Models/User')
+const ShareProject = use('App/Models/ShareProject')
 
 class FileController {
 
   async downloadFile({request, response, auth}) {
-    let path = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fileName
-    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + '/', path)) {
+    let path
+    let uuid
+    if (request.post().sharedId) {
+      let shareProject = await ShareProject.query().where('uuid', request.post().sharedId).firstOrFail()
+      let project = await shareProject.project().fetch()
+      let user = await User.find(project.owner)
+      uuid = user.uuid
+      path = Env.get('GITPROJECTDIR') + '/' + user.uuid + request.post().fileName
+    } else {
+      uuid = auth.user.uuid
+      path = Env.get('GITPROJECTDIR') + '/' + auth.user.uuid + request.post().fileName
+    	shared.addValueStatistics('filesDownloaded', auth.user.id)
+    }
+    if (!shared.checkPath(Env.get('GITPROJECTDIR') + '/' + uuid + '/', path)) {
       return response.badRequest('error in path')
     }
     await fs.readFile(path, 'utf8')
       .then(contents => {
       response.type('application/octet-stream')
-      shared.addValueStatistics('filesDownloaded', auth.user.id)
       return response.send(contents)
     })
       .catch(err => {
       return response.badRequest(err)
     })
+
   }
 
   async saveFile({request, response, auth}) {
