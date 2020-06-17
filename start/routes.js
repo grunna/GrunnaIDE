@@ -47,6 +47,8 @@ Route.group(() => {
   Route.post('/project/projectSettings', 'ProjectController.projectSettingsPost').middleware('auth')
   Route.get('/project/projectSettings', 'ProjectController.projectSettingsGet').middleware('auth')
   Route.post('/project/shareProject', 'ProjectController.shareProject')
+  Route.get('/project/sharedProjectLinks', 'ProjectController.sharedProjectLinks')
+  Route.post('/project/removeSharedProjectLink', 'ProjectController.removeSharedProjectLink')
 
   Route.post('/file/downloadFile', 'FileController.downloadFile')
   Route.post('/file/saveFile', 'FileController.saveFile').middleware('auth')

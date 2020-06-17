@@ -10,7 +10,7 @@
           <a class="dropdown-item disabled" href="#">Preference</a>
           <a class="dropdown-item" data-toggle="modal" data-target="#projectSettingsDialog">Project settings</a>
           <a class="dropdown-item" id="menuRemoveProject">Remove project</a>
-          <a class="dropdown-item" data-toggle="modal" data-target="#shareProjectModal">Share project</a>
+          <a class="dropdown-item" id="menuShareProject">Share project</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ route('dashboard') }}">Close project</a>
           <a class="dropdown-item" href="{{ route('login.logout') }}">Logout</a>
@@ -224,6 +224,17 @@
       </div>
       <div class="modal-body">
         Share this project? (Only read-only)
+        <hr/>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" style="width:100%">Shared link</th>
+              <th scope="col">Remove</th>
+            </tr>
+          </thead>
+          <tbody id="removeSharedLinkTable">
+          </tbody>
+        </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

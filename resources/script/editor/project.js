@@ -201,13 +201,51 @@ export function project() {
     })
     $('#removeProjectModal').modal('hide')
   })
-  
+
+  let removeSharedLink = ((data) => {
+    $("#removeSharedLinkTable").empty()
+    data.forEach(uuid => {
+      $("#removeSharedLinkTable").append('<tr><td><a target="_blank" href="shared?project=' +
+                                         uuid +
+                                         '">' +
+                                         uuid +
+                                         '</a></td><td><button id="' + uuid + '" type="button" class="close" aria-label="Close">' +
+                                         '<span aria-hidden="true">&times;</span>' +
+                                         '</button></td></tr>')
+      $('#' + uuid).on('click', function(event) {
+        $.ajax({
+          type: 'POST',
+          data: {
+            uuid: event.currentTarget.id
+          },
+          url: '/api/project/removeSharedProjectLink',
+          success: function (data) {
+            removeSharedLink(data)
+          }
+        })
+      })
+    })
+  })
+
+  $('#menuShareProject').on('click', function (event) {
+    let deleteModal = $('#shareProjectModal')
+    $.ajax({
+      type: 'GET',
+      url: '/api/project/sharedProjectLinks',
+      success: function (data) {
+        removeSharedLink(data)
+      }
+    })
+    deleteModal.modal('show')
+
+  })
+
   $('#shareProjectModalBtn').on('click', function (event) {
     $.ajax({
       type: 'POST',
       url: '/api/project/shareProject',
       success: function (data) {
-        $('#outputData').append('Project shared and can be find <a href="ide.grunna.com/shared?project=' + data + '">ide.grunna.com/shared?project=' + data + '</a><br/>')
+        $('#outputData').append('Project shared and can be find <a target="_blank" href="shared?project=' + data + '">ide.grunna.com/shared?project=' + data + '</a><br/>')
       }
     })
     $('#shareProjectModal').modal('hide')

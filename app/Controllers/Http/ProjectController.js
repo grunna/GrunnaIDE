@@ -163,14 +163,15 @@ class ProjectController {
     if (auth.user) {
       try {
         let projectUser = await ProjectUser.query().where('user_id','=', auth.user.id).where('project_id','=', request.get().projectId).first()
-        return response.send(JSON.parse(projectUser.settings))
+        if (projectUser) {
+        	return response.send(JSON.parse(projectUser.settings))
+        }
       } catch (err) {
         console.log('Error get project settings', err)
         return response.badRequest()
       }
-    } else {
-      return response.ok()
     }
+    return response.ok()
   }
 
   async projectSettingsPost({response, request, auth, session}) {
@@ -198,12 +199,34 @@ class ProjectController {
   }
 
   async shareProject({response, request, auth, session}) {
-    await ShareProject.truncate()
     let user = await User.find(auth.user.id)
     let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
     let newShareProject = new ShareProject()
     await project.shareProject().save(newShareProject)
     return response.ok(newShareProject.uuid)
+  }
+
+  async sharedProjectLinks({response, request, auth, session}) {
+    let user = await User.find(auth.user.id)
+    let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
+    let sharedProjects = await project.shareProject().fetch()
+    let returnSharedProjects = []
+    sharedProjects.rows.forEach(sp => {
+      returnSharedProjects.push(sp.uuid)
+    })
+    return response.send(returnSharedProjects)
+  }
+
+  async removeSharedProjectLink({response, request, auth, session}) {
+    let user = await User.find(auth.user.id)
+    let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
+    await project.shareProject().where({uuid: request.post().uuid}).delete()
+    let sharedProjects = await project.shareProject().fetch()
+    let returnSharedProjects = []
+    sharedProjects.rows.forEach(sp => {
+      returnSharedProjects.push(sp.uuid)
+    })
+    return response.send(returnSharedProjects)
   }
 
 }
