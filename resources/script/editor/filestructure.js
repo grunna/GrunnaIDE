@@ -85,6 +85,34 @@ export function retriveFile(path, fromTab = false) {
   }
 }
 
+function removeFileTab(event) {
+  event.stopPropagation()
+  if ($('#fileTabs li').length <= 1) {
+    return
+  }
+  let currentTab = $(event.currentTarget).closest('li')
+  let tabBefore = currentTab.prev()
+  let tabNext = currentTab.next()
+  if (currentTab.children('.active').length > 0) {
+    let changeToTab = null
+    if (tabBefore.length > 0) {
+      changeToTab = tabBefore
+    } else if (tabNext.length > 0) {
+      changeToTab = tabNext
+    }
+    if (changeToTab.href === '#editorTab') {
+      const path = changeToTab.children('a').first().attr('data-path')
+      retriveFile(path, true)
+      let node = globalValues.fancyTree.getNodeByKey(path);
+      node.setActive(true)
+      changeToTab.children('a').first().tab('show')
+    } else if (changeToTab.href === '#issueTab') {
+      changeToTab.children('a').first().tab('show')
+    }
+  }
+  currentTab.remove()
+}
+
 function displayFileInCodeEditor(data, path, fromTab) {
   setCodeMirrorData(data, path)
   window.sessionStorage.setItem(path, JSON.stringify({data: data, hash: sha256(data).toString()}))
@@ -95,31 +123,6 @@ function displayFileInCodeEditor(data, path, fromTab) {
       let node = globalValues.fancyTree.getNodeByKey(path);
       node.setActive(true)
       $(event.currentTarget).tab('show')
-    }
-    let removeFileTab = (event) => {
-      event.stopPropagation()
-      if ($('#fileTabs li').length <= 1) {
-      	return
-      }
-      let currentTab = $(event.currentTarget).closest('li')
-      let tabBefore = currentTab.prev()
-      let tabNext = currentTab.next()
-      if (currentTab.children('.active').length > 0) {
-        if (tabBefore.length > 0) {
-          const path = tabBefore.children('a').first().attr('data-path')
-          retriveFile(path, true)
-          let node = globalValues.fancyTree.getNodeByKey(path);
-          node.setActive(true)
-          tabBefore.children('a').first().tab('show')
-        } else if (tabNext.length > 0) {
-          const path = tabNext.children('a').first().attr('data-path')
-          retriveFile(path, true)
-          let node = globalValues.fancyTree.getNodeByKey(path);
-          node.setActive(true)
-          tabNext.children('a').first().tab('show')
-        }
-      }
-      currentTab.remove()
     }
     let inTabList = false
     $('#fileTabs li').each((idx, li) => {
@@ -142,6 +145,7 @@ function displayFileInCodeEditor(data, path, fromTab) {
       cross.classList.add("close")
       cross.addEventListener("click", removeFileTab)
       let modeLink = document.createElement('a')
+      modeLink.href = "#editorTab"
       modeLink.setAttribute('data-path', path)
       modeLink.innerHTML = path.substring(path.lastIndexOf('/') + 1);
       modeLink.classList.add("nav-link")
@@ -152,6 +156,30 @@ function displayFileInCodeEditor(data, path, fromTab) {
       $('#fileTabs li:first-child a').tab('show')
     }
   }
+}
+
+export function displayNewIssue() {
+  if ($('#fileTabs li').length >= 10) {
+    $('#fileTabs li').last().remove()
+  }
+  let liElement = document.createElement('li')
+  liElement.classList.add("nav-item")
+  let cross = document.createElement('button')
+  cross.type = 'button'
+  cross.innerHTML = '<span aria-hidden="true" class="tabCross"> &times;</span>'
+  cross.classList.add("close")
+  cross.addEventListener("click", removeFileTab)
+  let modeLink = document.createElement('a')
+  modeLink.href = "#issueTab"
+  modeLink.innerHTML = 'New Issue';
+  modeLink.classList.add("nav-link")
+  modeLink.addEventListener("click", (event) => {
+    $(event.currentTarget).tab('show')
+  })
+  modeLink.append(cross)
+  liElement.append(modeLink)
+  $('#fileTabs').prepend(liElement)
+  $('#fileTabs li:first-child a').tab('show')
 }
 
 export function createTree(array) {
