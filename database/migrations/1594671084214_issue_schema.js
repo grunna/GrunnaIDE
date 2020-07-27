@@ -8,18 +8,19 @@ class IssueSchema extends Schema {
     this.create('issues', (table) => {
       table.increments()
       table.timestamps()
-      table.integer('count').notNullable()
+      table.integer('issue_id').notNullable()
       table.uuid('uuid').notNullable().unique()
       table.integer('project_id').unsigned().references('id').inTable('projects')
       table.integer('assignee').unsigned().references('id').inTable('users')
       table.boolean('open').defaultTo('true').notNullable()
       table.string('title')
       table.text('description')
-      table.string('code_place')
-      table.string('test_case')
+      table.integer('importance')
       table.date('due_date')
+      table.string('estimate_time')
       table.boolean('members_only').defaultTo('false').notNullable()
       table.boolean('lock').defaultTo('false').notNullable()
+      table.date('deleted_at')
     })
   }
 

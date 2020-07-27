@@ -8,6 +8,7 @@ class ProjectIssueCountSchema extends Schema {
     this.alter('projects', (table) => {
       table.integer('issue_count').defaultTo(1).notNullable()
       table.boolean('public_project').defaultTo(true).notNullable()
+      table.boolean('anonymous_comments').defaultTo(true).notNullable()
     })
   }
 
@@ -15,6 +16,7 @@ class ProjectIssueCountSchema extends Schema {
     this.alter('projects', (table) => {
       table.dropColumn('issue_count')
       table.dropColumn('public_project')
+      table.dropColumn('anonymous_comments')
     })
   }
 }
