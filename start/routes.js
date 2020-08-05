@@ -67,8 +67,15 @@ Route.group(() => {
   Route.post('/git/push', 'GitController.push').middleware('auth')
   Route.post('/git/test', 'GitController.testGit').middleware('auth')
   
-  Route.post('/issue/create', 'IssueController.create').middleware('auth')
-  Route.get('/issue/issue', 'IssueController.issue').middleware('auth')
+  Route.post('/issue/create', 'IssueController.create')
+  Route.post('/issue/update', 'IssueController.update')
+  Route.post('/issue/deleteIssue', 'IssueController.deleteIssue')
+  Route.post('/issue/switchState', 'IssueController.switchState')
+  Route.post('/issue/addComment', 'IssueController.addComment')
+  Route.post('/issue/deleteComment', 'IssueController.deleteComment')
+  Route.get('/issue/list', 'IssueController.list')
+  Route.get('/issue/detail', 'IssueController.detail')
+  
   
   Route.get('/dashboard/summery', 'DashboardController.summery')
 }).prefix('api')

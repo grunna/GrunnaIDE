@@ -17,6 +17,10 @@ class Project extends Model {
   shareProject () {
     return this.hasMany('App/Models/ShareProject')
   }
+  
+  issues () {
+    return this.hasMany('App/Models/Issue')
+  }
 
 }
 

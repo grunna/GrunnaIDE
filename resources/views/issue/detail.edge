@@ -1,0 +1,59 @@
+<div class="mx-5">
+  <div class="d-flex">
+    <div class="mr-auto p-2">
+      <h3>
+        <button type="button" class="btn btn-sm" id="inputIssueDetailOpen" disabled></button> Issue #<span id="issueDetailIssueId"></span>
+      </h3>
+      <small>Created at <span id="inputIssueDetailCreated"></span></small>
+    </div>
+    <div class="p-2">
+      <button type="button" class="btn btn-sm btn-danger" id="inputIssueDetailDeleteIssue">Delete</button>
+    </div>
+    <div class="p-2">
+      <button type="button" class="btn btn-sm" id="inputIssueDetailSwitchState"></button>
+    </div>
+  </div>
+  <hr/>
+  <form id="create-issue-form" action="/api/issue/update" method="POST" role="form">
+    <div class="form-group">
+      <label for="inputIssueDetailTitle">Title</label>
+      <input type="text" name="title" class="form-control" id="inputIssueDetailTitle" aria-describedby="title" placeholder="Title">
+    </div>
+    <div class="form-group">
+      <label for="inputIssueDetailDescription">Description</label>
+      <textarea name="description" class="form-control" id="inputIssueDetailDescription" rows="3"></textarea>
+    </div>
+    <hr/>
+    <div class="form-group">
+      <label for="inputIssueDetailImportance">Importance</label>
+      <input type="text" name="importance" class="form-control" id="inputIssueDetailImportance" aria-describedby="importance" placeholder="Enter a number">
+    </div>
+    <div class="form-group">
+      <label for="inputIssueDetailDueDate">Due date</label>
+      <input type="date" name="dueDate" class="form-control" id="inputIssueDetailDueDate" aria-describedby="dueDate">
+    </div>
+    <div class="form-group">
+      <label for="inputIssueDetailEstimateTime">Estimate time</label>
+      <input type="text" name="estimateTime" class="form-control" id="inputIssueDetailEstimateTime" aria-describedby="estimateFinnished" placeholder="(5h, 2d, 1w)">
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" name="membersOnly" type="checkbox" value="false" id="inputIssueDetailMembersOnly">
+      <label class="form-check-label" for="inputIssueDetailMembersOnly">
+        Members only
+      </label>
+    </div>
+    <hr/>
+    <input id="issueDetailId" type="hidden" name="id" value="">
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+  <hr/>
+  <div id="issueComments"></div>
+  <hr/>
+  <form id="add-issue-comment-form" action="/api/issue/addComment" method="POST" role="form">
+  	<div class="form-group">
+      <label for="inputIssueDetailComment">Comment</label>
+      <textarea name="description" class="form-control" id="inputIssueDetailComment" rows="3"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add comment</button>
+  </form>
+</div>

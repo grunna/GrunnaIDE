@@ -5,7 +5,13 @@
   <div class="tab-pane show active" role="tabpanel" id="editorTab">
     <textarea id="allMyCode"></textarea>               
   </div>
-  <div class="tab-pane" role="tabpanel" id="issueTab">
+  <div class="tab-pane" role="tabpanel" id="newIssueTab">
     @include('issue.newIssue')           
+  </div>
+  <div class="tab-pane" role="tabpanel" id="issueListTab">
+    @include('issue.list')           
+  </div>
+  <div class="tab-pane" role="tabpanel" id="detailedIssueTab">
+    @include('issue.detail')           
   </div>
 </div>

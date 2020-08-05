@@ -17,7 +17,11 @@ class Issue extends Model {
     return this.belongsTo('App/Models/Project')
   }
   
-  user () {
+  userOwner () {
+    return this.belongsTo('App/Models/User')
+  }
+  
+  assignee () {
     return this.belongsTo('App/Models/User')
   }
   

@@ -57,6 +57,84 @@ export function filestructure() {
     });
   })
 
+  $("#issueListGroup").on('click', (event) => {
+    let inTabList = false
+    $('#fileTabs li').each((idx, li) => {
+      const issueList = $(li).children('a').first().attr('data-detailIssue')
+      if (issueList === 'true') {
+        $(li).children('a').first().tab('show')
+        inTabList = true
+        return false
+      }
+    })
+    let issueId = $(event.target).closest('a').attr('id')
+    $.ajax({
+      type: "GET",
+      data: {id: issueId},
+      url: "/api/issue/detail",
+      success: function (data) {
+        $('#issueDetailIssueId').text(data.issueId)
+        $('#inputIssueDetailCreated').text(data.created)
+        $('#inputIssueDetailOpen').html(data.open ? 'Open' : 'Closed').addClass(data.open ? 'btn-success' : 'btn-danger')
+        $('#inputIssueDetailSwitchState').html(data.open ? 'Close' : 'Reopen issue').addClass('btn-outline-info')
+        $('#issueDetailId').val(data.id)
+        $('#inputIssueDetailTitle').val(data.title)
+        $('#inputIssueDetailDescription').val(data.description)
+        $('#inputIssueDetailImportance').val(data.importance)
+        $('#inputIssueDetailDueDate').val(data.dueDate)
+        $('#inputIssueDetailEstimateTime').val(data.estimateTime)
+        $('#inputIssueDetailMembersOnly').val(data.membersOnly ? 'true' : 'false')
+        $('#inputIssueDetailMembersOnly').prop('checked', data.membersOnly);
+        $('#issueComments').empty()
+        data.comments.forEach(comment => {
+          let commentCard = `
+<div class="card">
+<div class="card-header py-0">
+<div class="d-flex">
+    <div class="mr-auto p-2">
+      Created at ${comment.created}
+    </div>
+    <div class="p-2">
+      <button type="button" data-commentId="${comment.id}" class="btn btn-sm btn-danger">Delete</button>
+    </div>
+  </div>
+</div>
+<div class="card-body py-2"><pre class="mb-0">
+${comment.text}
+</pre>
+</div>
+</div>
+`
+          $('#issueComments').append(commentCard)
+        })
+      }
+    })
+    if (!inTabList) {
+      if ($('#fileTabs li').length >= 10) {
+        $('#fileTabs li').last().remove()
+      }
+      let liElement = document.createElement('li')
+      liElement.classList.add("nav-item")
+      let cross = document.createElement('button')
+      cross.type = 'button'
+      cross.innerHTML = '<span aria-hidden="true" class="tabCross"> &times;</span>'
+      cross.classList.add("close")
+      cross.addEventListener("click", removeFileTab)
+      let modeLink = document.createElement('a')
+      modeLink.href = "#detailedIssueTab"
+      modeLink.innerHTML = 'Issue detail';
+      modeLink.classList.add("nav-link")
+      modeLink.setAttribute('data-detailIssue', 'true')
+      modeLink.addEventListener("click", (event) => {
+        $(event.currentTarget).tab('show')
+      })
+      modeLink.append(cross)
+      liElement.append(modeLink)
+      $('#fileTabs').prepend(liElement)
+      $('#fileTabs li:first-child a').tab('show')
+      return false;
+    }
+  });
 }
 
 export function retriveFile(path, fromTab = false) {
@@ -87,10 +165,11 @@ export function retriveFile(path, fromTab = false) {
 
 function removeFileTab(event) {
   event.stopPropagation()
+  let currentTab = $(event.currentTarget).closest('li')
   if ($('#fileTabs li').length <= 1) {
+    currentTab.remove()
     return
   }
-  let currentTab = $(event.currentTarget).closest('li')
   let tabBefore = currentTab.prev()
   let tabNext = currentTab.next()
   if (currentTab.children('.active').length > 0) {
@@ -105,10 +184,8 @@ function removeFileTab(event) {
       retriveFile(path, true)
       let node = globalValues.fancyTree.getNodeByKey(path);
       node.setActive(true)
-      changeToTab.children('a').first().tab('show')
-    } else if (changeToTab.href === '#issueTab') {
-      changeToTab.children('a').first().tab('show')
     }
+    changeToTab.children('a').first().tab('show')
   }
   currentTab.remove()
 }
@@ -159,6 +236,18 @@ function displayFileInCodeEditor(data, path, fromTab) {
 }
 
 export function displayNewIssue() {
+  let inTabList = false
+  $('#fileTabs li').each((idx, li) => {
+    const newIssue = $(li).children('a').first().attr('data-newIssue')
+    if (newIssue === 'true') {
+      $(li).children('a').first().tab('show')
+      inTabList = true
+      return false
+    }
+  })
+  if (inTabList) {
+    return
+  }
   if ($('#fileTabs li').length >= 10) {
     $('#fileTabs li').last().remove()
   }
@@ -170,9 +259,63 @@ export function displayNewIssue() {
   cross.classList.add("close")
   cross.addEventListener("click", removeFileTab)
   let modeLink = document.createElement('a')
-  modeLink.href = "#issueTab"
+  modeLink.href = "#newIssueTab"
   modeLink.innerHTML = 'New Issue';
   modeLink.classList.add("nav-link")
+  modeLink.setAttribute('data-newIssue', 'true')
+  modeLink.addEventListener("click", (event) => {
+    $(event.currentTarget).tab('show')
+  })
+  modeLink.append(cross)
+  liElement.append(modeLink)
+  $('#fileTabs').prepend(liElement)
+  $('#fileTabs li:first-child a').tab('show')
+}
+
+export function displayIssueList() {
+  let inTabList = false
+  $('#fileTabs li').each((idx, li) => {
+    const issueList = $(li).children('a').first().attr('data-issueList')
+    if (issueList === 'true') {
+      $(li).children('a').first().tab('show')
+      inTabList = true
+      return false
+    }
+  })
+  if (inTabList) {
+    return
+  }
+  $.ajax({
+    type: "GET",
+    url: "/api/issue/list",
+    success: function (data) {
+      $('#issueListGroup').empty()
+      data.forEach(data => {
+        let openText = data.open ? 'open' : 'closed'
+        let buttonColor = data.open ? 'btn-success' : 'btn-danger'
+        $('#issueListGroup').append('<a id="' + data.id + '" class="list-group-item list-group-item-action py-1"><p class="mb-0">' +
+                                    data.title +
+                                    ' <button type="button" class="btn btn-sm py-0 px-1 ' + buttonColor + '" disabled>' + openText + '</button>' +
+                                    '</p><small class="font-weight-light">#' + data.issueId + ' · created ' + new Date(data.created).toLocaleString() + '</small>' +
+                                    '</a>')
+      })
+    }
+  })
+  if ($('#fileTabs li').length >= 10) {
+    $('#fileTabs li').last().remove()
+  }
+  let liElement = document.createElement('li')
+  liElement.classList.add("nav-item")
+  let cross = document.createElement('button')
+  cross.type = 'button'
+  cross.innerHTML = '<span aria-hidden="true" class="tabCross"> &times;</span>'
+  cross.classList.add("close")
+  cross.addEventListener("click", removeFileTab)
+  let modeLink = document.createElement('a')
+  modeLink.href = "#issueListTab"
+  modeLink.innerHTML = 'Issue list';
+  modeLink.classList.add("nav-link")
+  modeLink.setAttribute('data-issueList', 'true')
   modeLink.addEventListener("click", (event) => {
     $(event.currentTarget).tab('show')
   })

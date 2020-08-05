@@ -8,6 +8,7 @@ class IssueCommentSchema extends Schema {
     this.create('issue_comments', (table) => {
       table.increments()
       table.timestamps()
+      table.uuid('uuid').notNullable().unique()
       table.text('text')
       table.integer('user').unsigned().references('id').inTable('users')
       table.integer('issue').unsigned().references('id').inTable('issues')
