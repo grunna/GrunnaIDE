@@ -75,7 +75,7 @@ export function filestructure() {
       success: function (data) {
         $('#issueDetailIssueId').text(data.issueId)
         $('#inputIssueDetailCreated').text(data.created)
-        $('#inputIssueDetailOpen').html(data.open ? 'Open' : 'Closed').addClass(data.open ? 'btn-success' : 'btn-danger')
+        $('#inputIssueDetailOpen').html(data.open ? 'Open' : 'Closed').removeClass(data.open ? 'btn-danger' : 'btn-success').addClass(data.open ? 'btn-success' : 'btn-danger')
         $('#inputIssueDetailSwitchState').html(data.open ? 'Close' : 'Reopen issue').addClass('btn-outline-info')
         $('#issueDetailId').val(data.id)
         $('#inputIssueDetailTitle').val(data.title)
@@ -91,13 +91,13 @@ export function filestructure() {
 <div class="card">
 <div class="card-header py-0">
 <div class="d-flex">
-    <div class="mr-auto p-2">
-      Created at ${comment.created}
-    </div>
-    <div class="p-2">
-      <button type="button" data-commentId="${comment.id}" class="btn btn-sm btn-danger">Delete</button>
-    </div>
-  </div>
+<div class="mr-auto p-2">
+Created at ${comment.created}
+</div>
+<div class="p-2">
+<button type="button" data-commentId="${comment.id}" class="btn btn-sm btn-danger">Delete</button>
+</div>
+</div>
 </div>
 <div class="card-body py-2"><pre class="mb-0">
 ${comment.text}
@@ -168,6 +168,8 @@ function removeFileTab(event) {
   let currentTab = $(event.currentTarget).closest('li')
   if ($('#fileTabs li').length <= 1) {
     currentTab.remove()
+    $('#tabContent div').removeClass('active')
+    $('#noTabSelectedTab').addClass('active')
     return
   }
   let tabBefore = currentTab.prev()
@@ -272,18 +274,17 @@ export function displayNewIssue() {
   $('#fileTabs li:first-child a').tab('show')
 }
 
-export function displayIssueList() {
+export function displayIssueList(navigate = true) {
   let inTabList = false
-  $('#fileTabs li').each((idx, li) => {
-    const issueList = $(li).children('a').first().attr('data-issueList')
-    if (issueList === 'true') {
-      $(li).children('a').first().tab('show')
-      inTabList = true
-      return false
-    }
-  })
-  if (inTabList) {
-    return
+  if (navigate) {
+    $('#fileTabs li').each((idx, li) => {
+      const issueList = $(li).children('a').first().attr('data-issueList')
+      if (issueList === 'true') {
+        $(li).children('a').first().tab('show')
+        inTabList = true
+        return false
+      }
+    })
   }
   $.ajax({
     type: "GET",
@@ -301,6 +302,9 @@ export function displayIssueList() {
       })
     }
   })
+  if (inTabList || !navigate) {
+    return
+  }
   if ($('#fileTabs li').length >= 10) {
     $('#fileTabs li').last().remove()
   }

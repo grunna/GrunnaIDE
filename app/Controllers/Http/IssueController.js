@@ -48,7 +48,7 @@ class IssueController {
     }
     try {
       if (auth.user) {
-        let issue = await Issue.findByOrFail('uuid', request.get().id)
+        let issue = await Issue.query().where('uuid','=',request.post().id).first()
         if (issue && issue.user_id === auth.user.id) {
           issue.title = request.post().title
           issue.description = request.post().description

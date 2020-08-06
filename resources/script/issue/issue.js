@@ -1,16 +1,43 @@
 "use strict";
 
+import {displayIssueList} from '../editor/filestructure.js'
+
 export function issue() {
   $('#create-issue-form').on('submit', function (e) {
     if (!e.isDefaultPrevented()) {
       let formData = $(this).serialize()
-      console.log('posting', formData)
       $.ajax({
         type: "POST",
         url: "/api/issue/create",
         data: formData
       }).done((data) => {
-        console.log('Issue created', data)
+        $("#create-issue-form").trigger("reset");
+        $('#fileTabs').find('.active').find('button').click()
+        displayIssueList()
+      }).fail((data, textStatus, thrown) => {
+        console.log('dataError', data)
+      })
+      return false;
+    }
+    e.preventDefault()
+  });
+  
+  $('#update-issue-form').on('submit', function (e) {
+    if (!e.isDefaultPrevented()) {
+      let formData = $(this).serialize()
+      $.ajax({
+        type: "POST",
+        url: "/api/issue/update",
+        data: formData
+      }).done((data) => {
+        displayIssueList(false)
+        $('<div class="alert alert-success" style="position: fixed; bottom: 5px; left:2%; width: 40%;">' +
+      '<button type="button" class="close" data-dismiss="alert">' +
+      '&times;</button>Issue updated</div>').hide().appendTo('#alerts').fadeIn(1000);
+
+    $(".alert").delay(1000).fadeOut("normal", function(){
+      $(this).alert('close')
+    })
       }).fail((data, textStatus, thrown) => {
         console.log('dataError', data)
       })
@@ -37,6 +64,7 @@ export function issue() {
         $('#inputIssueDetailOpen').toggleClass('btn-success').toggleClass('btn-danger').html('Close')
         $('#inputIssueDetailSwitchState').html('Reopen issue')
       }
+      displayIssueList(false)
     }).fail((data, textStatus, thrown) => {
       console.log('dataError', data)
     })
@@ -48,7 +76,8 @@ export function issue() {
       url: "/api/issue/deleteIssue",
       data: {id: $('#issueDetailId').val()}
     }).done((data) => {
-      // TODO Remove issue
+      $('#fileTabs').find('.active').find('button').click()
+      displayIssueList()
     }).fail((data, textStatus, thrown) => {
       console.log('dataError', data)
     })
