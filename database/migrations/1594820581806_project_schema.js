@@ -15,10 +15,18 @@ class ProjectIssueCountSchema extends Schema {
 
   down () {
     this.alter('projects', (table) => {
-      table.dropColumn('issue_count')
-      table.dropColumn('public_project')
       Database.schema.hasColumn('projects', 'anonymous_comments').then(exists => {
-      	if (exists) {
+        if (exists) {
+          table.dropColumn('issue_count')
+        }
+      })
+      Database.schema.hasColumn('projects', 'anonymous_comments').then(exists => {
+        if (exists) {
+          table.dropColumn('public_project')
+        }
+      })
+      Database.schema.hasColumn('projects', 'anonymous_comments').then(exists => {
+        if (exists) {
           table.dropColumn('anonymous_comments')
         }  
       })
