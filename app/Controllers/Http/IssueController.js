@@ -29,7 +29,7 @@ class IssueController {
           // issue.assignee = request.post().assignee
           issue.due_date = request.post().dueDate
           issue.estimate_time = request.post().estimateTime
-          issue.members_only = request.post().membersOnly ? false : true
+          issue.members_only = request.post().membersOnly ? true : false
           await issue.save()
           project.issue_count = project.issue_count + 1
           await project.save()
@@ -55,7 +55,7 @@ class IssueController {
           issue.importance = request.post().importance
           issue.due_date = request.post().dueDate
           issue.estimate_time = request.post().estimateTime
-          issue.members_only = request.post().membersOnly ? false : true
+          issue.members_only = request.post().membersOnly ? true : false
           await issue.save()
         }
       }
