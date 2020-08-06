@@ -2,6 +2,7 @@
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
+const Database = use('Database')
 
 class ProjectIssueCountSchema extends Schema {
   up () {
@@ -16,7 +17,11 @@ class ProjectIssueCountSchema extends Schema {
     this.alter('projects', (table) => {
       table.dropColumn('issue_count')
       table.dropColumn('public_project')
-      table.dropColumn('anonymous_comments')
+      Database.schema.hasColumn('projects', 'anonymous_comments').then(exists => {
+      	if (exists) {
+          table.dropColumn('anonymous_comments')
+        }  
+      })
     })
   }
 }
