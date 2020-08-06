@@ -20,6 +20,7 @@ import {footer} from './footer.js'
 import {navbar} from './navbar.js'
 import {project, openProject} from './project.js'
 import {docker, createNewDocker, dockerAttach} from './docker.js'
+import {issue} from '../issue/issue.js'
 
 import('jquery.fancytree/dist/skin-lion/ui.fancytree.css');
 import {createTree as fancyTreeCreate} from 'jquery.fancytree';
@@ -38,6 +39,7 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
   navbar()
   project()
   footer()
+  issue()
 
   async function start() {
     if (!shared) {

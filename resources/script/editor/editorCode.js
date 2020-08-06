@@ -55,19 +55,19 @@ export function saveFile() {
       }
     })
 
-    $('<div class="alert alert-success">' +
+    $('<div class="alert alert-success" style="position: fixed; bottom: 5px; left:2%; width: 40%;">' +
       '<button type="button" class="close" data-dismiss="alert">' +
       '&times;</button>File have been saved</div>').hide().appendTo('#alerts').fadeIn(1000);
 
-    $(".alert").delay(3000).fadeOut("normal", function(){
+    $(".alert").delay(1000).fadeOut("normal", function(){
       $(this).alert('close')
     })
   } else {
-    $('<div class="alert alert-success">' +
+    $('<div class="alert alert-success" style="position: fixed; bottom: 5px; left:2%; width: 40%;">' +
       '<button type="button" class="close" data-dismiss="alert">' +
       '&times;</button>Nothing new to save</div>').hide().appendTo('#alerts').fadeIn(1000);
 
-    $(".alert").delay(3000).fadeOut("normal", function(){
+    $(".alert").delay(1000).fadeOut("normal", function(){
       $(this).alert('close')
     })
   }

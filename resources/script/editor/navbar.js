@@ -1,6 +1,6 @@
 "use strict";
 
-import {inputSearchFilesListener} from './filestructure.js'
+import {inputSearchFilesListener, displayNewIssue, displayIssueList} from './filestructure.js'
 import {saveFile} from './editorCode.js'
 
 export function navbar() {
@@ -154,5 +154,13 @@ export function navbar() {
   $('#menuSaveFile').on('click', function (e) {
     saveFile()
   });
+  
+  $('#menuIssueCreate').on('click', function (e) {
+    displayNewIssue()
+  })
+  
+  $('#menuIssueList').on('click', function (e) {
+    displayIssueList()
+  })
   
 }

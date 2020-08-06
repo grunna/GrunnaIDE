@@ -23,5 +23,5 @@ ul.fancytree-container:focus {
 
 .CodeMirror {
   border: 1px solid #eee !important;
-  height: auto !important;
+  height: auto;
 }

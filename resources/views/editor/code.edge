@@ -1,8 +1,20 @@
 <ul class="nav nav-tabs" id="fileTabs" role="tablist">
 
 </ul>
-<div class="tab-content overflow-auto" style="height: calc(100% - 42px)">
-  <div class="tab-pane show active" role="tabpanel" id="editorTab">
+<div class="tab-content overflow-auto" style="height: calc(100% - 42px)" id="tabContent">
+	<div class="tab-pane show active" role="tabpanel" id="noTabSelectedTab">
+    Nothing has been selected yet, select something to the left or create a file with right click on the left file-tree.
+  </div>
+  <div class="tab-pane show" role="tabpanel" id="editorTab">
     <textarea id="allMyCode"></textarea>               
+  </div>
+  <div class="tab-pane" role="tabpanel" id="newIssueTab">
+    @include('issue.newIssue')           
+  </div>
+  <div class="tab-pane" role="tabpanel" id="issueListTab">
+    @include('issue.list')           
+  </div>
+  <div class="tab-pane" role="tabpanel" id="detailedIssueTab">
+    @include('issue.detail')           
   </div>
 </div>

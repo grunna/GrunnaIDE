@@ -62,82 +62,91 @@ class DockerController {
       })
     }
   }
-  
+
   async onDockerCreate() {
     const projectPath = Env.get('SAVEDIRECTORY') + '/' + this.auth.user.uuid + '/' + this.session.get('currentProject')
 
     let container = docker.getContainer(Env.get('DOCKER_NAME') + this.auth.user.id)
     let user = await User.find(this.auth.user.id)
     let project = await user.projects().where({name: this.session.get('currentProject')}).firstOrFail()
+    let dockerIsRunning = false
 
-    await container.stop()
-      .then(data => {
-      console.log('createDocker: Container have been stoped')
-      return container.remove()
-    })
-      .then(data => {
-      console.log('createDocker: Container have been removed')
-    })
-      .catch(err => {
-      console.log('createDocker: Container error -> ' + err)
-    })
 
-    console.log('create dockername')
-    let docker_name = null
-    if (project.keep_docker_name) {
-    	if (project.docker_name === null) {
-    		project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
-        await project.save()
+    await container.inspect()
+      .then(data => {
+      if (data.State.Status === 'running') {
+        dockerIsRunning = true
       }
-    } else {
-      project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
-    }
-
-    console.log('dockername', project.docker_name)
-    let dockerConfig = shared.dockerConfig(project.docker_image,
-                                           path.resolve(projectPath),
-                                           Env.get('DOCKER_NAME') + this.auth.user.id,
-                                           project.docker_name) 
-
-    console.log('Pull docker image: ', project.docker_image)
-    await docker.pull(project.docker_image)
-      .then(stream => {
-      // sendToTerminal.write(stream) fixme
     })
-      .catch(err => {
-      console.log('Error pulling image:', err)
-      this.socket.emit('output', 'Cant pull image, probobly already excist: ' + project.docker_image)
-    })
-    
-    let network = docker.getNetwork('traefik')
 
-    console.log('CreateContainer')
-    await docker.createContainer(dockerConfig)
-      .then(c => {
+    if (!dockerIsRunning) {
+      await container.stop()
+        .then(data => {
+        console.log('createDocker: Container have been stoped')
+        return container.remove()
+      })
+        .then(data => {
+        console.log('createDocker: Container have been removed')
+      })
+        .catch(err => {
+        console.log('createDocker: Container error -> ' + err)
+      })
+
+      console.log('create dockername')
+      let docker_name = null
+      if (project.keep_docker_name) {
+        if (project.docker_name === null) {
+          project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
+          await project.save()
+        }
+      } else {
+        project.docker_name = shared.makeRandomString(5) + "-" + shared.makeRandomString(5)
+      }
+
+      console.log('dockername', project.docker_name)
+      let dockerConfig = shared.dockerConfig(project.docker_image,
+                                             path.resolve(projectPath),
+                                             Env.get('DOCKER_NAME') + this.auth.user.id,
+                                             project.docker_name) 
+
+      console.log('Pull docker image: ', project.docker_image)
+      await docker.pull(project.docker_image)
+        .then(stream => {
+        // sendToTerminal.write(stream) fixme
+      })
+        .catch(err => {
+        console.log('Error pulling image:', err)
+        this.socket.emit('output', 'Cant pull image, probobly already excist: ' + project.docker_image)
+      })
+
+      let network = docker.getNetwork('traefik')
+
+      console.log('CreateContainer')
+      await docker.createContainer(dockerConfig)
+        .then(c => {
         container = c
         return network.connect({Container: c.id});
-    })
-      .then(data => {
+      })
+        .then(data => {
         console.log('data1', data)
         return container.start()
       })
-      .then(data => {
-      return container.inspect()
-    })
-      .then(data => {
-      	this.socket.emit('output', 'Connect to: <a href="http://' + project.docker_name + '.ide.grunna.com" target="_blank">' + project.docker_name + '.ide.grunna.com</a> -> container 0.0.0.0:8080')
-    })
-      .catch(err => {
-      console.log('err: ', err)
-    })
+        .then(data => {
+        this.socket.emit('output', 'Connect to: <a href="http://' + project.docker_name + '.ide.grunna.com" target="_blank">' + project.docker_name + '.ide.grunna.com</a> -> container 0.0.0.0:8080')
+      })
+        .catch(err => {
+        console.log('err: ', err)
+      })
+    } else {
+      this.socket.emit('output', 'Already running, connect to: <a href="http://' + project.docker_name + '.ide.grunna.com" target="_blank">' + project.docker_name + '.ide.grunna.com</a> -> container 0.0.0.0:8080')
+    }
     this.socket.emit('dockerCommand', 'dockerAttach')
   }
 
   async onDockerAttach() {
-
     console.log('attach: ' + Env.get('DOCKER_NAME'), this.auth.user.id)
     let container = docker.getContainer(Env.get('DOCKER_NAME') + this.auth.user.id);
-    
+
     await container.logs({
       stdout: true,
       stderr: true,
