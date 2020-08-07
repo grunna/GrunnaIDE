@@ -70,7 +70,11 @@ export function filestructure() {
     let issueId = $(event.target).closest('a').attr('id')
     $.ajax({
       type: "GET",
-      data: {id: issueId},
+      data: {
+        id: issueId,
+        projectId : getQueryParams('project', window.location.href),
+        shared: window.location.pathname.startsWith('/shared')
+      },
       url: "/api/issue/detail",
       success: function (data) {
         $('#issueDetailIssueId').text(data.issueId)
@@ -289,6 +293,10 @@ export function displayIssueList(navigate = true) {
   $.ajax({
     type: "GET",
     url: "/api/issue/list",
+    data: {
+      projectId : getQueryParams('project', window.location.href),
+      shared: window.location.pathname.startsWith('/shared')
+    },
     success: function (data) {
       $('#issueListGroup').empty()
       data.forEach(data => {

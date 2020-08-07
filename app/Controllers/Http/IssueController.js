@@ -5,6 +5,7 @@ const shared = new Shared()
 const Env = use('Env')
 const User = use('App/Models/User')
 const Project = use('App/Models/Project')
+const ShareProject = use('App/Models/ShareProject')
 const Issue = use('App/Models/Issue')
 const IssueComment = use('App/Models/IssueComment')
 
@@ -91,12 +92,18 @@ class IssueController {
     return response.ok()
   }
 
-  async list({response, auth, session}) {
+  async list({request, response, auth, session}) {
     let returnValue = []
     try {
-      if (auth.user) {
+      let project = null
+      if (request.get().shared === 'true') {
+        let shareProject = await ShareProject.query().where('uuid', request.get().projectId).firstOrFail()
+        project = await shareProject.project().fetch()
+      } else {
         let user = await User.find(auth.user.id)
-        let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()
+        project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()  
+      }
+      if ((auth.user && project) || (project && project.public_project)) {
         let issues = await project.issues().fetch()
         issues.rows.forEach(issue => {
           if (issue.deleted_at === null) {
@@ -123,6 +130,19 @@ class IssueController {
 
   async detail({response, auth, session, request}) {
     try {
+      if (request.get().shared === 'true') {
+        let shareProject = await ShareProject.query().where('uuid', request.get().projectId).firstOrFail()
+        let project = await shareProject.project().fetch()
+        if (project && !project.public_project) {
+          return response.badRequest()
+        }
+      } else {
+        let user = await User.find(auth.user.id)
+        let project = await user.projects().where({name: session.get('currentProject')}).firstOrFail()  
+        if (!project) {
+          return response.badRequest()
+        }
+      }
       let issue = await Issue.findByOrFail('uuid', request.get().id)
       let issueComments = await IssueComment.query().where('issue','=',issue.id).fetch()
       let comments = []
