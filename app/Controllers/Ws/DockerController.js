@@ -78,7 +78,10 @@ class DockerController {
         dockerIsRunning = true
       }
     })
-
+    .catch(err => {
+      console.log('Container inspection error', err)
+    })
+    
     if (!dockerIsRunning) {
       await container.stop()
         .then(data => {
