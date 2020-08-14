@@ -43,8 +43,9 @@ export function openProject() {
             }
           }
           if (node.folder) {
-            recursiveTree(JSON.parse(sessionStorage.getItem('fancyTree')))
-            console.log('node', node.key, node, JSON.parse(sessionStorage.getItem('fancyTree')))
+            if (sessionStorage.getItem('fancyTree')) {
+	            recursiveTree(JSON.parse(sessionStorage.getItem('fancyTree')))
+            }
           }
         })
         resolve()
