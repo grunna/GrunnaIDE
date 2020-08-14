@@ -346,6 +346,7 @@ export function createTree(array) {
           title: a.name,
           key: a.path,
           folder: true,
+          expanded: globalValues.fancyTreeFlat[a.path],
           children: createTree(a.children)
         })
       } else {
@@ -361,6 +362,7 @@ export function createTree(array) {
         title: array.name,
         key: array.path,
         folder: true,
+        expanded: globalValues.fancyTreeFlat[array.path],
         children: createTree(array.children)
       })
     } else {

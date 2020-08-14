@@ -5,6 +5,7 @@ export var globalValues = {
   loadedFile: "",
   loadedFilePath: "",
   fancyTree: null,
+  fancyTreeFlat: {}, 
   currentFileTree: [],
   tempLoadedFile: "",
   tempLoadedFilePath: "",
