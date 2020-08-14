@@ -18,6 +18,35 @@ export function openProject() {
         $('#openProjectDialog').modal('hide');
         globalValues.currentFileTree = data
         globalValues.fancyTree.reload(createTree(data))
+        globalValues.fancyTree.visit((node) => {
+          let recursiveTree = (workingNode) => {
+            if (Array.isArray(workingNode)) {
+              for (var i = 0; i < workingNode.length; i++) {
+                if (workingNode[i].children) {
+                  if (workingNode[i].key === node.key && workingNode[i].expanded) {
+                    node.setExpanded(workingNode[i].expanded)
+                  }
+                  recursiveTree(workingNode[i].children)
+                } else {
+                  if (workingNode[i].key === node.key && workingNode[i].expanded) {
+                    node.setExpanded(workingNode[i].expanded)
+                  }
+                }
+              }
+            } else {
+              if (workingNode.children) {
+                if (workingNode.key === node.key && workingNode[i].expanded) {
+                    node.setExpanded(workingNode[i].expanded)
+                  }
+                recursiveTree(workingNode.children)
+              }
+            }
+          }
+          if (node.folder) {
+            recursiveTree(JSON.parse(sessionStorage.getItem('fancyTree')))
+            console.log('node', node.key, node, JSON.parse(sessionStorage.getItem('fancyTree')))
+          }
+        })
         resolve()
       },
       error: function(error) {

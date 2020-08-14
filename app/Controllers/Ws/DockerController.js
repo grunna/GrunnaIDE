@@ -71,12 +71,14 @@ class DockerController {
     let project = await user.projects().where({name: this.session.get('currentProject')}).firstOrFail()
     let dockerIsRunning = false
 
-
     await container.inspect()
       .then(data => {
       if (data.State.Status === 'running') {
         dockerIsRunning = true
       }
+    })
+      .catch(err => {
+      console.log('Container inspection error', err)
     })
 
     if (!dockerIsRunning) {

@@ -129,6 +129,13 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
           retriveFile(data.node.key)
         }
       },
+      expand: (event, data) => {
+        sessionStorage.setItem('fancyTree', JSON.stringify(globalValues.fancyTree.toDict(true)));
+        console.log('Expand', sessionStorage.getItem('fancyTree'))
+      },
+      collapse: (event, data) => {
+        sessionStorage.setItem('fancyTree', JSON.stringify(globalValues.fancyTree.toDict(true)));
+      },
       source: [],
       childcounter: {
         deep: true,
