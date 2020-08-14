@@ -15,7 +15,7 @@ import Ws from '@adonisjs/websocket-client'
 
 import {globalValues, getQueryParams} from './global.js'
 import {editorCode} from './editorCode.js'
-import {filestructure, inputSearchFilesListener, retriveFile} from './filestructure.js'
+import {filestructure, inputSearchFilesListener, createTree, retriveFile} from './filestructure.js'
 import {footer} from './footer.js'
 import {navbar} from './navbar.js'
 import {project, openProject} from './project.js'
