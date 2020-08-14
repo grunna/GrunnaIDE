@@ -80,4 +80,4 @@ Route.group(() => {
   Route.get('/dashboard/summery', 'DashboardController.summery')
 }).prefix('api')
 
-Route.any('*', ({ response }) => { response.redirect('/login') }).middleware('guest')
+Route.any('*', ({ response, auth }) => { auth.user ? response.redirect('/dashboard') : response.redirect('/login') })

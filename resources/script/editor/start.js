@@ -15,7 +15,7 @@ import Ws from '@adonisjs/websocket-client'
 
 import {globalValues, getQueryParams} from './global.js'
 import {editorCode} from './editorCode.js'
-import {filestructure, inputSearchFilesListener, createTree, retriveFile} from './filestructure.js'
+import {filestructure, inputSearchFilesListener, retriveFile} from './filestructure.js'
 import {footer} from './footer.js'
 import {navbar} from './navbar.js'
 import {project, openProject} from './project.js'
@@ -119,15 +119,40 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
   }
 
   function initFancyTree () {
+    let recursiveTree = (workingNode) => {
+      if (Array.isArray(workingNode)) {
+        for (var i = 0; i < workingNode.length; i++) {
+          if (workingNode[i].folder) {
+            globalValues.fancyTreeFlat[workingNode[i].key] = workingNode[i].expanded
+          }
+          if (workingNode[i].children) {
+            recursiveTree(workingNode[i].children)
+          }
+        }
+      } else {
+        if (workingNode.children) {
+          recursiveTree(workingNode.children)
+        }
+      }
+    }
+    if (sessionStorage.getItem('fancyTree')) {
+      recursiveTree(JSON.parse(sessionStorage.getItem('fancyTree')))
+    }
     globalValues.fancyTree = fancyTreeCreate('#filetree', {
       minExpandLevel: 2,
       autoScroll: true,
       clickFolderMode: 3,
       extensions: ["childcounter"],
       activate: (event, data) => {
-        if (!data.node.isFolder() && event.currentTarget) {
+        if (!data.node.isFolder()) {
           retriveFile(data.node.key)
         }
+      },
+      expand: (event, data) => {
+        sessionStorage.setItem('fancyTree', JSON.stringify(globalValues.fancyTree.toDict(true)));
+      },
+      collapse: (event, data) => {
+        sessionStorage.setItem('fancyTree', JSON.stringify(globalValues.fancyTree.toDict(true)));
       },
       source: [],
       childcounter: {
