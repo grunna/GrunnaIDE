@@ -25,11 +25,13 @@ export function openProject() {
                 if (workingNode[i].children) {
                   if (workingNode[i].key === node.key && workingNode[i].expanded) {
                     node.setExpanded(workingNode[i].expanded)
+                    return
                   }
                   recursiveTree(workingNode[i].children)
                 } else {
                   if (workingNode[i].key === node.key && workingNode[i].expanded) {
                     node.setExpanded(workingNode[i].expanded)
+                    return
                   }
                 }
               }
@@ -37,6 +39,7 @@ export function openProject() {
               if (workingNode.children) {
                 if (workingNode.key === node.key && workingNode[i].expanded) {
                     node.setExpanded(workingNode[i].expanded)
+                  	return
                   }
                 recursiveTree(workingNode.children)
               }
