@@ -81,7 +81,7 @@ class DockerController {
       console.log('Container inspection error', err)
     })
 
-    if (!dockerIsRunning) {
+    if (!dockerIsRunning || project.docker_name === null) {
       await container.stop()
         .then(data => {
         console.log('createDocker: Container have been stoped')
