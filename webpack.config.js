@@ -1,10 +1,12 @@
 const webpack = require('webpack'); 
 const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
     editor: ['./resources/script/editor/start.js'],
-    dashboard: ['./resources/script/dashboard/dashboard.js']
+    dashboard: ['./resources/script/dashboard/dashboard.js'],
+    preact: ['./resources/script/preact/preact.js']
   },
   output: {
     filename: '[name].js',
@@ -17,6 +19,11 @@ module.exports = {
     },
   },*/
   plugins: [
+    new HtmlWebpackPlugin({
+      hash: true,
+      chunks: ['preact'],
+      filename: './../preact.html'
+    }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery'
@@ -28,6 +35,14 @@ module.exports = {
       { from: 'node_modules/codemirror/theme', to: '../codemirror/theme' },
     ]),
   ],
+  resolve: { 
+    alias: { 
+      "react": "preact/compat",
+      "react-dom/test-utils": "preact/test-utils",
+      "react-dom": "preact/compat",
+     // Must be below test-utils
+    },
+  },
   module: {
     rules: [
       {
@@ -42,7 +57,7 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           presets: ['@babel/preset-env'],
-          plugins: ['@babel/plugin-transform-runtime']
+          plugins: ['@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties']
         }
       },
       {

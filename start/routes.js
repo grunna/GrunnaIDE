@@ -18,6 +18,9 @@ const Route = use('Route')
 
 const NODE_ENV= { NODE_ENV: process.env.NODE_ENV }
 
+const Env = use('Env')
+const version = { version: Env.get('VERSION') }
+
 Route.on('/welcome').render('welcome').middleware('guest')
 
 // Login with github
@@ -29,6 +32,8 @@ if (NODE_ENV !== 'production') {
 Route.get('github/callback', 'LoginController.callback').as('github.callback')
 
 Route.on('/login').render('login', NODE_ENV).middleware('guest')
+
+Route.on('/login2').render('login2', version).middleware('guest')
 
 Route.on('/ide').render('editor').as('editor').middleware('auth')
 Route.on('/shared').render('editor').as('shared')
