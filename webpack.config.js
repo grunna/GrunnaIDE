@@ -1,12 +1,11 @@
 const webpack = require('webpack'); 
 const CopyPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
     editor: ['./resources/script/editor/start.js'],
     dashboard: ['./resources/script/dashboard/dashboard.js'],
-    preact: ['./resources/script/preact/preact.js']
+    login: ['./resources/script/login/login.js']
   },
   output: {
     filename: '[name].js',
@@ -19,11 +18,6 @@ module.exports = {
     },
   },*/
   plugins: [
-    new HtmlWebpackPlugin({
-      hash: true,
-      chunks: ['preact'],
-      filename: './../preact.html'
-    }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery'
