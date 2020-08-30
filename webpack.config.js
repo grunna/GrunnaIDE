@@ -5,7 +5,8 @@ module.exports = {
   entry: {
     editor: ['./resources/script/editor/start.js'],
     dashboard: ['./resources/script/dashboard/dashboard.js'],
-    login: ['./resources/script/login/login.js']
+    login: ['./resources/script/login/login.js'],
+    dashboardPreact: ['./resources/script/dashboard/dashboardPreact.js']
   },
   output: {
     filename: '[name].js',

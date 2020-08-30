@@ -32,6 +32,7 @@ Route.get('github/callback', 'LoginController.callback').as('github.callback')
 Route.on('/login').render('loginPreact', version)
 
 Route.on('/dashboard').render('dashboard').as('dashboard').middleware('auth')
+Route.on('/dashboardDev').render('dashboardPreact').as('dashboardDev').middleware('auth')
 
 Route.on('/ide').render('editor').as('editor').middleware('auth')
 Route.on('/shared').render('editor').as('shared')
