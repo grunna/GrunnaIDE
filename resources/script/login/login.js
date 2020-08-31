@@ -7,6 +7,22 @@ import Jumbotron from 'react-bootstrap/Jumbotron'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+let logintype
+if (process.env.NODE_ENV === 'development') {
+  logintype = html`
+					<a href="/login/loginDev">
+          	Login with Dev1
+        	</a><br/>
+					<a href="/login/loginDev2">
+          	Login with Dev2
+        	</a>`
+} else {
+  logintype = html`
+					<a href="/login/github">
+          	Login with GitHub
+        	</a>`
+}
+
 class App extends Component {
   render() {
     return html`
@@ -20,9 +36,7 @@ class App extends Component {
       <${Card.Header}><h5 class="card-title mb-0">Login</h5><//>
       <${Card.Body}>
         <p class="card-text">At this first version we only support login via a GitHub account</p>
-        <a href="/login/loginDev">
-          Login with GitHub
-        </a>
+        ${logintype}        
       <//>
     <//>
   <//>

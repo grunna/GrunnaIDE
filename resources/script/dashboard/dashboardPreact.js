@@ -17,7 +17,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 class CreateProjectDialog extends Component {
   constructor(props) {
     super(props)
-    this.state = { availibleImages: [], selectedImage: 'node:10', projectName: '', gitUrl: '' }
+    this.state = { availibleImages: [], selectedImage: 'node:10', projectName: '', gitUrl: '', isCreating: false }
   }
   
   componentDidMount() {
@@ -43,9 +43,7 @@ class CreateProjectDialog extends Component {
   
   createProject = (e) => {
     e.preventDefault()
-    console.log('Project name', this.state.projectName)
-    console.log('gitUrl', this.state.gitUrl)
-    console.log('image', this.state.selectedImage)
+		this.setState({ isCreating: true})
     fetch('/api/project/createProject', {
       method: 'post',
       headers: {
@@ -55,7 +53,8 @@ class CreateProjectDialog extends Component {
     })
     .then(response => response.json())
     .then(result => {
-      window.location.href = '/ide?project=' + result.projectId;
+      window.location.href = '/ide?project=' + result.projectId
+      this.setState({ isCreating: false})
     })
   }
   
@@ -92,8 +91,8 @@ class CreateProjectDialog extends Component {
             <${Button} variant="secondary" onClick=${this.closeDialog}>
               Close
             <//>
-            <${Button} variant="primary" type="submit">
-              Create project
+            <${Button} variant="primary" disabled=${this.state.isCreating} type="submit">
+							${this.state.isCreating ? html`<${Spinner} animation="border" />` : 'Create project'}
             <//>
           <//>
         <//>
