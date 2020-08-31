@@ -16,24 +16,25 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-const NODE_ENV= { NODE_ENV: process.env.NODE_ENV }
+const NODE_ENV = { NODE_ENV: process.env.NODE_ENV }
 
-Route.on('/welcome').render('welcome').middleware('guest')
+const Env = use('Env')
+const version = { version: Env.get('VERSION') }
 
 // Login with github
 Route.get('login/github', 'LoginController.redirect').as('login.github')
-if (NODE_ENV !== 'production') {
+if (NODE_ENV.NODE_ENV !== 'production') {
   Route.get('login/loginDev', 'LoginController.loginDev').as('login.loginDev')
   Route.get('login/loginDev2', 'LoginController.loginDev2').as('login.loginDev2')
 }
 Route.get('github/callback', 'LoginController.callback').as('github.callback')
 
-Route.on('/login').render('login', NODE_ENV).middleware('guest')
+Route.on('/login').render('loginPreact', version)
+
+Route.on('/dashboard').render('dashboardPreact').as('dashboardDev').middleware('auth')
 
 Route.on('/ide').render('editor').as('editor').middleware('auth')
 Route.on('/shared').render('editor').as('shared')
-
-Route.on('/dashboard').render('dashboard').as('dashboard').middleware('auth')
 
 Route.get('login/logout', 'LoginController.logout').as('login.logout').middleware('auth')
 

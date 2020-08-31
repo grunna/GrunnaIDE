@@ -54,6 +54,7 @@ class ProjectController {
     try {
       let user = await User.find(auth.user.id)
       let projects = await user.projects().wherePivot('owner', true).fetch()
+      console.log('createProject', request.post())
       if (user.max_projects <= projects.rows.length) {
         return response.notAcceptable('Cant create more projects')
       }
