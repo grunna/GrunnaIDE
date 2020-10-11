@@ -88,7 +88,6 @@ import 'jquery-contextmenu/dist/jquery.contextMenu.min.css'
         dockerAttach(5)
       }
     })
-
   }
 
   function WsNotice() {

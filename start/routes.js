@@ -30,8 +30,8 @@ if (NODE_ENV.NODE_ENV !== 'production') {
 Route.get('github/callback', 'LoginController.callback').as('github.callback')
 
 Route.on('/login').render('loginPreact', version)
-
-Route.on('/dashboard').render('dashboardPreact').as('dashboardDev').middleware('auth')
+Route.on('/dashboard').render('dashboardPreact', version).as('dashboard').middleware('auth')
+Route.on('/ideDev').render('editorPreact', version).middleware('auth')
 
 Route.on('/ide').render('editor').as('editor').middleware('auth')
 Route.on('/shared').render('editor').as('shared')
