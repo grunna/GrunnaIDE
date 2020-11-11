@@ -7,7 +7,6 @@ import Observable from './Observer.js'
 import CodeMirror from 'codemirror/lib/codemirror.js'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material.css'
-import loadCodeMode from './codemirrorMode.js'
 
 class CodeMirrorView extends Component {
 
@@ -59,7 +58,7 @@ class CodeMirrorView extends Component {
     }
     console.log('mode', spec, mode, path)
     if (mode) {
-      loadCodeMode(mode).then(() => {
+      import(`codemirror/mode/${mode}/${mode}.js`).then(() => {
         this.state.mirrorInstance.setOption("mode", spec)
       })
     } else {
