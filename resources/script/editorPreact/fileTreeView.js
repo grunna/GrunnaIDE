@@ -41,7 +41,7 @@ class ReactTreeView extends Component {
     })
     .then(response => response.text())
     .then(result => {
-      globals.observers.downloadFile.notify(result)
+      globals.observers.downloadFile.notify({filePath: filePath, data: result})
     })
   }
 

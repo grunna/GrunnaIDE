@@ -15,39 +15,12 @@ import TreeView from './fileTreeView.js'
 import CodeMirrorView from './codemirror.js'
 import OutputView from './output.js'
 import XtermView from './xterm.js'
+import TopMenuView from './menu/topmenu.js'
 import "regenerator-runtime/runtime.js";
 import Ws from '@adonisjs/websocket-client'
 import './editor.css'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-
-/**
-	Should render the top menu, there are some static part like close and remove the project.
-  Then there are dynamic menus that should be loaded from the server depending what things the user want to see
-**/
-class TopMenu extends Component {
-  
-  render() {
-    return html`
-	<${Navbar} bg="light" className="py-0">
-		<${Nav} className="mr-auto">
-			<${NavDropdown} title="File" id="collasible-nav-dropdown">
-        <${NavDropdown.Item}>Project settings<//>
-        <${NavDropdown.Item}>Remove project<//>
-        <${NavDropdown.Item}>Share project<//>
-				<${NavDropdown.Divider} />
-        <${NavDropdown.Item} href="#action/3.2">Close project<//>
-        <${NavDropdown.Item} href="#action/3.3">Logout<//>
-      <//>
-      <${NavDropdown} title="Issue" id="collasible-nav-dropdown">
-        <${NavDropdown.Item}>Create issue<//>
-        <${NavDropdown.Item}>List issues<//>
-      <//>
-    <//>
-  <//>
-`
-  }
-}
 
 class RightTop extends Component {
     render() {
@@ -148,12 +121,21 @@ class App extends Component {
     if (!globals.ws) {
     	globals.ws = Ws().connect()
     }
+    globals.projectId = parseInt(this.queryParameter('project'))
+  }
+  
+  queryParameter(params) {
+    let href = window.location.href;
+    //this expression is to get the query strings
+    let reg = new RegExp( '[?&]' + params + '=([^&#]*)', 'i' );
+    let queryString = reg.exec(href);
+    return queryString ? queryString[1] : null;
   }
   
   render() {
     return html`
     <div style="height: 100%">
-      <${TopMenu} />
+      <${TopMenuView} />
       <${Container} fluid className="px-0" style="height: calc(100% - 40px)">
         <${BasicLayout} />
       <//>
