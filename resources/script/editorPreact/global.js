@@ -6,6 +6,7 @@ export var globals = {
   observers: {
     downloadFile: new Observable(),
   	output: new Observable(),
+    changeTheme: new Observable(),
   },
   ws: null
 }

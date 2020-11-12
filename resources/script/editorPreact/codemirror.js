@@ -5,7 +5,6 @@ import Observable from './Observer.js'
 
 import CodeMirror from 'codemirror/lib/codemirror.js'
 import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/material.css'
 import 'codemirror/mode/meta.js'
 
 class CodeMirrorView extends Component {
@@ -20,7 +19,6 @@ class CodeMirrorView extends Component {
       this.setState({ value: data.data})
       this.state.mirrorInstance.setValue(data.data)
       this.setCodeMirrorData(data.filePath)
-      console.log('CodeMirrorView', data.filePath)
     })
   }
 
@@ -28,15 +26,22 @@ class CodeMirrorView extends Component {
     return false;
   }
 
-  componentDidMount() {
-		CodeMirror.modeURL = '/codemirror/mode/%N/%N.js'
-    console.log('CodeMirror.modeURL', CodeMirror.modeURL)
-
+  async componentDidMount() {
+    let themeName = null
+    await fetch('/api/project/projectSettings?' + new URLSearchParams({projectId: globals.projectId}))
+      .then(response => response.json())
+      .then(result => {
+      if (result.ideTheme) {
+        themeName = result.ideTheme
+        import(/* webpackChunkName: "mirrorTheme" */ `codemirror/theme/${themeName}.css`)
+      }
+    })
     this.setState({ mirrorInstance: CodeMirror.fromTextArea(document.getElementById("codemirroreditor"), {
       lineNumbers : true,
       tabSize: 2,
       gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-      showTrailingSpace: true
+      showTrailingSpace: true,
+      theme: themeName
     })
                   });
   }
@@ -56,9 +61,8 @@ class CodeMirrorView extends Component {
     } else {
       mode = spec = null;
     }
-    console.log('mode', spec, mode, path)
     if (mode) {
-      import(`codemirror/mode/${mode}/${mode}.js`).then(() => {
+      import(/* webpackChunkName: "mirrorMode" */ `codemirror/mode/${mode}/${mode}.js`).then(() => {
         this.state.mirrorInstance.setOption("mode", spec)
       })
     } else {

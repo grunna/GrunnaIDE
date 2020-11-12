@@ -21,5 +21,5 @@ gitTest
 
 # Public that is generated when building
 public/fonts/*
-public/script/*
+
 
