@@ -3,10 +3,10 @@ import { html } from 'htm/preact';
 import { globals } from './global.js'
 import Observable from './Observer.js'
 
-// import {UnControlled as CodeMirror} from 'react-codemirror2'
 import CodeMirror from 'codemirror/lib/codemirror.js'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material.css'
+import 'codemirror/mode/meta.js'
 
 class CodeMirrorView extends Component {
 
