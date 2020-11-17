@@ -16,6 +16,7 @@ import CodeMirrorView from './codemirror.js'
 import OutputView from './output.js'
 import XtermView from './xterm.js'
 import TopMenuView from './menu/topmenu.js'
+import BottomView from './bottomView.js'
 import "regenerator-runtime/runtime.js";
 import Ws from '@adonisjs/websocket-client'
 import './editor.css'
@@ -114,7 +115,6 @@ class BasicLayout extends Component {
   }
 }
 
-
 class App extends Component {
   constructor () {
     super()
@@ -136,9 +136,10 @@ class App extends Component {
     return html`
     <div style="height: 100%">
       <${TopMenuView} />
-      <${Container} fluid className="px-0" style="height: calc(100% - 40px)">
+      <${Container} fluid className="px-0" style="height: calc(100% - 64px)">
         <${BasicLayout} />
       <//>
+			<${BottomView} />
     </div>
 `
   }

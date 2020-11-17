@@ -20,6 +20,14 @@ class CodeMirrorView extends Component {
       this.state.mirrorInstance.setValue(data.data)
       this.setCodeMirrorData(data.filePath)
     })
+    globals.observers.changeTheme.subscribe((data) => {
+      import(/* webpackChunkName: "mirrorTheme" */ `codemirror/theme/${data.theme}.css`).then(() => {
+      	this.state.mirrorInstance.setOption("theme", data.theme)  
+      })
+    })
+    globals.observers.fileMode.subscribe((data) => {
+      this.state.mirrorInstance.setOption("mode", data.modeSpec)
+    })
   }
 
   shouldComponentUpdate() {
@@ -63,10 +71,10 @@ class CodeMirrorView extends Component {
     }
     if (mode) {
       import(/* webpackChunkName: "mirrorMode" */ `codemirror/mode/${mode}/${mode}.js`).then(() => {
-        this.state.mirrorInstance.setOption("mode", spec)
+        globals.observers.fileMode.notify({modeName: name, modeSpec: spec })
       })
     } else {
-      this.state.mirrorInstance.setOption("mode", null)
+      globals.observers.fileMode.notify({modeName: 'text', modeSpec: null })
     }
   }
 
