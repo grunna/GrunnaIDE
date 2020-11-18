@@ -96,7 +96,6 @@ class LeftSide extends Component {
   render() {
     return html`
 		<div>
-			Something very cool<br/>
 			<${TreeView} />
 		</div>
 `

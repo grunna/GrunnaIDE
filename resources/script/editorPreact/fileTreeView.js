@@ -7,6 +7,9 @@ import('jquery.fancytree/dist/skin-lion/ui.fancytree.css');
 import {createTree as fancyTreeCreate} from 'jquery.fancytree';
 import 'jquery.fancytree/dist/modules/jquery.fancytree.childcounter';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRedo } from '@fortawesome/free-solid-svg-icons'
+
 class ReactTreeView extends Component {
   
   constructor () {
@@ -65,6 +68,12 @@ class ReactTreeView extends Component {
         hideExpanded: true
       },
     })})
+    this.reloadFileTree()
+  }
+  
+  
+  
+  reloadFileTree = () => {
     fetch('/api/project/getAllFiles?' + new URLSearchParams({projectId: this.queryParameter('project'), shared: window.location.pathname.startsWith('/shared')}))
       .then(response => response.json())
       .then(result => {
@@ -107,12 +116,12 @@ class ReactTreeView extends Component {
       this.setState({ treeData: testing})
       this.state.fancyTree.reload(testing)
     })
-    
   }
   
   render() {
     return html`
 		<div>
+			Folder <${FontAwesomeIcon} icon=${faRedo} onClick=${this.reloadFileTree}/>
 			<div id="filetree"></div>
 		</div>
 `

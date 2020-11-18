@@ -42,7 +42,6 @@ class BottomLayout extends Component {
   }
   
   changeMode = (mode) => {
-    console.log('mode11', mode)
     globals.observers.fileMode.notify({modeName: mode.name, modeSpec: mode.mime })
   }
 
@@ -50,7 +49,7 @@ class BottomLayout extends Component {
     return html`
     <${Navbar} bg="light" className="py-0" fixed="bottom">
       <${Container} fluid>
-				<${Dropdown} className="ml-auto" id="codeMode" drop="up">
+				<${Dropdown} className="ml-auto" id="codeMode" drop="up" alignRight="true">
 					<${Dropdown.Toggle} size="sm">${this.state.mode}<//>
 					<${Dropdown.Menu} style="height: 400px;overflow-y: auto;">
             <${Dropdown.Item} eventKey="text">text<//>

@@ -42,7 +42,7 @@ class TopMenuView extends Component {
     return html`
 	<${Navbar} bg="light" className="py-0">
 		<${Nav} className="mr-auto">
-			<${NavDropdown} title="File" id="collasible-nav-dropdown">
+			<${NavDropdown} title="File" className="noCaret">
         <${NavDropdown.Item} onClick="${this.openProjectSettingsDialog}">Project settings<//>
         <${NavDropdown.Item}>Remove project<//>
         <${NavDropdown.Item}>Share project<//>
@@ -50,7 +50,7 @@ class TopMenuView extends Component {
         <${NavDropdown.Item} href="/dashboard">Close project<//>
         <${NavDropdown.Item} href="/login/logout">Logout<//>
       <//>
-      <${NavDropdown} title="Issue" id="collasible-nav-dropdown">
+      <${NavDropdown} title="Issue" className="noCaret">
         <${NavDropdown.Item}>Create issue<//>
         <${NavDropdown.Item}>List issues<//>
       <//>

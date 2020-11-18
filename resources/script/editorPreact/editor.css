@@ -14,12 +14,8 @@ body, html {
   height: inherit !important;
 }
 
-footer {
-  position: fixed;
-  height: 100px;
-  bottom: 0;
-  width: 100%;
-	background-color: ff0000;
+.noCaret > a:after {
+  display: none;
 }
 
 .CodeMirror {
