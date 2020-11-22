@@ -35,15 +35,15 @@ class CodeMirrorView extends Component {
   }
 
   async componentDidMount() {
-    let themeName = null
+    let themeName = 'eclipse'
     await fetch('/api/project/projectSettings?' + new URLSearchParams({projectId: globals.projectId}))
       .then(response => response.json())
       .then(result => {
       if (result.ideTheme) {
         themeName = result.ideTheme
-        import(/* webpackChunkName: "mirrorTheme" */ `codemirror/theme/${themeName}.css`)
       }
     })
+    import(/* webpackChunkName: "mirrorTheme" */ `codemirror/theme/${themeName}.css`)
     this.setState({ mirrorInstance: CodeMirror.fromTextArea(document.getElementById("codemirroreditor"), {
       lineNumbers : true,
       tabSize: 2,
