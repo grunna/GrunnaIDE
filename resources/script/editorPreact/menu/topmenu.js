@@ -10,13 +10,12 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+
 class RemoveProjectDialog extends Component {
   constructor(props) {
     super(props)
-    this.state = { 
-
-    }
-    
   }
   
   closeDialog = () => {
@@ -28,8 +27,7 @@ class RemoveProjectDialog extends Component {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ dockerImage: this.state.selectedImage, ideTheme: this.state.ideTheme })
+      }
     })
     .then(response => {
       if (response.ok) {
@@ -42,7 +40,7 @@ class RemoveProjectDialog extends Component {
     return html`
       <${Modal} centered show=${this.props.show} onHide=${this.closeDialog}>
         <${Modal.Header} closeButton>
-          <${Modal.Title}>Create a new project<//>
+          <${Modal.Title}>Remove project<//>
         <//>
 				<${Modal.Body}>
           Do you want to remove the project? 
@@ -72,7 +70,6 @@ class ProjectSettingsDialog extends Component {
   }
   
   loadData = async () => {
-    console.log('loadData')
     await fetch('/api/project/listAllAvailibleImages')
       .then(response => response.json())
       .then(result => {
@@ -145,6 +142,102 @@ class ProjectSettingsDialog extends Component {
   }
 }
 
+class ShareProjectDialog extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      shareLinks: []
+    }
+  }
+  
+  closeDialog = () => {
+    this.props.callbackShowDialog(false)
+  }
+  
+  loadData = async () => {
+    await fetch('/api/project/sharedProjectLinks')
+      .then(response => response.json())
+      .then(result => {
+      if (result) {
+        this.setState({shareLinks: result})
+      }
+    })
+  }
+  
+  removeShareLink = async (shareLink) => {
+    await fetch('/api/project/removeSharedProjectLink', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ uuid: shareLink })
+    })
+    .then(response => {
+      if (response.ok) {
+        this.loadData()
+      }
+    })
+  }
+
+  shareProject = async () => {
+    await fetch('/api/project/shareProject', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.text()
+      }
+    })
+    .then(result => {
+      if (result) {
+        globals.observers.output.notify(`New project share link created https://ide.grunna.com/shared?project=${result}`)
+        this.closeDialog()
+      }
+    })
+  }
+
+  render () {
+    return html`
+      <${Modal} centered show=${this.props.show} onShow=${this.loadData} onHide=${this.closeDialog}>
+        <${Modal.Header} closeButton>
+          <${Modal.Title}>Share project<//>
+        <//>
+				<${Modal.Body}>
+          Share this project? (Only read-only)
+        	<hr/>
+					<table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" style="width:100%">Shared link</th>
+                <th scope="col">Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+							${this.state.shareLinks.map(shareLink => html`
+							<tr>
+								<td><a target="_blank" href="shared?project=${shareLink}">${shareLink}</a></td>
+								<td style="text-align:center;"><${FontAwesomeIcon} icon=${faTimes} style=${{ cursor: "pointer" }} onClick=${() => this.removeShareLink(shareLink)}/></td>
+							</tr>
+              `)}
+            </tbody>
+          </table>
+        <//>
+        <${Modal.Footer}>
+          <${Button} variant="secondary" onClick=${this.closeDialog}>
+            Close
+          <//>
+					<${Button} variant="primary" onClick=${this.shareProject}>
+            Create link
+          <//>
+        <//>
+      <//>
+`
+  }
+}
+
 class TopMenuView extends Component {
   
   constructor () {
@@ -152,6 +245,7 @@ class TopMenuView extends Component {
     this.state = { 
     	showProjectSettings: false,
       showRemoveProject: false,
+      showShareProject: false,
     }
   }
   
@@ -171,6 +265,10 @@ class TopMenuView extends Component {
     this.setState({ showRemoveProject: show})
   }
   
+  showShareProjectDialog = (show) => {
+    this.setState({ showShareProject: show})
+  }
+  
   render() {
     return html`
 	<${Navbar} bg="light" className="py-0">
@@ -178,7 +276,7 @@ class TopMenuView extends Component {
 			<${NavDropdown} title="File" className="noCaret">
         <${NavDropdown.Item} onClick="${this.openProjectSettingsDialog}">Project settings<//>
         <${NavDropdown.Item} onClick="${this.openRemoveProjectDialog}">Remove project<//>
-        <${NavDropdown.Item}>Share project<//>
+        <${NavDropdown.Item} onClick="${() => this.setState({ showShareProject: true })}">Share project<//>
 				<${NavDropdown.Divider} />
         <${NavDropdown.Item} href="/dashboard">Close project<//>
         <${NavDropdown.Item} href="/login/logout">Logout<//>
@@ -191,6 +289,7 @@ class TopMenuView extends Component {
   <//>
 	<${ProjectSettingsDialog} show=${this.state.showProjectSettings} callbackShowDialog="${this.showProjectSettingsDialog}"/>
 	<${RemoveProjectDialog} show=${this.state.showRemoveProject} callbackShowDialog="${this.showRemoveProjectDialog}"/>
+  <${ShareProjectDialog} show=${this.state.showShareProject} callbackShowDialog="${this.showShareProjectDialog}"/>
 `
   }
 }

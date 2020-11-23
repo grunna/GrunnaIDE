@@ -7,8 +7,7 @@ class OutputView extends Component {
   constructor () {
     super()
     this.state = {
-			outputText: `
-Welcome to Grunna IDE!
+			outputText: `Welcome to Grunna IDE!
 On the left you find the tree view with all the files and directories.
 On the bottom you have two tabs, one for different outputs and the other (Terminal) is for making commands to your docker container.
 If you have any problems and need any help join our https://discord.gg/U4cN8tr
@@ -16,11 +15,9 @@ The docker container is linked to port 8080, so you need to expose that to get a
 `
     }
     globals.observers.output.subscribe((data) => {
-      console.log('OutputView', data)
-      this.setState({ outputText: this.outputText + data + '<br/>'})
+      this.setState({ outputText: this.state.outputText + data + '\n'})
     })
     globals.ws.on('open', () => {
-      console.log('ws is open output')
       let dockerChannel
       if (!globals.ws.getSubscription('docker')) {
         dockerChannel = globals.ws.subscribe('docker')
@@ -28,7 +25,7 @@ The docker container is linked to port 8080, so you need to expose that to get a
         dockerChannel = globals.ws.getSubscription('docker')
       }
       dockerChannel.on('output', (output) => { 
-        this.setState({ outputText: this.outputText + output + '<br/>'})
+        this.setState({ outputText: this.state.outputText + output + '\n'})
       })
     })
   }

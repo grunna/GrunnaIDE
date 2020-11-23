@@ -70,7 +70,9 @@ class XtermView extends Component {
   }
   
   updateTerminalSize() {
-    this.state.xtermFitAddon.fit()
+		try {
+    	this.state.xtermFitAddon.fit()
+    } catch (error) {}
   }
 
   render() {
