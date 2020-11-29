@@ -8,6 +8,9 @@ export var globals = {
     output: new Observable(),
     changeTheme: new Observable(),
     fileMode: new Observable(),
+    keyEvents: {
+      save: new Observable(),
+    }
   },
   ws: null,
 }

@@ -2,10 +2,13 @@ import { h, render, Component } from 'preact';
 import { html } from 'htm/preact';
 import { globals } from './global.js'
 import Observable from './Observer.js'
+import sha256 from 'crypto-js/sha256';
 
 import CodeMirror from 'codemirror/lib/codemirror.js'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/meta.js'
+
+import Toast from 'react-bootstrap/Toast'
 
 class CodeMirrorView extends Component {
 
@@ -14,9 +17,13 @@ class CodeMirrorView extends Component {
     this.state = {
       value: '',
       mirrorInstance: null,
+      currentFilePath: '',
+      loadedFileSha: '',
+      showSavedFileToaster: false,
+      showNoChangeToaster: false,
     }
     globals.observers.downloadFile.subscribe((data) => {
-      this.setState({ value: data.data})
+      this.setState({ value: data.data, currentFilePath: data.filePath, loadedFileSha: sha256(data.data).toString() })
       this.state.mirrorInstance.setValue(data.data)
       this.setCodeMirrorData(data.filePath)
     })
@@ -28,10 +35,29 @@ class CodeMirrorView extends Component {
     globals.observers.fileMode.subscribe((data) => {
       this.state.mirrorInstance.setOption("mode", data.modeSpec)
     })
+    globals.observers.keyEvents.save.subscribe(() => {
+      this.saveFile()
+    })
   }
-
-  shouldComponentUpdate() {
-    return false;
+  
+  saveFile() {
+    let newSha = sha256(this.state.mirrorInstance.getValue()).toString()
+    if (this.state.loadedFileSha !== newSha) {
+      fetch('/api/file/saveFile', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ fileName: this.state.currentFilePath, data: this.state.mirrorInstance.getValue() })
+      })
+      .then(response => {
+        if (response.ok) {
+          this.setState({showSavedFileToaster: true, loadedFileSha: newSha })
+        }
+      })
+    } else {
+      this.setState({showNoChangeToaster: true})
+    }
   }
 
   async componentDidMount() {
@@ -81,6 +107,13 @@ class CodeMirrorView extends Component {
   render() {
     return html`
 <textarea id="codemirroreditor"></textarea>
+  <${Toast} onClose=${() => this.setState({showSavedFileToaster: false})} show=${this.state.showSavedFileToaster} delay=${2000} autohide style=${{position: 'fixed', bottom: '5px', left: '2%'}}>
+    <${Toast.Body}>File have been saved<//>
+  <//>
+  <${Toast} onClose=${() => this.setState({showNoChangeToaster: false})} show=${this.state.showNoChangeToaster} delay=${3000} autohide style=${{position: 'fixed', bottom: '5px', left: '2%'}}>
+    <${Toast.Body}>Nothing new to be saved<//>
+  <//>
+
 `
   }
 }

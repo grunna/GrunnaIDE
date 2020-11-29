@@ -17,6 +17,7 @@ import OutputView from './output.js'
 import XtermView from './xterm.js'
 import TopMenuView from './menu/topmenu.js'
 import BottomView from './bottomView.js'
+import KeyEvents from './keyevents.js'
 import "regenerator-runtime/runtime.js";
 import Ws from '@adonisjs/websocket-client'
 import './editor.css'
@@ -140,6 +141,7 @@ class App extends Component {
       <//>
 			<${BottomView} />
     </div>
+		<${KeyEvents} />
 `
   }
 }
