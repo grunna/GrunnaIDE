@@ -31,10 +31,9 @@ Route.get('github/callback', 'LoginController.callback').as('github.callback')
 
 Route.on('/login').render('loginPreact', version)
 Route.on('/dashboard').render('dashboardPreact', version).as('dashboard').middleware('auth')
-Route.on('/ideDev').render('editorPreact', version).middleware('auth')
+Route.on('/ide').render('editorPreact', version).as('editor').middleware('auth')
 
-Route.on('/ide').render('editor').as('editor').middleware('auth')
-Route.on('/shared').render('editor').as('shared')
+Route.on('/shared').render('editorPreact', version).as('shared')
 
 Route.get('login/logout', 'LoginController.logout').as('login.logout').middleware('auth')
 

@@ -332,7 +332,7 @@ class ReactTreeView extends Component {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ fileName: filePath, hash: 0 /* Need to add hash data */, sharedId: window.location.pathname.startsWith('/shared') ? projectId : null})
+      body: JSON.stringify({ fileName: filePath, hash: 0 /* Need to add hash data */, sharedId: globals.shared ? globals.projectId : null})
     })
     .then(response => response.text())
     .then(result => {
@@ -400,7 +400,7 @@ class ReactTreeView extends Component {
   }
 
   reloadFileTree = () => {
-    fetch('/api/project/getAllFiles?' + new URLSearchParams({projectId: this.queryParameter('project'), shared: window.location.pathname.startsWith('/shared')}))
+    fetch('/api/project/getAllFiles?' + new URLSearchParams({projectId: globals.projectId, shared: globals.shared}))
       .then(response => response.json())
       .then(result => {
       let printArray = function(array) {

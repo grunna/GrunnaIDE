@@ -273,6 +273,7 @@ class TopMenuView extends Component {
     return html`
 	<${Navbar} bg="light" className="py-0">
 		<${Nav} className="mr-auto">
+			${ !globals.shared && html`
 			<${NavDropdown} title="File" className="noCaret">
         <${NavDropdown.Item} onClick="${this.openProjectSettingsDialog}">Project settings<//>
         <${NavDropdown.Item} onClick="${this.openRemoveProjectDialog}">Remove project<//>
@@ -281,6 +282,7 @@ class TopMenuView extends Component {
         <${NavDropdown.Item} href="/dashboard">Close project<//>
         <${NavDropdown.Item} href="/login/logout">Logout<//>
       <//>
+			`}
       <${NavDropdown} title="Issue" className="noCaret">
         <${NavDropdown.Item}>Create issue<//>
         <${NavDropdown.Item}>List issues<//>

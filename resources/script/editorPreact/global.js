@@ -3,6 +3,7 @@ import Observable from './Observer.js'
 
 export var globals = {
   projectId: -1,
+  shared: false,
   observers: {
     downloadFile: new Observable(),
     output: new Observable(),

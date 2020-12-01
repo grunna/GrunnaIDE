@@ -121,7 +121,8 @@ class App extends Component {
     if (!globals.ws) {
     	globals.ws = Ws().connect()
     }
-    globals.projectId = parseInt(this.queryParameter('project'))
+    globals.shared = window.location.pathname.startsWith('/shared')
+    globals.projectId = globals.shared ? this.queryParameter('project') : parseInt(this.queryParameter('project'))
   }
   
   queryParameter(params) {
