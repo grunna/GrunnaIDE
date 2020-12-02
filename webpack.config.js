@@ -3,7 +3,6 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
-    editor: ['./resources/script/editor/start.js'],
     login: ['./resources/script/login/login.js'],
     dashboardPreact: ['./resources/script/dashboard/dashboardPreact.js'],
     editorPreact: ['./resources/script/editorPreact/index.js'],
@@ -23,12 +22,6 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery'
     }),
-    new CopyPlugin([
-      { from: 'node_modules/codemirror/lib', to: '../codemirror/lib' },
-      { from: 'node_modules/codemirror/addon', to: '../codemirror/addon' },
-      { from: 'node_modules/codemirror/mode', to: '../codemirror/mode' },
-      { from: 'node_modules/codemirror/theme', to: '../codemirror/theme' },
-    ]),
   ],
   resolve: { 
     alias: { 
